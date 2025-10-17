@@ -1,0 +1,15 @@
+# {{APP_DESCRIPTION}}
+name = "tools-{{APP_NAME}}"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+
+# 必要に応じてR2バケット、KV、D1などのバインディングを追加
+# 例: データ保存用のR2バケット
+# [[r2_buckets]]
+# binding = "STORAGE"
+# bucket_name = "{{APP_NAME}}-storage"
+
+# 例: メタデータ保存用のKV
+# [[kv_namespaces]]
+# binding = "METADATA"
+# id = "your-kv-namespace-id"

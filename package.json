@@ -1,0 +1,34 @@
+{
+  "name": "tools-router",
+  "version": "1.0.0",
+  "description": "Cloudflare Workers router for multiple tool applications",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "wrangler dev",
+    "build": "npm run type-check",
+    "build:router": "tsc --noEmit",
+    "deploy": "npm run build && npm run deploy:apps && npm run deploy:router",
+    "deploy:router": "wrangler deploy",
+    "deploy:apps": "npm run deploy:image-crop",
+    "deploy:image-crop": "cd apps/image-crop && npm run deploy",
+    "type-check": "tsc --noEmit",
+    "create-app": "node scripts/create-app.js",
+    "delete-app": "node scripts/delete-app.js"
+  },
+  "keywords": [
+    "cloudflare-workers",
+    "hono",
+    "router"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "hono": "^4.6.14"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20241205.0",
+    "@iarna/toml": "^2.2.5",
+    "typescript": "^5.7.2",
+    "wrangler": "^3.99.0"
+  }
+}
