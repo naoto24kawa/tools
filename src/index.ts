@@ -24,20 +24,111 @@ app.use('*', cors({
   maxAge: 86400,
 }))
 
-// ルートエンドポイント - 利用可能なツールの一覧を返す
+// ルートエンドポイント - 利用可能なツールの一覧を表示
 app.get('/', (c) => {
-  return c.json({
-    message: 'Tools Router',
-    version: '1.0.0',
-    availableApps: [
-      {
-        name: 'image-crop',
-        path: '/image-crop',
-        description: '画像のトリミング'
-      }, // BEGIN APP: image-crop
-      // 他のツールを追加する場合はここに追加
-    ]
-  })
+  const html = `<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tools - elchika</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .container {
+      background: white;
+      border-radius: 16px;
+      padding: 40px;
+      max-width: 600px;
+      width: 100%;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+    h1 {
+      font-size: 2.5rem;
+      color: #333;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    .subtitle {
+      color: #666;
+      text-align: center;
+      margin-bottom: 40px;
+      font-size: 1.1rem;
+    }
+    .tools-list {
+      list-style: none;
+    }
+    .tool-item {
+      margin-bottom: 16px;
+    }
+    .tool-link {
+      display: block;
+      padding: 20px 24px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      text-decoration: none;
+      border-radius: 12px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+    }
+    .tool-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.6);
+    }
+    .tool-name {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .tool-description {
+      font-size: 0.95rem;
+      opacity: 0.9;
+    }
+    footer {
+      margin-top: 40px;
+      text-align: center;
+      color: #999;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🛠️ Tools</h1>
+    <p class="subtitle">便利なツール集</p>
+
+    <ul class="tools-list">
+      <!-- BEGIN APP: image-crop -->
+      <li class="tool-item">
+        <a href="/image-crop/" class="tool-link">
+          <div class="tool-name">📸 Image Crop</div>
+          <div class="tool-description">画像のトリミング</div>
+        </a>
+      </li>
+      <!-- END APP: image-crop -->
+      <!-- 他のツールを追加する場合はここに追加 -->
+    </ul>
+
+    <footer>
+      Powered by Cloudflare Workers + Pages
+    </footer>
+  </div>
+</body>
+</html>`
+
+  return c.html(html)
 })
 
 // ヘルスチェックエンドポイント
