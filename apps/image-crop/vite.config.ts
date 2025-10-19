@@ -3,7 +3,8 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
-  base: '/image-crop/',
+  // Pages直接アクセス用にルートパスを使用
+  base: '/',
   build: {
     outDir: "dist",
     emptyOutDir: true,

@@ -152,7 +152,19 @@ app.all('/image-crop/*', async (c) => {
       body: c.req.raw.body,
     })
 
-    // レスポンスヘッダーをコピー（必要に応じて調整）
+    // HTMLの場合はアセットパスを書き換え
+    const contentType = response.headers.get('content-type') || ''
+    if (contentType.includes('text/html')) {
+      const html = await response.text()
+      // /assets/ を /image-crop/assets/ に書き換え
+      const modifiedHtml = html.replace(
+        /(src|href)="\/assets\//g,
+        '$1="/image-crop/assets/'
+      )
+      return c.html(modifiedHtml)
+    }
+
+    // HTML以外はそのまま返す
     const newResponse = new Response(response.body, response)
     return newResponse
   } catch (error) {
