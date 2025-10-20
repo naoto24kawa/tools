@@ -6,6 +6,8 @@ import { compress } from 'hono/compress'
 // 環境変数の型定義
 type Bindings = {
   // 他のツールを追加する場合はここに型を追加
+
+  IMAGE_GENERATE: Fetcher // BEGIN APP: image-generate
 }
 
 // Pages デプロイメントのURL
@@ -118,6 +120,14 @@ app.get('/', (c) => {
         </a>
       </li>
       <!-- END APP: image-crop -->
+      <!-- BEGIN APP: image-generate -->
+      <li class="tool-item">
+        <a href="/image-generate/" class="tool-link">
+          <div class="tool-name">🎨 Image Generate</div>
+          <div class="tool-description">画像ファイルを生成します</div>
+        </a>
+      </li>
+      <!-- END APP: image-generate -->
       <!-- 他のツールを追加する場合はここに追加 -->
     </ul>
 
@@ -176,13 +186,36 @@ app.all('/image-crop/*', async (c) => {
   }
 }) // END APP: image-crop
 
+
+// 画像ファイルを生成します へのルーティング // BEGIN APP: image-generate
+app.all('/image-generate/*', async (c) => {
+  try {
+    const path = c.req.path.replace('/image-generate', '') || '/'
+    const url = new URL(path, 'http://internal')
+
+    const request = new Request(url, {
+      method: c.req.method,
+      headers: c.req.raw.headers,
+      body: c.req.raw.body,
+    })
+
+    return await c.env.IMAGE_GENERATE.fetch(request)
+  } catch (error) {
+    console.error('Error proxying to image-generate:', error)
+    return c.json({
+      error: 'Service unavailable',
+      message: '画像ファイルを生成しますへの接続に失敗しました'
+    }, 503)
+  }
+}) // END APP: image-generate
+
 // 404エラーハンドラー
 app.notFound((c) => {
   return c.json({
     error: 'Not found',
     message: '指定されたパスは存在しません',
     availablePaths: ['/', '/health', '/image-crop' // BEGIN APP: image-crop
-    ]
+    , '/image-generate' // BEGIN APP: image-generate]
   }, 404)
 })
 
