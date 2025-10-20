@@ -153,11 +153,18 @@ export function App() {
     <div className="container">
       <header className="header">
         <div style={{ marginBottom: '0.5rem' }}>
-          <a href="/" style={{ color: '#667eea', textDecoration: 'none', fontSize: '0.9rem' }}>
+          <a
+            href="/"
+            style={{
+              color: 'var(--primary-color)',
+              textDecoration: 'none',
+              fontSize: '0.9rem',
+            }}
+          >
             ← Tools トップに戻る
           </a>
         </div>
-        <h1>画像トリミングアプリ</h1>
+        <h1>🖼️ Image Cropper</h1>
         <p>クライアントサイドで完結する画像トリミングツール</p>
       </header>
 
