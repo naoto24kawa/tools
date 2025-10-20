@@ -214,8 +214,12 @@ app.notFound((c) => {
   return c.json({
     error: 'Not found',
     message: '指定されたパスは存在しません',
-    availablePaths: ['/', '/health', '/image-crop' // BEGIN APP: image-crop
-    , '/image-generate' // BEGIN APP: image-generate]
+    availablePaths: [
+      '/',
+      '/health',
+      '/image-crop', // BEGIN APP: image-crop
+      '/image-generate' // BEGIN APP: image-generate
+    ]
   }, 404)
 })
 
