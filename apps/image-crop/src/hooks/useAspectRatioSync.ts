@@ -43,8 +43,6 @@ export function useAspectRatioSync({
 }) {
   const prevAspectRef = useRef<number | undefined>();
   const srcRef = useRef(''); // 空文字列で初期化して、最初のマウント時にisNewImage = trueになるようにする
-  const cropRef = useRef(crop);
-  cropRef.current = crop;
 
   useEffect(() => {
     // srcが変更されたかチェック（新しい画像がアップロードされた）
@@ -62,7 +60,7 @@ export function useAspectRatioSync({
     // cropが既に有効な値を持っており、かつ新しい画像の場合
     // これは新しい画像がアップロードされ、ユーザー設定が適用されている状態
     // この場合のみスキップ
-    if (isNewImage && cropRef.current.width > 0 && cropRef.current.height > 0) {
+    if (isNewImage && crop.width > 0 && crop.height > 0) {
       prevAspectRef.current = aspect;
       return;
     }
@@ -105,5 +103,5 @@ export function useAspectRatioSync({
 
     // アスペクト比適用後のサイズを通知
     onAspectRatioApplied?.(pixelCropForUI);
-  }, [aspect, imageSize, src, onCropChange, onAspectRatioApplied, imgRef]);
+  }, [aspect, imageSize, src, crop, onCropChange, onAspectRatioApplied, imgRef]);
 }

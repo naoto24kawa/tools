@@ -28,6 +28,13 @@ export default [
         File: 'readonly',
         HTMLImageElement: 'readonly',
         HTMLInputElement: 'readonly',
+        HTMLButtonElement: 'readonly',
+        HTMLDivElement: 'readonly',
+        React: 'readonly',
+        alert: 'readonly',
+        setTimeout: 'readonly',
+        Blob: 'readonly',
+        Date: 'readonly',
       },
     },
     plugins: {
@@ -46,6 +53,8 @@ export default [
         'warn',
         { argsIgnorePattern: '^_', varsIgnorePattern: '^_' },
       ],
+      '@typescript-eslint/no-empty-object-type': 'off', // Allow empty interfaces for shadcn/ui components
+      'no-undef': 'off', // TypeScript handles this
     },
     settings: {
       react: {

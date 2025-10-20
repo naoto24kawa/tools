@@ -52,11 +52,11 @@ export function useCropState() {
     height: 0,
   });
   const [aspectRatio, setAspectRatio] = useState<number | undefined>(undefined);
-  const [exportSettings, setExportSettings] = useState<ExportSettings>({
+  const [exportSettings, setExportSettings] = useState<ExportSettings>(() => ({
     format: 'png',
     quality: 0.95,
     filename: `cropped-${Date.now()}.png`,
-  });
+  }));
 
   // ========================================
   // サービス
