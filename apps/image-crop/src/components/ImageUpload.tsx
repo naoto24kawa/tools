@@ -71,8 +71,8 @@ export function ImageUpload({ onImageLoad }: ImageUploadProps) {
   return (
     <div
       className={cn(
-        "relative cursor-pointer rounded-lg border-2 border-dashed border-muted-foreground/25 bg-background p-12 text-center transition-colors hover:border-primary hover:bg-muted/50",
-        dragActive && "border-primary border-solid bg-muted/50"
+        'relative cursor-pointer rounded-lg border-2 border-dashed border-muted-foreground/25 bg-background p-12 text-center transition-colors hover:border-primary hover:bg-muted/50',
+        dragActive && 'border-primary border-solid bg-muted/50'
       )}
       onDragEnter={handleDrag}
       onDragLeave={handleDrag}
@@ -92,9 +92,7 @@ export function ImageUpload({ onImageLoad }: ImageUploadProps) {
       <p className="mb-2 text-base font-medium text-foreground">
         画像をドラッグ＆ドロップ、またはクリックして選択
       </p>
-      <p className="text-sm text-muted-foreground">
-        JPEG、PNG、WebP、GIF（最大10MB、8000x8000px）
-      </p>
+      <p className="text-sm text-muted-foreground">JPEG、PNG、WebP、GIF（最大10MB、8000x8000px）</p>
     </div>
   );
 }

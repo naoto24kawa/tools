@@ -42,11 +42,7 @@ export class BackgroundRenderer {
   /**
    * チェッカーボードパターンを描画
    */
-  private drawCheckerboard(
-    ctx: CanvasRenderingContext2D,
-    width: number,
-    height: number
-  ): void {
+  private drawCheckerboard(ctx: CanvasRenderingContext2D, width: number, height: number): void {
     const squareSize = CANVAS_CONSTANTS.PATTERN_SIZE;
     ctx.fillStyle = `rgba(0, 0, 0, ${CANVAS_CONSTANTS.CHECKERBOARD_ALPHA})`;
 

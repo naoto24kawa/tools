@@ -1,6 +1,7 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useMemo } from 'react';
 import type { ExportSettings, PixelCrop, PreviewInfo, AspectRatioOption } from '@types';
-import { getCroppedImg } from '@utils/cropCalculator';
+import { ImageExporter } from '@services/ImageExporter';
+import { useToast } from '@hooks/useToast';
 import { AspectRatioSelector } from './AspectRatioSelector';
 import { ExportSettings as ExportSettingsComponent } from './ExportSettings';
 import { PreviewInfo as PreviewInfoComponent } from './PreviewInfo';
@@ -30,33 +31,31 @@ export function ExportPanel({
 }: ExportPanelProps) {
   const imgRef = useRef<HTMLImageElement>(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const { toast } = useToast();
+
+  // ImageExporterインスタンスをメモ化（再レンダリングごとに再作成しない）
+  const exporter = useMemo(() => new ImageExporter(), []);
 
   const handleExport = async () => {
     if (!imgRef.current || isProcessing) return;
 
     setIsProcessing(true);
     try {
-      const blob = await getCroppedImg(
-        imgRef.current,
-        crop,
-        exportSettings.format,
-        exportSettings.quality
-      );
+      const result = await exporter.exportImage(imgRef.current, crop, exportSettings);
 
-      if (!blob) {
-        alert('画像の処理に失敗しました');
-        return;
+      if (result.success) {
+        toast({
+          title: '成功',
+          description: '画像を保存しました',
+          variant: 'success',
+        });
+      } else {
+        toast({
+          title: 'エラー',
+          description: result.error || 'エクスポートに失敗しました',
+          variant: 'destructive',
+        });
       }
-
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = exportSettings.filename || `cropped-${Date.now()}.${exportSettings.format}`;
-      a.click();
-      URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error('Export failed:', error);
-      alert('エクスポートに失敗しました');
     } finally {
       setIsProcessing(false);
     }

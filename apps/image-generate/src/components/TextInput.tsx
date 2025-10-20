@@ -3,7 +3,15 @@ import { createNumberInputHandler } from '@utils/inputValidation';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Button } from './ui/button';
-import { Type, AlignLeft, AlignCenter, AlignRight, AlignVerticalJustifyStart, AlignVerticalJustifyCenter, AlignVerticalJustifyEnd } from 'lucide-react';
+import {
+  Type,
+  AlignLeft,
+  AlignCenter,
+  AlignRight,
+  AlignVerticalJustifyStart,
+  AlignVerticalJustifyCenter,
+  AlignVerticalJustifyEnd,
+} from 'lucide-react';
 
 interface TextInputProps {
   text: string;
@@ -72,8 +80,7 @@ export function TextInput({
             type="button"
             className="flex-1"
           >
-            <AlignLeft className="mr-1 h-4 w-4" />
-            左
+            <AlignLeft className="mr-1 h-4 w-4" />左
           </Button>
           <Button
             variant={textAlignment === 'center' ? 'default' : 'outline'}
@@ -92,8 +99,7 @@ export function TextInput({
             type="button"
             className="flex-1"
           >
-            <AlignRight className="mr-1 h-4 w-4" />
-            右
+            <AlignRight className="mr-1 h-4 w-4" />右
           </Button>
         </div>
       </div>
@@ -108,8 +114,7 @@ export function TextInput({
             type="button"
             className="flex-1"
           >
-            <AlignVerticalJustifyStart className="mr-1 h-4 w-4" />
-            上
+            <AlignVerticalJustifyStart className="mr-1 h-4 w-4" />上
           </Button>
           <Button
             variant={textVerticalAlignment === 'middle' ? 'default' : 'outline'}
@@ -128,8 +133,7 @@ export function TextInput({
             type="button"
             className="flex-1"
           >
-            <AlignVerticalJustifyEnd className="mr-1 h-4 w-4" />
-            下
+            <AlignVerticalJustifyEnd className="mr-1 h-4 w-4" />下
           </Button>
         </div>
       </div>

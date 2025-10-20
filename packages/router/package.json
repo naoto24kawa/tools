@@ -1,0 +1,26 @@
+{
+  "name": "router",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Cloudflare Workers router for multiple tool applications",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "wrangler dev",
+    "build": "tsc --noEmit",
+    "type-check": "tsc --noEmit",
+    "deploy": "bun run build && wrangler deploy"
+  },
+  "keywords": [
+    "cloudflare-workers",
+    "hono",
+    "router"
+  ],
+  "dependencies": {
+    "hono": "^4.6.14"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20241205.0",
+    "typescript": "^5.7.2",
+    "wrangler": "^4.0.0"
+  }
+}

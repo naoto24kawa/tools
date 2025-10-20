@@ -30,8 +30,7 @@ export function SizeInput({ width, height, onWidthChange, onHeightChange }: Size
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="width-input" className="flex items-center gap-1.5">
-            <Maximize2 className="h-3.5 w-3.5 text-muted-foreground" />
-            幅 (px)
+            <Maximize2 className="h-3.5 w-3.5 text-muted-foreground" />幅 (px)
           </Label>
           <Input
             id="width-input"

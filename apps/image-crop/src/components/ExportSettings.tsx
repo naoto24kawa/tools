@@ -2,13 +2,7 @@ import type { ExportSettings as ExportSettingsType } from '@types';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Settings, FileType, Sliders, File } from 'lucide-react';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from './ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 
 interface ExportSettingsProps {
   exportSettings: ExportSettingsType;

@@ -1,85 +1,38 @@
-import { useRef, useEffect } from 'react';
+import { useRef } from 'react';
 import ReactCrop, { centerCrop, makeAspectCrop } from 'react-image-crop';
 import type { Crop, PixelCrop } from '@types';
 import { convertPercentToPixelCrop, convertToActualPixels } from '@utils/coordinateConverter';
+import { useAspectRatioSync } from '@hooks/useAspectRatioSync';
 
 interface ImageCropperProps {
   src: string;
   crop: Crop;
   onCropChange: (crop: Crop, pixelCrop: PixelCrop) => void;
-  onAspectRatioApplied?: (crop: Crop) => void;
-  aspect?: number;
+  onAspectRatioApplied?: ((crop: Crop) => void) | undefined;
+  aspect?: number | undefined;
   imageSize: { width: number; height: number };
 }
 
-export function ImageCropper({ src, crop, onCropChange, onAspectRatioApplied, aspect, imageSize }: ImageCropperProps) {
+export function ImageCropper({
+  src,
+  crop,
+  onCropChange,
+  onAspectRatioApplied,
+  aspect,
+  imageSize,
+}: ImageCropperProps) {
   const imgRef = useRef<HTMLImageElement>(null);
-  const prevAspectRef = useRef<number | undefined>();
-  const srcRef = useRef(''); // 空文字列で初期化して、最初のマウント時にisNewImage = trueになるようにする
-  const cropRef = useRef(crop);
-  cropRef.current = crop;
 
-  // アスペクト比が変更されたときにクロップ領域を再計算
-  useEffect(() => {
-    // srcが変更されたかチェック（新しい画像がアップロードされた）
-    const isNewImage = srcRef.current !== src;
-    if (isNewImage) {
-      srcRef.current = src;
-    }
-
-    // アスペクト比が変更されていない場合はスキップ
-    if (!imgRef.current || !aspect || prevAspectRef.current === aspect) {
-      prevAspectRef.current = aspect;
-      return;
-    }
-
-    // cropが既に有効な値を持っており、かつ新しい画像の場合
-    // これは新しい画像がアップロードされ、ユーザー設定が適用されている状態
-    // この場合のみスキップ
-    if (isNewImage && cropRef.current.width > 0 && cropRef.current.height > 0) {
-      prevAspectRef.current = aspect;
-      return;
-    }
-
-    prevAspectRef.current = aspect;
-
-    const { width, height } = imgRef.current;
-
-    // 現在のクロップ領域を新しいアスペクト比に合わせて調整
-    const newCrop = centerCrop(
-      makeAspectCrop(
-        {
-          unit: '%',
-          width: 50,
-        },
-        aspect,
-        width,
-        height
-      ),
-      width,
-      height
-    );
-
-    // パーセント→ピクセルに変換してから渡す
-    const pixelCropForUI = convertPercentToPixelCrop(
-      newCrop,
-      width,
-      height,
-      imageSize.width,
-      imageSize.height
-    );
-    const pixelCrop = convertToActualPixels(
-      pixelCropForUI,
-      width,
-      height,
-      imageSize.width,
-      imageSize.height
-    );
-    onCropChange(pixelCropForUI, pixelCrop);
-
-    // アスペクト比適用後のサイズを通知
-    onAspectRatioApplied?.(pixelCropForUI);
-  }, [aspect, imageSize, src, onCropChange, onAspectRatioApplied]);
+  // アスペクト比の同期ロジックを専用フックに委譲
+  useAspectRatioSync({
+    imgRef,
+    src,
+    crop,
+    aspect,
+    imageSize,
+    onCropChange,
+    onAspectRatioApplied,
+  });
 
   const onImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
     // cropが既に有効な値を持っている場合は初期化をスキップ
@@ -165,7 +118,7 @@ export function ImageCropper({ src, crop, onCropChange, onAspectRatioApplied, as
           );
           onCropChange(crop, actualPixelCrop);
         }}
-        aspect={aspect}
+        {...(aspect !== undefined && { aspect })}
       >
         <img
           ref={imgRef}

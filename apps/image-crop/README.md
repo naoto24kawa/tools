@@ -64,12 +64,14 @@ bun run deploy
 ## 対応フォーマット
 
 ### 入力
+
 - JPEG (.jpg, .jpeg)
 - PNG (.png)
 - WebP (.webp)
 - GIF (.gif)
 
 ### 出力
+
 - JPEG (品質調整可能)
 - PNG
 - WebP (品質調整可能)

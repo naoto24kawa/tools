@@ -50,7 +50,7 @@ if (args.includes('--help') || args.includes('-h')) {
 function kebabToPascal(str) {
   return str
     .split('-')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join('');
 }
 
@@ -115,7 +115,7 @@ function updateWranglerToml(appName, appNameSnake) {
     }
 
     // すでに存在するかチェック
-    const exists = config.services.some(s => s.service === `tools-${appName}`);
+    const exists = config.services.some((s) => s.service === `tools-${appName}`);
     if (exists) {
       console.log(`   ⚠️  Service Binding はすでに存在します`);
       return;
@@ -124,13 +124,12 @@ function updateWranglerToml(appName, appNameSnake) {
     // 新しいService Bindingを追加
     config.services.push({
       binding: appNameSnake,
-      service: `tools-${appName}`
+      service: `tools-${appName}`,
     });
 
     // TOMLとして書き出し
     fs.writeFileSync(wranglerPath, toml.stringify(config));
     console.log(`   ✅ wrangler.toml に Service Binding を追加`);
-
   } catch (error) {
     console.error(`   ❌ wrangler.toml の更新に失敗:`, error.message);
     throw error;
@@ -158,7 +157,6 @@ function updatePackageJson(appName) {
 
     fs.writeFileSync(packagePath, JSON.stringify(pkg, null, 2) + '\n');
     console.log(`   ✅ package.json にデプロイスクリプトを追加`);
-
   } catch (error) {
     console.error(`   ❌ package.json の更新に失敗:`, error.message);
     throw error;
@@ -241,7 +239,6 @@ app.all('/${appName}/*', async (c) => {
     }
 
     fs.writeFileSync(indexPath, content, 'utf8');
-
   } catch (error) {
     console.error(`   ❌ src/index.ts の更新に失敗:`, error.message);
     throw error;
@@ -289,7 +286,7 @@ function showNextSteps(appName) {
 async function promptInput(question) {
   const rl = readline.createInterface({
     input: process.stdin,
-    output: process.stdout
+    output: process.stdout,
   });
 
   return new Promise((resolve) => {
@@ -303,7 +300,7 @@ async function promptInput(question) {
 // メイン処理
 async function main() {
   // アプリ名を取得
-  let appName = args.find(arg => !arg.startsWith('--'));
+  let appName = args.find((arg) => !arg.startsWith('--'));
 
   if (!appName) {
     appName = await promptInput('アプリ名（kebab-case、例: image-crop）: ');
@@ -379,7 +376,6 @@ async function main() {
 
     // 次のステップを表示
     showNextSteps(appName);
-
   } catch (error) {
     console.error(`\n❌ エラーが発生しました:`, error.message);
     console.error(`\n💡 バックアップファイル(.backup)から復元できます`);

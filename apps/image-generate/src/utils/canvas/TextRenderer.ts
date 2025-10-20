@@ -46,11 +46,7 @@ export class TextRenderer {
 
     lines.forEach((line, index) => {
       const y = startY + lineHeight * index;
-      const x = this.calculateHorizontalPosition(
-        ctx,
-        options.canvasWidth,
-        options.alignment
-      );
+      const x = this.calculateHorizontalPosition(ctx, options.canvasWidth, options.alignment);
 
       ctx.fillText(line, x, y);
     });

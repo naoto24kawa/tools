@@ -1,35 +1,59 @@
 {
-  "name": "tools-router",
+  "name": "elchika-tools",
   "version": "1.0.0",
-  "description": "Cloudflare Workers router for multiple tool applications",
-  "main": "src/index.ts",
+  "private": true,
+  "description": "Monorepo for Elchika tool applications",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
-    "dev": "wrangler dev",
-    "build": "npm run type-check",
-    "build:router": "tsc --noEmit",
-    "deploy": "npm run build && npm run deploy:apps && npm run deploy:router",
-    "deploy:router": "wrangler deploy",
-    "deploy:apps": "npm run deploy:image-crop",
-    "deploy:image-crop": "cd apps/image-crop && npm run deploy",
-    "type-check": "tsc --noEmit",
+    "dev:router": "cd packages/router && bun run dev",
+    "dev:image-crop": "cd apps/image-crop && bun run dev",
+    "dev:image-generate": "cd apps/image-generate && bun run dev",
+    "build": "bun run build:apps && bun run build:router",
+    "build:apps": "cd apps/image-crop && bun run build && cd ../image-generate && bun run build",
+    "build:router": "cd packages/router && bun run build",
+    "deploy": "bun run build && bun run deploy:all",
+    "deploy:all": "bun run deploy:apps && bun run deploy:router",
+    "deploy:apps": "cd apps/image-crop && bun run deploy && cd ../image-generate && bun run deploy",
+    "deploy:router": "cd packages/router && bun run deploy",
+    "type-check": "bun run type-check:router && bun run type-check:apps",
+    "type-check:router": "cd packages/router && bun run type-check",
+    "type-check:apps": "cd apps/image-crop && bun run type-check && cd ../image-generate && bun run type-check",
+    "lint": "cd apps/image-crop && bun run lint && cd ../image-generate && bun run lint",
+    "lint:fix": "cd apps/image-crop && bun run lint:fix && cd ../image-generate && bun run lint:fix",
+    "format": "prettier --write \"**/*.{ts,tsx,js,json,md}\" --ignore-path .prettierignore",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,json,md}\" --ignore-path .prettierignore",
+    "test": "cd apps/image-crop && bun test && cd ../image-generate && bun test",
+    "clean": "bun run clean:deps && bun run clean:build",
+    "clean:deps": "rm -rf node_modules apps/*/node_modules packages/*/node_modules",
+    "clean:build": "rm -rf apps/*/dist packages/*/dist",
+    "install:all": "bun install && cd apps/image-crop && bun install && cd ../image-generate && bun install && cd ../../packages/router && bun install",
     "create-app": "node scripts/create-app.js",
-    "delete-app": "node scripts/delete-app.js",
-    "deploy:image-generate": "cd apps/image-generate && npm install && wrangler deploy"
+    "delete-app": "node scripts/delete-app.js"
   },
   "keywords": [
+    "monorepo",
     "cloudflare-workers",
-    "hono",
-    "router"
+    "cloudflare-pages",
+    "tools"
   ],
   "author": "",
   "license": "MIT",
-  "dependencies": {
-    "hono": "^4.6.14"
-  },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20241205.0",
-    "@iarna/toml": "^2.2.5",
+    "@types/bun": "^1.2.0",
+    "@typescript-eslint/eslint-plugin": "^8.46.1",
+    "@typescript-eslint/parser": "^8.46.1",
+    "eslint": "^9.38.0",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.6.2",
     "typescript": "^5.7.2",
-    "wrangler": "^3.99.0"
+    "wrangler": "^4.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "bun": ">=1.0.0"
   }
 }

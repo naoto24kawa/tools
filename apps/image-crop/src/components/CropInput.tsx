@@ -3,13 +3,7 @@ import { updateCropField, convertCropUnit } from '@utils/cropAdjuster';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Move, Maximize2, Ruler } from 'lucide-react';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from './ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 
 interface CropInputProps {
   crop: Crop;
@@ -82,8 +76,7 @@ export function CropInput({
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="crop-width" className="flex items-center gap-1.5">
-            <Maximize2 className="h-3.5 w-3.5 text-muted-foreground" />
-            幅
+            <Maximize2 className="h-3.5 w-3.5 text-muted-foreground" />幅
           </Label>
           <Input
             id="crop-width"

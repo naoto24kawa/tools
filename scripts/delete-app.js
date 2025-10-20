@@ -68,7 +68,7 @@ const deleteWorker = args.includes('--delete-worker');
 function kebabToPascal(str) {
   return str
     .split('-')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join('');
 }
 
@@ -111,7 +111,7 @@ function removeDirectory(dirPath) {
 async function confirm(question) {
   const rl = readline.createInterface({
     input: process.stdin,
-    output: process.stdout
+    output: process.stdout,
   });
 
   return new Promise((resolve) => {
@@ -144,7 +144,7 @@ function removeFromWranglerToml(appName) {
 
     // 該当するService Bindingを削除
     const originalLength = config.services.length;
-    config.services = config.services.filter(s => s.service !== `tools-${appName}`);
+    config.services = config.services.filter((s) => s.service !== `tools-${appName}`);
 
     if (config.services.length === originalLength) {
       console.log(`   ⚠️  Service Binding が見つかりませんでした`);
@@ -154,7 +154,6 @@ function removeFromWranglerToml(appName) {
     // TOMLとして書き出し
     fs.writeFileSync(wranglerPath, toml.stringify(config));
     console.log(`   ✅ wrangler.toml から Service Binding を削除`);
-
   } catch (error) {
     console.error(`   ❌ wrangler.toml の更新に失敗:`, error.message);
     throw error;
@@ -186,7 +185,6 @@ function removeFromPackageJson(appName) {
 
     fs.writeFileSync(packagePath, JSON.stringify(pkg, null, 2) + '\n');
     console.log(`   ✅ package.json からデプロイスクリプトを削除`);
-
   } catch (error) {
     console.error(`   ❌ package.json の更新に失敗:`, error.message);
     throw error;
@@ -217,7 +215,10 @@ function removeFromIndexTs(appName, appNameSnake) {
     }
 
     // 2. availableApps配列の要素を削除
-    const availableAppsRegex = new RegExp(`\\s*\\{[^}]*name: '${appName}'[^}]*\\}, \/\/ BEGIN APP: ${appName}\\n`, 'g');
+    const availableAppsRegex = new RegExp(
+      `\\s*\\{[^}]*name: '${appName}'[^}]*\\}, \/\/ BEGIN APP: ${appName}\\n`,
+      'g'
+    );
     if (availableAppsRegex.test(content)) {
       content = content.replace(availableAppsRegex, '');
       console.log(`   ✅ availableApps配列から削除`);
@@ -233,7 +234,10 @@ function removeFromIndexTs(appName, appNameSnake) {
     }
 
     // 4. ルーティング関数を削除（BEGIN/ENDマーカー間）
-    const routingRegex = new RegExp(`\n\/\/ .*? \/\/ BEGIN APP: ${appName}[\\s\\S]*?\/\/ END APP: ${appName}\\n`, 'g');
+    const routingRegex = new RegExp(
+      `\n\/\/ .*? \/\/ BEGIN APP: ${appName}[\\s\\S]*?\/\/ END APP: ${appName}\\n`,
+      'g'
+    );
     if (routingRegex.test(content)) {
       content = content.replace(routingRegex, '\n');
       console.log(`   ✅ ルーティング関数を削除`);
@@ -245,7 +249,6 @@ function removeFromIndexTs(appName, appNameSnake) {
     } else {
       console.log(`   ⚠️  削除対象のコードが見つかりませんでした`);
     }
-
   } catch (error) {
     console.error(`   ❌ src/index.ts の更新に失敗:`, error.message);
     throw error;
@@ -266,7 +269,6 @@ async function deleteCloudflareWorker(appName) {
     }
 
     console.log(`   ✅ Cloudflare Worker を削除: ${serviceName}`);
-
   } catch (error) {
     console.error(`   ❌ Cloudflare Worker の削除に失敗:`, error.message);
     console.error(`   💡 手動で削除してください: wrangler delete ${serviceName}`);
@@ -276,7 +278,7 @@ async function deleteCloudflareWorker(appName) {
 // メイン処理
 async function main() {
   // アプリ名を取得
-  const appName = args.find(arg => !arg.startsWith('--'));
+  const appName = args.find((arg) => !arg.startsWith('--'));
 
   if (!appName) {
     console.error('❌ エラー: アプリ名を指定してください。');
@@ -355,11 +357,14 @@ async function main() {
 2. メインルーターを再デプロイ:
    npm run deploy:router
 
-${deleteWorker ? '' : `3. Cloudflare Worker を手動削除（必要な場合）:
+${
+  deleteWorker
+    ? ''
+    : `3. Cloudflare Worker を手動削除（必要な場合）:
    wrangler delete tools-${appName}
-`}
+`
+}
 `);
-
   } catch (error) {
     console.error(`\n❌ エラーが発生しました:`, error.message);
     console.error(`\n💡 バックアップファイル(.backup)から復元できます`);
