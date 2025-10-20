@@ -1,33 +1,22 @@
-import React, { useState } from 'react';
-import { ImageUpload } from './components/ImageUpload';
-import { ImageCropper } from './components/ImageCropper';
-import { CropInput } from './components/CropInput';
-import { ExportPanel } from './components/ExportPanel';
-import type { ImageState, Crop, PixelCrop, ExportSettings, AspectRatioOption } from './types';
-import { calculateAspectRatio } from './utils/cropCalculator';
-
-const ASPECT_RATIOS: AspectRatioOption[] = [
-  { label: '自由', value: null },
-  { label: '1:1', value: 1 },
-  { label: '4:3', value: 4 / 3 },
-  { label: '16:9', value: 16 / 9 },
-  { label: '3:2', value: 3 / 2 },
-];
+import { useState } from 'react';
+import { ImageUpload } from '@components/ImageUpload';
+import { ImageCropper } from '@components/ImageCropper';
+import { CropInput } from '@components/CropInput';
+import { ExportPanel } from '@components/ExportPanel';
+import type { ImageState, Crop, PixelCrop, ExportSettings, UserPreferences } from '@types';
+import { calculateAspectRatio } from '@utils/cropCalculator';
+import { ASPECT_RATIOS } from '@config/constants';
 
 export function App() {
-  const [image, setImage] = useState<ImageState>({
-    file: null,
-    src: null,
-    naturalWidth: 0,
-    naturalHeight: 0,
-  });
+  const [image, setImage] = useState<ImageState>({ status: 'idle' });
+  const [userPreferences, setUserPreferences] = useState<UserPreferences>({});
 
   const [crop, setCrop] = useState<Crop>({
-    unit: '%',
-    x: 25,
-    y: 25,
-    width: 50,
-    height: 50,
+    unit: 'px',
+    x: 0,
+    y: 0,
+    width: 100,
+    height: 100,
   });
 
   const [completedCrop, setCompletedCrop] = useState<PixelCrop>({
@@ -41,16 +30,79 @@ export function App() {
   const [aspectRatio, setAspectRatio] = useState<number | undefined>(undefined);
 
   const [exportSettings, setExportSettings] = useState<ExportSettings>({
-    format: 'jpeg',
+    format: 'png',
     quality: 0.95,
-    filename: `cropped-${Date.now()}.jpeg`,
+    filename: `cropped-${Date.now()}.png`,
   });
 
+  /**
+   * ユーザー設定を新しい画像に適用する
+   */
+  const applyCropPreferences = (
+    imageWidth: number,
+    imageHeight: number,
+    preferences: UserPreferences
+  ): Crop => {
+    // サイズ設定がある場合
+    if (preferences.manualSize) {
+      let { width, height, unit } = preferences.manualSize;
+
+      // ピクセル単位の場合、画像サイズより大きければ画像に合わせる
+      if (unit === 'px') {
+        width = Math.min(width, imageWidth);
+        height = Math.min(height, imageHeight);
+      }
+
+      // アスペクト比設定もある場合は調整
+      if (preferences.manualAspectRatio) {
+        // アスペクト比を維持しつつサイズ調整
+        const newHeight = width / preferences.manualAspectRatio;
+        if (newHeight <= imageHeight) {
+          height = newHeight;
+        } else {
+          // 高さが画像を超える場合は高さから逆算
+          height = imageHeight;
+          width = height * preferences.manualAspectRatio;
+        }
+      }
+
+      return { x: 0, y: 0, width, height, unit };
+    }
+
+    // サイズ設定がなくアスペクト比のみ設定されている場合
+    if (preferences.manualAspectRatio) {
+      // デフォルトの50%幅でアスペクト比を適用
+      const width = imageWidth * 0.5;
+      const height = width / preferences.manualAspectRatio;
+      return { x: 0, y: 0, width, height, unit: 'px' };
+    }
+
+    // 設定なし：デフォルト値
+    return { unit: 'px', x: 0, y: 0, width: 100, height: 100 };
+  };
+
   const handleImageLoad = (file: File, src: string, width: number, height: number) => {
-    setImage({ file, src, naturalWidth: width, naturalHeight: height });
+    setImage({
+      status: 'loaded',
+      file,
+      src,
+      naturalWidth: width,
+      naturalHeight: height,
+    });
     setExportSettings({
       ...exportSettings,
       filename: `cropped-${file.name.split('.')[0]}.${exportSettings.format}`,
+    });
+
+    // ユーザー設定を適用
+    const newCrop = applyCropPreferences(width, height, userPreferences);
+    setCrop(newCrop);
+    setCompletedCrop({
+      unit: 'px',
+      x: newCrop.x,
+      y: newCrop.y,
+      width: newCrop.width,
+      height: newCrop.height,
     });
   };
 
@@ -61,18 +113,57 @@ export function App() {
 
   const handleAspectRatioChange = (ratio: number | null) => {
     setAspectRatio(ratio || undefined);
+    // ユーザー設定に保存
+    setUserPreferences((prev) => ({
+      ...prev,
+      manualAspectRatio: ratio,
+    }));
+  };
+
+  /**
+   * アスペクト比適用後のサイズをユーザー設定に保存
+   */
+  const handleAspectRatioApplied = (newCrop: Crop) => {
+    setUserPreferences((prev) => ({
+      ...prev,
+      manualSize: {
+        width: newCrop.width,
+        height: newCrop.height,
+        unit: newCrop.unit,
+      },
+    }));
+  };
+
+  /**
+   * CropInputからの手動変更を受け取る
+   */
+  const handleManualCropChange = (newCrop: Crop) => {
+    // サイズと単位をユーザー設定に保存
+    setUserPreferences((prev) => ({
+      ...prev,
+      manualSize: {
+        width: newCrop.width,
+        height: newCrop.height,
+        unit: newCrop.unit,
+      },
+    }));
   };
 
   return (
     <div className="container">
       <header className="header">
+        <div style={{ marginBottom: '0.5rem' }}>
+          <a href="/" style={{ color: '#667eea', textDecoration: 'none', fontSize: '0.9rem' }}>
+            ← Tools トップに戻る
+          </a>
+        </div>
         <h1>画像トリミングアプリ</h1>
         <p>クライアントサイドで完結する画像トリミングツール</p>
       </header>
 
       <main className="main-content">
         <div className="card">
-          {!image.src ? (
+          {image.status === 'idle' ? (
             <ImageUpload onImageLoad={handleImageLoad} />
           ) : (
             <>
@@ -80,13 +171,14 @@ export function App() {
                 src={image.src}
                 crop={crop}
                 onCropChange={handleCropChange}
+                onAspectRatioApplied={handleAspectRatioApplied}
                 aspect={aspectRatio}
                 imageSize={{ width: image.naturalWidth, height: image.naturalHeight }}
               />
               <div style={{ marginTop: '1rem' }}>
                 <button
                   className="button button-secondary"
-                  onClick={() => setImage({ file: null, src: null, naturalWidth: 0, naturalHeight: 0 })}
+                  onClick={() => setImage({ status: 'idle' })}
                 >
                   別の画像を選択
                 </button>
@@ -95,12 +187,14 @@ export function App() {
           )}
         </div>
 
-        {image.src && (
+        {image.status === 'loaded' && (
           <div className="card">
             <CropInput
               crop={crop}
               imageSize={{ width: image.naturalWidth, height: image.naturalHeight }}
               onCropChange={(newCrop) => handleCropChange(newCrop, completedCrop)}
+              onManualChange={handleManualCropChange}
+              selectedAspectRatio={aspectRatio}
             />
 
             <ExportPanel
@@ -108,6 +202,9 @@ export function App() {
               crop={completedCrop}
               exportSettings={exportSettings}
               onExportSettingsChange={setExportSettings}
+              aspectRatios={ASPECT_RATIOS}
+              selectedAspectRatio={aspectRatio}
+              onAspectRatioChange={handleAspectRatioChange}
               previewInfo={{
                 originalSize: {
                   width: image.naturalWidth,
