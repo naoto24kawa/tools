@@ -22,7 +22,12 @@ export function App() {
             </a>
           </div>
           <h1 className="text-3xl font-bold tracking-tight">🎨 Image Generator</h1>
-          <p className="mt-1 text-sm text-muted-foreground">テスト用画像を簡単生成</p>
+          <p className="mt-2 text-sm text-muted-foreground">
+            プレースホルダー画像生成ツール。モックアップ、テストデータ、デザインカンプ、ワイヤーフレーム作成に最適。
+          </p>
+          <p className="mt-1 text-xs text-muted-foreground/80">
+            🔒 すべての処理はブラウザ内で完結 - データは外部に送信・保存されません
+          </p>
         </div>
       </header>
 

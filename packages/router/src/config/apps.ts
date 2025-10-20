@@ -10,7 +10,7 @@ export const APPS_CONFIG = [
     name: '画像のトリミング',
     icon: '📸',
     displayName: 'Image Crop',
-    description: '画像のトリミング',
+    description: '画像のトリミングとリサイズ - OGP画像やREADME用スクリーンショットに',
   },
   {
     path: '/image-generate',
@@ -18,7 +18,7 @@ export const APPS_CONFIG = [
     name: '画像ファイルを生成します',
     icon: '🎨',
     displayName: 'Image Generate',
-    description: '画像ファイルを生成します',
+    description: 'プレースホルダー画像を生成 - モックアップやテストデータ作成に',
   },
 ] as const;
 

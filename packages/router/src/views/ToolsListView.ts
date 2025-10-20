@@ -32,13 +32,11 @@ export function renderToolsPage(tools: readonly AppConfig[]): string {
 <body>
   <div class="container">
     <h1>🛠️ Tools</h1>
-    <p class="subtitle">便利なツール集</p>
+    <p class="subtitle">プログラマーのための便利ツール集</p>
+    <p class="security-note">🔒 すべての処理はブラウザ内で完結。データの外部送信・保存はありません。</p>
     <ul class="tools-list">
       ${toolsListHtml}
     </ul>
-    <footer>
-      Powered by Cloudflare Workers + Pages
-    </footer>
   </div>
 </body>
 </html>`;
@@ -84,8 +82,16 @@ function getStyles(): string {
     .subtitle {
       text-align: center;
       color: #666;
-      margin-bottom: 30px;
+      margin-bottom: 15px;
       font-size: 1.1rem;
+    }
+
+    .security-note {
+      text-align: center;
+      color: #059669;
+      margin-bottom: 30px;
+      font-size: 0.95rem;
+      font-weight: 500;
     }
 
     .tools-list {
@@ -127,13 +133,6 @@ function getStyles(): string {
     .tool-description {
       font-size: 1rem;
       opacity: 0.9;
-    }
-
-    footer {
-      text-align: center;
-      margin-top: 30px;
-      color: #999;
-      font-size: 0.9rem;
     }
 
     @media (max-width: 600px) {
