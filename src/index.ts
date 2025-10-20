@@ -6,12 +6,11 @@ import { compress } from 'hono/compress'
 // 環境変数の型定義
 type Bindings = {
   // 他のツールを追加する場合はここに型を追加
-
-  IMAGE_GENERATE: Fetcher // BEGIN APP: image-generate
 }
 
 // Pages デプロイメントのURL
 const IMAGE_CROP_URL = 'https://image-crop-3ch.pages.dev' // BEGIN APP: image-crop
+const IMAGE_GENERATE_URL = 'https://image-generate.pages.dev' // BEGIN APP: image-generate
 
 const app = new Hono<{ Bindings: Bindings }>()
 
@@ -187,19 +186,37 @@ app.all('/image-crop/*', async (c) => {
 }) // END APP: image-crop
 
 
-// 画像ファイルを生成します へのルーティング // BEGIN APP: image-generate
+// 画像ファイルを生成します へのプロキシ // BEGIN APP: image-generate
 app.all('/image-generate/*', async (c) => {
   try {
     const path = c.req.path.replace('/image-generate', '') || '/'
-    const url = new URL(path, 'http://internal')
+    const targetUrl = new URL(path, IMAGE_GENERATE_URL)
 
-    const request = new Request(url, {
+    const headers = new Headers(c.req.raw.headers)
+    headers.set('X-Forwarded-Host', c.req.header('host') || '')
+    headers.set('X-Forwarded-Proto', 'https')
+
+    const response = await fetch(targetUrl.toString(), {
       method: c.req.method,
-      headers: c.req.raw.headers,
+      headers: headers,
       body: c.req.raw.body,
     })
 
-    return await c.env.IMAGE_GENERATE.fetch(request)
+    // HTMLの場合はアセットパスを書き換え
+    const contentType = response.headers.get('content-type') || ''
+    if (contentType.includes('text/html')) {
+      const html = await response.text()
+      // /assets/ を /image-generate/assets/ に書き換え
+      const modifiedHtml = html.replace(
+        /(src|href)="\/assets\//g,
+        '$1="/image-generate/assets/'
+      )
+      return c.html(modifiedHtml)
+    }
+
+    // HTML以外はそのまま返す
+    const newResponse = new Response(response.body, response)
+    return newResponse
   } catch (error) {
     console.error('Error proxying to image-generate:', error)
     return c.json({
