@@ -13,7 +13,8 @@
     "deploy:image-crop": "cd apps/image-crop && npm run deploy",
     "type-check": "tsc --noEmit",
     "create-app": "node scripts/create-app.js",
-    "delete-app": "node scripts/delete-app.js"
+    "delete-app": "node scripts/delete-app.js",
+    "deploy:image-generate": "cd apps/image-generate && npm install && wrangler deploy"
   },
   "keywords": [
     "cloudflare-workers",

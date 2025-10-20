@@ -4,14 +4,24 @@ apps/*/node_modules/
 
 # Build output
 dist/
+build/
 .wrangler/
 apps/*/.wrangler/
 apps/*/dist/
+apps/*/build/
 
 # Environment variables
 .env
+.env.local
+.env.*.local
 .dev.vars
 apps/*/.dev.vars
+
+# Package manager lock files (using bun, ignore others)
+package-lock.json
+yarn.lock
+apps/*/package-lock.json
+apps/*/yarn.lock
 
 # TypeScript
 *.tsbuildinfo
@@ -19,17 +29,38 @@ apps/*/.dev.vars
 # Logs
 *.log
 npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Test coverage
+coverage/
+.nyc_output/
 
 # OS
 .DS_Store
 Thumbs.db
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
 
 # IDE
 .vscode/
+!.vscode/extensions.json
 .idea/
 *.swp
 *.swo
+*.sw?
 *~
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
 
 # Backup files
 *.backup
+
+# Playwright MCP temporary files
+.playwright-mcp/

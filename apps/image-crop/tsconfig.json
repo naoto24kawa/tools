@@ -13,6 +13,16 @@
     "verbatimModuleSyntax": true,
     "noEmit": true,
 
+    /* Path aliases */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@components/*": ["src/components/*"],
+      "@utils/*": ["src/utils/*"],
+      "@types": ["src/types"],
+      "@config/*": ["src/config/*"]
+    },
+
     /* Linting */
     "skipLibCheck": true,
     "strict": true,

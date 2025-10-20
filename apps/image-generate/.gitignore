@@ -1,0 +1,6 @@
+# このディレクトリ固有の除外パターン
+# (共通パターンはルートの.gitignoreに記載)
+
+# Vite specific
+dist-ssr/
+logs/

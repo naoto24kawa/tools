@@ -1,47 +1,41 @@
-import React, { useCallback } from 'react';
+import { useState, useCallback } from 'react';
+import { Upload } from 'lucide-react';
+import { IMAGE_UPLOAD_CONFIG } from '@config/constants';
+import { validateFile } from '@utils/imageValidator';
+import { loadImage } from '@utils/imageLoader';
+import { cn } from '../lib/utils';
 
 interface ImageUploadProps {
   onImageLoad: (file: File, src: string, width: number, height: number) => void;
 }
 
-const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
-const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
-const MAX_DIMENSION = 8000;
+const { allowedTypes } = IMAGE_UPLOAD_CONFIG;
 
 export function ImageUpload({ onImageLoad }: ImageUploadProps) {
-  const [dragActive, setDragActive] = React.useState(false);
-
-  const validateFile = (file: File): string | null => {
-    if (!ALLOWED_TYPES.includes(file.type)) {
-      return 'サポートされていないファイル形式です。JPEG、PNG、WebP、GIFのみ対応しています。';
-    }
-    if (file.size > MAX_FILE_SIZE) {
-      return 'ファイルサイズは10MB以下にしてください。';
-    }
-    return null;
-  };
+  const [dragActive, setDragActive] = useState(false);
 
   const handleFile = useCallback(
-    (file: File) => {
-      const error = validateFile(file);
-      if (error) {
-        alert(error);
+    async (file: File) => {
+      // ファイルの基本的なバリデーション
+      const validationError = validateFile(file);
+      if (validationError) {
+        alert(validationError.message);
         return;
       }
 
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const img = new Image();
-        img.onload = () => {
-          if (img.naturalWidth > MAX_DIMENSION || img.naturalHeight > MAX_DIMENSION) {
-            alert(`画像サイズは${MAX_DIMENSION}x${MAX_DIMENSION}px以下にしてください。`);
-            return;
-          }
-          onImageLoad(file, e.target?.result as string, img.naturalWidth, img.naturalHeight);
-        };
-        img.src = e.target?.result as string;
-      };
-      reader.readAsDataURL(file);
+      try {
+        // 画像の読み込みとサイズバリデーション
+        const { src, width, height } = await loadImage(file);
+        onImageLoad(file, src, width, height);
+      } catch (error) {
+        // エラーメッセージの表示
+        if (error && typeof error === 'object' && 'message' in error) {
+          alert(error.message as string);
+        } else {
+          alert('画像の読み込みに失敗しました。別のファイルを選択してください。');
+        }
+        console.error('画像読み込みエラー:', error);
+      }
     },
     [onImageLoad]
   );
@@ -76,7 +70,10 @@ export function ImageUpload({ onImageLoad }: ImageUploadProps) {
 
   return (
     <div
-      className={`upload-area ${dragActive ? 'drag-active' : ''}`}
+      className={cn(
+        "relative cursor-pointer rounded-lg border-2 border-dashed border-muted-foreground/25 bg-background p-12 text-center transition-colors hover:border-primary hover:bg-muted/50",
+        dragActive && "border-primary border-solid bg-muted/50"
+      )}
       onDragEnter={handleDrag}
       onDragLeave={handleDrag}
       onDragOver={handleDrag}
@@ -86,14 +83,18 @@ export function ImageUpload({ onImageLoad }: ImageUploadProps) {
       <input
         id="file-input"
         type="file"
-        className="upload-input"
-        accept={ALLOWED_TYPES.join(',')}
+        className="hidden"
+        accept={allowedTypes.join(',')}
         onChange={handleChange}
         aria-label="画像を選択"
       />
-      <div className="upload-icon">📁</div>
-      <p className="upload-text">画像をドラッグ＆ドロップ、またはクリックして選択</p>
-      <p className="upload-hint">JPEG、PNG、WebP、GIF（最大10MB、8000x8000px）</p>
+      <Upload className="mx-auto mb-4 h-12 w-12 text-primary" />
+      <p className="mb-2 text-base font-medium text-foreground">
+        画像をドラッグ＆ドロップ、またはクリックして選択
+      </p>
+      <p className="text-sm text-muted-foreground">
+        JPEG、PNG、WebP、GIF（最大10MB、8000x8000px）
+      </p>
     </div>
   );
 }

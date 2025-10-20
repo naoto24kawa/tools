@@ -3,6 +3,8 @@ import { ImageUpload } from '@components/ImageUpload';
 import { ImageCropper } from '@components/ImageCropper';
 import { CropInput } from '@components/CropInput';
 import { ExportPanel } from '@components/ExportPanel';
+import { Button } from '@components/ui/button';
+import { Card } from '@components/ui/card';
 import type { ImageState, Crop, PixelCrop, ExportSettings, UserPreferences } from '@types';
 import { calculateAspectRatio } from '@utils/cropCalculator';
 import { ASPECT_RATIOS } from '@config/constants';
@@ -150,86 +152,87 @@ export function App() {
   };
 
   return (
-    <div className="container">
-      <header className="header">
-        <div style={{ marginBottom: '0.5rem' }}>
-          <a
-            href="/"
-            style={{
-              color: 'var(--primary-color)',
-              textDecoration: 'none',
-              fontSize: '0.9rem',
-            }}
-          >
-            ← Tools トップに戻る
-          </a>
+    <div className="min-h-screen bg-background">
+      <header className="border-b bg-card shadow-sm">
+        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+          <div className="mb-2">
+            <a
+              href="/"
+              className="text-sm text-primary hover:underline"
+            >
+              ← Tools トップに戻る
+            </a>
+          </div>
+          <h1 className="text-3xl font-bold tracking-tight">🖼️ Image Cropper</h1>
+          <p className="mt-1 text-sm text-muted-foreground">クライアントサイドで完結する画像トリミングツール</p>
         </div>
-        <h1>🖼️ Image Cropper</h1>
-        <p>クライアントサイドで完結する画像トリミングツール</p>
       </header>
 
-      <main className="main-content">
-        <div className="card">
-          {image.status === 'idle' ? (
-            <ImageUpload onImageLoad={handleImageLoad} />
-          ) : (
-            <>
-              <ImageCropper
-                src={image.src}
+      <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_400px]">
+          <Card className="p-6">
+            {image.status === 'idle' ? (
+              <ImageUpload onImageLoad={handleImageLoad} />
+            ) : (
+              <>
+                <ImageCropper
+                  src={image.src}
+                  crop={crop}
+                  onCropChange={handleCropChange}
+                  onAspectRatioApplied={handleAspectRatioApplied}
+                  aspect={aspectRatio}
+                  imageSize={{ width: image.naturalWidth, height: image.naturalHeight }}
+                />
+                <div className="mt-4">
+                  <Button
+                    variant="outline"
+                    onClick={() => setImage({ status: 'idle' })}
+                    className="w-full"
+                  >
+                    別の画像を選択
+                  </Button>
+                </div>
+              </>
+            )}
+          </Card>
+
+          {image.status === 'loaded' && (
+            <Card className="p-6">
+              <CropInput
                 crop={crop}
-                onCropChange={handleCropChange}
-                onAspectRatioApplied={handleAspectRatioApplied}
-                aspect={aspectRatio}
                 imageSize={{ width: image.naturalWidth, height: image.naturalHeight }}
+                onCropChange={(newCrop) => handleCropChange(newCrop, completedCrop)}
+                onManualChange={handleManualCropChange}
+                selectedAspectRatio={aspectRatio}
               />
-              <div style={{ marginTop: '1rem' }}>
-                <button
-                  className="button button-secondary"
-                  onClick={() => setImage({ status: 'idle' })}
-                >
-                  別の画像を選択
-                </button>
-              </div>
-            </>
+
+              <ExportPanel
+                imageSrc={image.src}
+                crop={completedCrop}
+                exportSettings={exportSettings}
+                onExportSettingsChange={setExportSettings}
+                aspectRatios={ASPECT_RATIOS}
+                selectedAspectRatio={aspectRatio}
+                onAspectRatioChange={handleAspectRatioChange}
+                previewInfo={{
+                  originalSize: {
+                    width: image.naturalWidth,
+                    height: image.naturalHeight,
+                  },
+                  croppedSize: {
+                    width: Math.round(completedCrop.width),
+                    height: Math.round(completedCrop.height),
+                  },
+                  fileSize: '推定中...',
+                  aspectRatio: calculateAspectRatio(
+                    Math.round(completedCrop.width),
+                    Math.round(completedCrop.height)
+                  ),
+                }}
+              />
+            </Card>
           )}
         </div>
-
-        {image.status === 'loaded' && (
-          <div className="card">
-            <CropInput
-              crop={crop}
-              imageSize={{ width: image.naturalWidth, height: image.naturalHeight }}
-              onCropChange={(newCrop) => handleCropChange(newCrop, completedCrop)}
-              onManualChange={handleManualCropChange}
-              selectedAspectRatio={aspectRatio}
-            />
-
-            <ExportPanel
-              imageSrc={image.src}
-              crop={completedCrop}
-              exportSettings={exportSettings}
-              onExportSettingsChange={setExportSettings}
-              aspectRatios={ASPECT_RATIOS}
-              selectedAspectRatio={aspectRatio}
-              onAspectRatioChange={handleAspectRatioChange}
-              previewInfo={{
-                originalSize: {
-                  width: image.naturalWidth,
-                  height: image.naturalHeight,
-                },
-                croppedSize: {
-                  width: Math.round(completedCrop.width),
-                  height: Math.round(completedCrop.height),
-                },
-                fileSize: '推定中...',
-                aspectRatio: calculateAspectRatio(
-                  Math.round(completedCrop.width),
-                  Math.round(completedCrop.height)
-                ),
-              }}
-            />
-          </div>
-        )}
       </main>
     </div>
   );
