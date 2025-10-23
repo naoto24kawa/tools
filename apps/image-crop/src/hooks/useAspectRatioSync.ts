@@ -1,7 +1,7 @@
 import { useRef, useEffect } from 'react';
 import { centerCrop, makeAspectCrop } from 'react-image-crop';
 import type { Crop, PixelCrop } from '@types';
-import { convertPercentToPixelCrop, convertToActualPixels } from '@utils/coordinateConverter';
+import { convertPercentToPixelCrop } from '@utils/coordinateConverter';
 
 /**
  * アスペクト比同期フック
@@ -84,24 +84,20 @@ export function useAspectRatioSync({
       height
     );
 
-    // パーセント→ピクセルに変換してから渡す
-    const pixelCropForUI = convertPercentToPixelCrop(
+    // パーセント→実画像ピクセルに変換（エクスポート用）
+    const pixelCrop = convertPercentToPixelCrop(
       newCrop,
       width,
       height,
       imageSize.width,
       imageSize.height
-    );
-    const pixelCrop = convertToActualPixels(
-      pixelCropForUI,
-      width,
-      height,
-      imageSize.width,
-      imageSize.height
-    );
-    onCropChange(pixelCropForUI, pixelCrop);
+    ) as PixelCrop;
+
+    // crop にはパーセント座標、completedCrop には実画像ピクセル座標を保存
+    onCropChange(newCrop, pixelCrop);
 
     // アスペクト比適用後のサイズを通知
-    onAspectRatioApplied?.(pixelCropForUI);
-  }, [aspect, imageSize, src, crop, onCropChange, onAspectRatioApplied, imgRef]);
+    onAspectRatioApplied?.(newCrop);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [aspect, imageSize, src, onCropChange, onAspectRatioApplied, imgRef]);
 }

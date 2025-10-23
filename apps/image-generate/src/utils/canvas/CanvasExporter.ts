@@ -6,6 +6,11 @@ import { CANVAS_CONSTANTS } from '@config/canvas';
 export type ExportFormat = 'png' | 'jpeg';
 
 /**
+ * ファイルサイズ制御モード
+ */
+export type FileSizeMode = 'none' | 'minimum' | 'maximum';
+
+/**
  * エクスポートオプション
  */
 export interface ExportOptions {
@@ -15,6 +20,10 @@ export interface ExportOptions {
   format: ExportFormat;
   /** JPEG品質（1-100） */
   quality: number;
+  /** ファイルサイズ制御モード */
+  fileSizeMode: FileSizeMode;
+  /** ターゲットファイルサイズ（KB） */
+  targetFileSize: number;
 }
 
 /**
@@ -24,8 +33,25 @@ export class CanvasExporter {
   /**
    * Canvas を画像ファイルとしてダウンロード
    */
-  download(canvas: HTMLCanvasElement, options: ExportOptions): void {
-    const { mimeType, qualityValue } = this.getExportParams(options.format, options.quality);
+  async download(canvas: HTMLCanvasElement, options: ExportOptions): Promise<void> {
+    // ファイルサイズ制御が必要な場合はJPEG品質を自動調整
+    let finalQuality = options.quality;
+
+    if (options.fileSizeMode !== 'none' && options.format === 'jpeg') {
+      const optimalQuality = await this.findOptimalQuality(
+        canvas,
+        options.targetFileSize,
+        options.fileSizeMode
+      );
+      if (optimalQuality !== null) {
+        finalQuality = optimalQuality;
+        console.log(`ファイルサイズ制御: 品質を ${optimalQuality} に調整しました`);
+      } else {
+        console.warn('ファイルサイズ制御: 最適な品質が見つかりませんでした');
+      }
+    }
+
+    const { mimeType, qualityValue } = this.getExportParams(options.format, finalQuality);
 
     canvas.toBlob(
       (blob) => {
@@ -59,6 +85,75 @@ export class CanvasExporter {
     const mimeType = format === 'png' ? 'image/png' : 'image/jpeg';
     const qualityValue = format === 'jpeg' ? quality / 100 : undefined;
     return { mimeType, qualityValue };
+  }
+
+  /**
+   * 最適なJPEG品質を二分探索で見つける
+   */
+  private async findOptimalQuality(
+    canvas: HTMLCanvasElement,
+    targetSizeKB: number,
+    mode: FileSizeMode
+  ): Promise<number | null> {
+    const targetSizeBytes = targetSizeKB * 1024;
+    const maxIterations = 10;
+    let low = 1;
+    let high = 100;
+    let bestQuality: number | null = null;
+    let bestDiff = Infinity;
+
+    for (let i = 0; i < maxIterations; i++) {
+      const mid = Math.floor((low + high) / 2);
+      const size = await this.getFileSize(canvas, mid);
+
+      if (size === null) {
+        return null;
+      }
+
+      const diff = Math.abs(size - targetSizeBytes);
+
+      // 条件を満たす場合のみbestQualityを更新
+      const meetsCondition =
+        mode === 'minimum' ? size >= targetSizeBytes : size <= targetSizeBytes;
+
+      if (meetsCondition && diff < bestDiff) {
+        bestQuality = mid;
+        bestDiff = diff;
+      }
+
+      // 二分探索の更新
+      if (size < targetSizeBytes) {
+        low = mid + 1;
+      } else {
+        high = mid - 1;
+      }
+
+      // 探索範囲が狭まったら終了
+      if (low > high) {
+        break;
+      }
+    }
+
+    return bestQuality;
+  }
+
+  /**
+   * 指定した品質でのファイルサイズを取得
+   */
+  private async getFileSize(canvas: HTMLCanvasElement, quality: number): Promise<number | null> {
+    return new Promise((resolve) => {
+      canvas.toBlob(
+        (blob) => {
+          if (!blob) {
+            resolve(null);
+            return;
+          }
+          resolve(blob.size);
+        },
+        'image/jpeg',
+        quality / 100
+      );
+    });
   }
 
   /**

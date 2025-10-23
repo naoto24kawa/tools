@@ -13,6 +13,10 @@ interface ExportSettingsProps {
   onFormatChange: (format: 'png' | 'jpeg') => void;
   /** 品質変更ハンドラー */
   onQualityChange: (quality: number) => void;
+  /** ファイルサイズ制御モード変更ハンドラー */
+  onFileSizeModeChange: (mode: 'none' | 'minimum' | 'maximum') => void;
+  /** ターゲットファイルサイズ変更ハンドラー */
+  onTargetFileSizeChange: (size: number) => void;
   /** ファイル名変更ハンドラー */
   onFilenameChange: (filename: string) => void;
   /** ダウンロードボタンクリックハンドラー */
@@ -29,12 +33,19 @@ export function ExportSettings({
   settings,
   onFormatChange,
   onQualityChange,
+  onFileSizeModeChange,
+  onTargetFileSizeChange,
   onFilenameChange,
   onDownload,
 }: ExportSettingsProps) {
   const handleQualityChange = createNumberInputHandler(onQualityChange, {
     min: 1,
     max: 100,
+  });
+
+  const handleTargetFileSizeChange = createNumberInputHandler(onTargetFileSizeChange, {
+    min: 1,
+    max: 10000,
   });
 
   return (
@@ -73,21 +84,69 @@ export function ExportSettings({
       </div>
 
       {settings.format === 'jpeg' && (
-        <div className="space-y-2">
-          <Label htmlFor="quality-input" className="flex items-center gap-1.5">
-            <Sliders className="h-3.5 w-3.5 text-muted-foreground" />
-            品質 ({settings.quality}%)
-          </Label>
-          <input
-            id="quality-input"
-            type="range"
-            min="1"
-            max="100"
-            value={settings.quality}
-            onChange={handleQualityChange}
-            className="w-full"
-          />
-        </div>
+        <>
+          <div className="space-y-2">
+            <Label htmlFor="quality-input" className="flex items-center gap-1.5">
+              <Sliders className="h-3.5 w-3.5 text-muted-foreground" />
+              品質 ({settings.quality}%)
+            </Label>
+            <input
+              id="quality-input"
+              type="range"
+              min="1"
+              max="100"
+              value={settings.quality}
+              onChange={handleQualityChange}
+              className="w-full"
+              disabled={settings.fileSizeMode !== 'none'}
+            />
+            {settings.fileSizeMode !== 'none' && (
+              <p className="text-xs text-muted-foreground">
+                ファイルサイズ制御が有効な場合、品質は自動調整されます
+              </p>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="filesize-mode-select" className="flex items-center gap-1.5">
+              <FileType className="h-3.5 w-3.5 text-muted-foreground" />
+              ファイルサイズ制御
+            </Label>
+            <Select
+              value={settings.fileSizeMode}
+              onValueChange={(value) =>
+                onFileSizeModeChange(value as 'none' | 'minimum' | 'maximum')
+              }
+            >
+              <SelectTrigger id="filesize-mode-select">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">なし</SelectItem>
+                <SelectItem value="minimum">指定サイズ以上</SelectItem>
+                <SelectItem value="maximum">指定サイズ以下</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {settings.fileSizeMode !== 'none' && (
+            <div className="space-y-2">
+              <Label htmlFor="target-filesize-input" className="flex items-center gap-1.5">
+                <File className="h-3.5 w-3.5 text-muted-foreground" />
+                ターゲットサイズ (KB)
+              </Label>
+              <Input
+                id="target-filesize-input"
+                type="number"
+                min="1"
+                max="10000"
+                value={settings.targetFileSize}
+                onChange={handleTargetFileSizeChange}
+                placeholder="100"
+              />
+            </div>
+          )}
+        </>
       )}
 
       <Button onClick={onDownload} type="button" className="w-full" size="lg">

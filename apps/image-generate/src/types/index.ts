@@ -173,12 +173,35 @@ export interface ImageGeneratorSettings {
    * JPEG品質（1-100）
    *
    * この値は format が 'jpeg' の場合のみ使用される。
+   * fileSizeModeが'none'以外の場合は、自動調整される。
    *
    * @minimum 1
    * @maximum 100
    * @default 90
    */
   quality: number;
+
+  /**
+   * ファイルサイズ制御モード
+   *
+   * - `none`: サイズ制御なし（品質を手動設定）
+   * - `minimum`: 指定サイズ以上になるように品質を調整
+   * - `maximum`: 指定サイズ以下になるように品質を調整
+   *
+   * @default 'none'
+   */
+  fileSizeMode: 'none' | 'minimum' | 'maximum';
+
+  /**
+   * ターゲットファイルサイズ（KB）
+   *
+   * fileSizeModeが'none'以外の場合に使用される。
+   *
+   * @minimum 1
+   * @maximum 10000
+   * @default 100
+   */
+  targetFileSize: number;
 
   /**
    * エクスポート時のファイル名（拡張子なし）

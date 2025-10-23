@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import ReactCrop, { centerCrop, makeAspectCrop } from 'react-image-crop';
 import type { Crop, PixelCrop } from '@types';
-import { convertPercentToPixelCrop, convertToActualPixels } from '@utils/coordinateConverter';
+import { convertPercentToPixelCrop } from '@utils/coordinateConverter';
 import { useAspectRatioSync } from '@hooks/useAspectRatioSync';
 
 interface ImageCropperProps {
@@ -57,22 +57,17 @@ export function ImageCropper({
       height
     );
 
-    // 初期cropをピクセル単位に変換してから渡す
-    const initialPixelCropForUI = convertPercentToPixelCrop(
+    // 初期cropを実画像ピクセルに変換（エクスポート用）
+    const initialPixelCrop = convertPercentToPixelCrop(
       initialCrop,
       width,
       height,
       imageSize.width,
       imageSize.height
-    );
-    const initialPixelCrop = convertToActualPixels(
-      initialPixelCropForUI,
-      width,
-      height,
-      imageSize.width,
-      imageSize.height
-    );
-    onCropChange(initialPixelCropForUI, initialPixelCrop);
+    ) as PixelCrop;
+
+    // crop にはパーセント座標、completedCrop には実画像ピクセル座標を保存
+    onCropChange(initialCrop, initialPixelCrop);
   };
 
   return (
@@ -85,38 +80,20 @@ export function ImageCropper({
           const displayWidth = imgRef.current.width;
           const displayHeight = imgRef.current.height;
 
-          // パーセント→ピクセルに変換してから渡す
-          const pixelCropForUI = convertPercentToPixelCrop(
+          // 実画像ピクセル座標を計算（エクスポート用）
+          const pixelCrop = convertPercentToPixelCrop(
             percentCrop,
             displayWidth,
             displayHeight,
             imageSize.width,
             imageSize.height
-          );
-          const pixelCrop = convertToActualPixels(
-            pixelCropForUI,
-            displayWidth,
-            displayHeight,
-            imageSize.width,
-            imageSize.height
-          );
-          onCropChange(pixelCropForUI, pixelCrop);
+          ) as PixelCrop;
+
+          // crop にはパーセント座標、completedCrop には実画像ピクセル座標を保存
+          onCropChange(percentCrop, pixelCrop);
         }}
         onComplete={() => {
-          if (!imgRef.current) return;
-
-          const displayWidth = imgRef.current.width;
-          const displayHeight = imgRef.current.height;
-
-          // 確定時：現在のcropをピクセルに変換
-          const actualPixelCrop = convertToActualPixels(
-            crop,
-            displayWidth,
-            displayHeight,
-            imageSize.width,
-            imageSize.height
-          );
-          onCropChange(crop, actualPixelCrop);
+          // onChangeで処理済み
         }}
         {...(aspect !== undefined && { aspect })}
       >

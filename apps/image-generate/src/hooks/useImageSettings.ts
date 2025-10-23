@@ -38,6 +38,10 @@ export interface ImageSettingsHandlers {
   handleFormatChange: (format: 'png' | 'jpeg') => void;
   /** JPEG品質を変更 */
   handleQualityChange: (quality: number) => void;
+  /** ファイルサイズ制御モードを変更 */
+  handleFileSizeModeChange: (mode: 'none' | 'minimum' | 'maximum') => void;
+  /** ターゲットファイルサイズを変更 */
+  handleTargetFileSizeChange: (size: number) => void;
   /** ファイル名を変更 */
   handleFilenameChange: (filename: string) => void;
 }
@@ -179,6 +183,14 @@ export function useImageSettings() {
     setSettings((prev) => ({ ...prev, quality }));
   };
 
+  const handleFileSizeModeChange = (fileSizeMode: 'none' | 'minimum' | 'maximum') => {
+    setSettings((prev) => ({ ...prev, fileSizeMode }));
+  };
+
+  const handleTargetFileSizeChange = (targetFileSize: number) => {
+    setSettings((prev) => ({ ...prev, targetFileSize }));
+  };
+
   const handleFilenameChange = (filename: string) => {
     setSettings((prev) => ({ ...prev, filename }));
   };
@@ -201,6 +213,8 @@ export function useImageSettings() {
     handleTextVerticalAlignmentChange,
     handleFormatChange,
     handleQualityChange,
+    handleFileSizeModeChange,
+    handleTargetFileSizeChange,
     handleFilenameChange,
   };
 

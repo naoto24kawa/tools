@@ -1,3 +1,14 @@
-name = "image-generate"
+name = "tools-image-generate"
 pages_build_output_dir = "dist"
 compatibility_date = "2024-10-19"
+
+# GitHub Repository: https://github.com/naoto24kawa/tools
+# Production Branch: main
+# Build Command: bun run build
+# Framework: React + Vite
+
+[build]
+command = "bun run build"
+
+[build.environment_variables]
+NODE_VERSION = "20"

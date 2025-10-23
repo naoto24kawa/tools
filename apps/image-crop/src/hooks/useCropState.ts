@@ -38,11 +38,11 @@ export function useCropState() {
   const [image, setImage] = useState<ImageState>({ status: 'idle' });
   const [userPreferences, setUserPreferences] = useState<UserPreferences>({});
   const [crop, setCrop] = useState<Crop>({
-    unit: 'px',
+    unit: '%',
     x: 0,
     y: 0,
-    width: 100,
-    height: 100,
+    width: 0,
+    height: 0,
   });
   const [completedCrop, setCompletedCrop] = useState<PixelCrop>({
     unit: 'px',
@@ -88,18 +88,17 @@ export function useCropState() {
         filename: `cropped-${file.name.split('.')[0]}.${prev.format}`,
       }));
 
-      // ユーザー設定を適用
-      const newCrop = preferencesManager.applyCropPreferences(width, height, userPreferences);
-      setCrop(newCrop);
-      setCompletedCrop({
-        unit: 'px',
-        x: newCrop.x,
-        y: newCrop.y,
-        width: newCrop.width,
-        height: newCrop.height,
+      // cropの初期化はImageCropperのonImageLoadに任せる
+      // ここではcropをリセットしてImageCropperが初期化できるようにする
+      setCrop({
+        unit: '%',
+        x: 0,
+        y: 0,
+        width: 0,
+        height: 0,
       });
     },
-    [userPreferences, preferencesManager]
+    []
   );
 
   /**

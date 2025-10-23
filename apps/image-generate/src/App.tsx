@@ -87,6 +87,8 @@ export function App() {
               settings={settings}
               onFormatChange={handlers.handleFormatChange}
               onQualityChange={handlers.handleQualityChange}
+              onFileSizeModeChange={handlers.handleFileSizeModeChange}
+              onTargetFileSizeChange={handlers.handleTargetFileSizeChange}
               onFilenameChange={handlers.handleFilenameChange}
             />
           </Card>

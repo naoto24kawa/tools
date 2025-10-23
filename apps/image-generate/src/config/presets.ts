@@ -84,5 +84,7 @@ export const DEFAULT_SETTINGS = {
   textVerticalAlignment: 'middle' as const,
   format: 'png' as const,
   quality: 90,
+  fileSizeMode: 'none' as const,
+  targetFileSize: 100,
   filename: 'generated-image',
 };

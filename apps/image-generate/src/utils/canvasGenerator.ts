@@ -29,19 +29,23 @@ export function generateCanvas(settings: ImageGeneratorSettings): HTMLCanvasElem
  * @param filename ファイル名（拡張子なし）
  * @param format エクスポート形式（'png' | 'jpeg'）
  * @param quality JPEG品質（1-100）
+ * @param fileSizeMode ファイルサイズ制御モード
+ * @param targetFileSize ターゲットファイルサイズ（KB）
  *
  * @example
  * ```tsx
- * downloadCanvas(canvas, 'my-image', 'png', 90);
+ * downloadCanvas(canvas, 'my-image', 'jpeg', 90, 'maximum', 100);
  * ```
  */
 export function downloadCanvas(
   canvas: HTMLCanvasElement,
   filename: string,
   format: 'png' | 'jpeg',
-  quality: number
+  quality: number,
+  fileSizeMode: 'none' | 'minimum' | 'maximum' = 'none',
+  targetFileSize: number = 100
 ): void {
-  canvasExporter.download(canvas, { filename, format, quality });
+  canvasExporter.download(canvas, { filename, format, quality, fileSizeMode, targetFileSize });
 }
 
 /**

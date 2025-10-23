@@ -11,6 +11,10 @@ interface ExportPanelProps {
   onFormatChange: (format: 'png' | 'jpeg') => void;
   /** 品質変更ハンドラー */
   onQualityChange: (quality: number) => void;
+  /** ファイルサイズ制御モード変更ハンドラー */
+  onFileSizeModeChange: (mode: 'none' | 'minimum' | 'maximum') => void;
+  /** ターゲットファイルサイズ変更ハンドラー */
+  onTargetFileSizeChange: (size: number) => void;
   /** ファイル名変更ハンドラー */
   onFilenameChange: (filename: string) => void;
 }
@@ -25,11 +29,20 @@ export function ExportPanel({
   settings,
   onFormatChange,
   onQualityChange,
+  onFileSizeModeChange,
+  onTargetFileSizeChange,
   onFilenameChange,
 }: ExportPanelProps) {
   const handleDownload = () => {
     const canvas = generateCanvas(settings);
-    downloadCanvas(canvas, settings.filename, settings.format, settings.quality);
+    downloadCanvas(
+      canvas,
+      settings.filename,
+      settings.format,
+      settings.quality,
+      settings.fileSizeMode,
+      settings.targetFileSize
+    );
   };
 
   return (
@@ -45,6 +58,8 @@ export function ExportPanel({
         settings={settings}
         onFormatChange={onFormatChange}
         onQualityChange={onQualityChange}
+        onFileSizeModeChange={onFileSizeModeChange}
+        onTargetFileSizeChange={onTargetFileSizeChange}
         onFilenameChange={onFilenameChange}
         onDownload={handleDownload}
       />
