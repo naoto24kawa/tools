@@ -44,6 +44,14 @@ export const APPS_CONFIG = [
     displayName: 'Text Diff Checker',
     description: '2つのテキストを比較して差分を視覚的に表示 - コードレビューや文書比較に',
   },
+  {
+    path: '/text-deduplicate',
+    url: 'https://tools-text-deduplicate.elchika.app',
+    name: '重複行削除',
+    icon: '🔀',
+    displayName: 'Text Deduplicate',
+    description: 'テキストの重複行を削除して整理 - ログファイルやデータの整理に最適',
+  },
 ] as const;
 
 /**
