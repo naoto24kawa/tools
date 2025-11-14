@@ -47,12 +47,15 @@ Thumbs.db
 
 # IDE
 .vscode/
-!.vscode/extensions.json
-.idea/
-*.swp
-*.swo
-*.sw?
-*~
+.cursor/
+.cursorignore
+.cursorrules
+.kiro/
+
+# Coding Agent
+.claude/
+CLAUDE.md
+
 
 # Temporary files
 *.tmp

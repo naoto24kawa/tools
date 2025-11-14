@@ -28,6 +28,22 @@ export const APPS_CONFIG = [
     displayName: 'Image Resize',
     description: '画像を拡大・縮小 - パーセント、ピクセル、ファイルサイズで指定可能',
   },
+  {
+    path: '/text-counter',
+    url: 'https://tools-text-counter.elchika.app',
+    name: 'テキストカウンター',
+    icon: '📝',
+    displayName: 'Text Counter',
+    description: 'テキストの文字数、単語数、行数などをリアルタイムで解析 - 文書作成や翻訳作業に',
+  },
+  {
+    path: '/text-diff-checker',
+    url: 'https://tools-text-diff-checker.elchika.app',
+    name: 'テキスト差分チェッカー',
+    icon: '🔍',
+    displayName: 'Text Diff Checker',
+    description: '2つのテキストを比較して差分を視覚的に表示 - コードレビューや文書比較に',
+  },
 ] as const;
 
 /**

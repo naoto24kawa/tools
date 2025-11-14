@@ -6,6 +6,9 @@ export default defineConfig({
   plugins: [react()],
   // Pages直接アクセス用にルートパスを使用
   base: '/',
+  server: {
+    port: 5175,
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),

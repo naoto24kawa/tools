@@ -1,14 +1,7 @@
 name = "tools-image-resize"
-pages_build_output_dir = "dist"
 compatibility_date = "2024-10-19"
 
-# GitHub Repository: https://github.com/naoto24kawa/tools
-# Production Branch: main
-# Build Command: bun run build
+# Cloudflare Pages Configuration
+# Deploy: wrangler pages deploy dist --project-name=tools-image-resize
+# Build output directory: dist
 # Framework: React + Vite
-
-[build]
-command = "bun run build"
-
-[build.environment_variables]
-NODE_VERSION = "20"

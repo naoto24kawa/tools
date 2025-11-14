@@ -15,7 +15,7 @@
     "lint:fix": "eslint src --ext .ts,.tsx --fix",
     "format": "prettier --write \"src/**/*.{ts,tsx,css}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,css}\"",
-    "deploy": "bun run build && wrangler pages deploy"
+    "deploy": "bun run build && wrangler pages deploy dist --project-name=tools-image-crop"
   },
   "dependencies": {
     "@radix-ui/react-label": "^2.1.7",

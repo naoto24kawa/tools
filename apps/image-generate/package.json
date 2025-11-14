@@ -9,7 +9,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "type-check": "tsc --noEmit",
-    "deploy": "bun run build && wrangler pages deploy",
+    "deploy": "bun run build && wrangler pages deploy dist --project-name=tools-image-generate",
     "lint": "eslint src --ext .ts,.tsx",
     "lint:fix": "eslint src --ext .ts,.tsx --fix",
     "format": "prettier --write \"src/**/*.{ts,tsx,css}\"",
