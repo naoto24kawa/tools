@@ -1,10 +1,10 @@
-import { useRef } from 'react';
+import { Button } from '@components/ui/button';
 import { Label } from '@components/ui/label';
 import { Textarea } from '@components/ui/textarea';
-import { Button } from '@components/ui/button';
-import { Upload } from 'lucide-react';
-import { loadTextFile } from '@services/fileLoader';
 import { toast } from '@hooks/useToast';
+import { loadTextFile } from '@services/fileLoader';
+import { Upload } from 'lucide-react';
+import { useRef } from 'react';
 
 interface TextInputProps {
   label: string;

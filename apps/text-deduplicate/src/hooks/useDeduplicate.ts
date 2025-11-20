@@ -1,8 +1,8 @@
-import { useMemo, useCallback } from 'react';
+import { DEFAULT_DEDUPLICATE_SETTINGS, STORAGE_KEYS } from '@config/constants';
+import { useLocalStorage } from '@hooks/useLocalStorage';
 import type { DeduplicateSettings } from '@types';
 import { deduplicateLines, getRemovedLineCount } from '@utils/deduplicate';
-import { useLocalStorage } from '@hooks/useLocalStorage';
-import { DEFAULT_DEDUPLICATE_SETTINGS, STORAGE_KEYS } from '@config/constants';
+import { useCallback, useMemo } from 'react';
 
 /**
  * 重複行削除機能を提供するカスタムフック
@@ -57,4 +57,3 @@ export function useDeduplicate() {
     copyResult,
   };
 }
-

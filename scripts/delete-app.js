@@ -10,12 +10,12 @@
  *   npm run delete-app pdf-converter
  */
 
-const fs = require('fs');
-const path = require('path');
-const readline = require('readline');
+const fs = require('node:fs');
+const path = require('node:path');
+const readline = require('node:readline');
 const toml = require('@iarna/toml');
-const { exec } = require('child_process');
-const util = require('util');
+const { exec } = require('node:child_process');
+const util = require('node:util');
 
 const execPromise = util.promisify(exec);
 
@@ -183,7 +183,7 @@ function removeFromPackageJson(appName) {
 
     delete pkg.scripts[scriptName];
 
-    fs.writeFileSync(packagePath, JSON.stringify(pkg, null, 2) + '\n');
+    fs.writeFileSync(packagePath, `${JSON.stringify(pkg, null, 2)}\n`);
     console.log(`   ✅ package.json からデプロイスクリプトを削除`);
   } catch (error) {
     console.error(`   ❌ package.json の更新に失敗:`, error.message);
@@ -207,7 +207,7 @@ function removeFromIndexTs(appName, appNameSnake) {
     let modified = false;
 
     // 1. 型定義を削除（マーカーコメント付き）
-    const typeRegex = new RegExp(`\\s*${appNameSnake}: Fetcher \/\/ BEGIN APP: ${appName}\\n`, 'g');
+    const typeRegex = new RegExp(`\\s*${appNameSnake}: Fetcher // BEGIN APP: ${appName}\\n`, 'g');
     if (typeRegex.test(content)) {
       content = content.replace(typeRegex, '');
       console.log(`   ✅ 型定義を削除`);
@@ -216,7 +216,7 @@ function removeFromIndexTs(appName, appNameSnake) {
 
     // 2. availableApps配列の要素を削除
     const availableAppsRegex = new RegExp(
-      `\\s*\\{[^}]*name: '${appName}'[^}]*\\}, \/\/ BEGIN APP: ${appName}\\n`,
+      `\\s*\\{[^}]*name: '${appName}'[^}]*\\}, // BEGIN APP: ${appName}\\n`,
       'g'
     );
     if (availableAppsRegex.test(content)) {
@@ -226,7 +226,7 @@ function removeFromIndexTs(appName, appNameSnake) {
     }
 
     // 3. availablePaths配列の要素を削除
-    const availablePathsRegex = new RegExp(`, '\\/${appName}' \/\/ BEGIN APP: ${appName}`, 'g');
+    const availablePathsRegex = new RegExp(`, '\\/${appName}' // BEGIN APP: ${appName}`, 'g');
     if (availablePathsRegex.test(content)) {
       content = content.replace(availablePathsRegex, '');
       console.log(`   ✅ availablePaths配列から削除`);
@@ -235,7 +235,7 @@ function removeFromIndexTs(appName, appNameSnake) {
 
     // 4. ルーティング関数を削除（BEGIN/ENDマーカー間）
     const routingRegex = new RegExp(
-      `\n\/\/ .*? \/\/ BEGIN APP: ${appName}[\\s\\S]*?\/\/ END APP: ${appName}\\n`,
+      `\n// .*? // BEGIN APP: ${appName}[\\s\\S]*?// END APP: ${appName}\\n`,
       'g'
     );
     if (routingRegex.test(content)) {
@@ -262,7 +262,7 @@ async function deleteCloudflareWorker(appName) {
   console.log(`\n🔧 Cloudflare Worker の削除を試みています...\n`);
 
   try {
-    const { stdout, stderr } = await execPromise(`wrangler delete ${serviceName}`);
+    const { stdout: _stdout, stderr } = await execPromise(`wrangler delete ${serviceName}`);
 
     if (stderr && !stderr.includes('Successfully')) {
       console.error(`   ⚠️  警告: ${stderr}`);
@@ -288,7 +288,7 @@ async function main() {
   }
 
   // 変換
-  const appNamePascal = kebabToPascal(appName);
+  const _appNamePascal = kebabToPascal(appName);
   const appNameSnake = kebabToSnakeUpper(appName);
 
   // ターゲットディレクトリ

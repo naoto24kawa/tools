@@ -6,9 +6,7 @@ import { MAX_FILE_SIZE } from '@config/constants';
 export async function loadTextFile(file: File): Promise<string> {
   // ファイルサイズチェック
   if (file.size > MAX_FILE_SIZE) {
-    throw new Error(
-      `ファイルサイズが大きすぎます（最大: ${MAX_FILE_SIZE / 1024 / 1024}MB）`
-    );
+    throw new Error(`ファイルサイズが大きすぎます（最大: ${MAX_FILE_SIZE / 1024 / 1024}MB）`);
   }
 
   // テキストファイルチェック

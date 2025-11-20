@@ -1,4 +1,4 @@
-import type { AspectRatioOption, SizePreset, ColorPreset } from '@types';
+import type { AspectRatioOption, ColorPreset, SizePreset } from '@types';
 
 // アスペクト比のプリセット
 export const ASPECT_RATIOS: AspectRatioOption[] = [

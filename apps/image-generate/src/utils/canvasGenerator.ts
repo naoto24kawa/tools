@@ -1,5 +1,5 @@
 import type { ImageGeneratorSettings } from '@types';
-import { ImageGenerator, CanvasExporter } from './canvas';
+import { CanvasExporter, ImageGenerator } from './canvas';
 
 /**
  * シングルトンインスタンス

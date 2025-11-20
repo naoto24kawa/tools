@@ -1,4 +1,4 @@
-import type { SizePreset, ColorPreset } from '@types';
+import type { ColorPreset, SizePreset } from '@types';
 
 /**
  * サイズプリセットのカテゴリー表示名マッピング

@@ -1,4 +1,3 @@
-import type { ViewMode } from '@types';
 import { Label } from '@components/ui/label';
 import {
   Select,
@@ -8,6 +7,7 @@ import {
   SelectValue,
 } from '@components/ui/select';
 import { VIEW_MODES } from '@config/constants';
+import type { ViewMode } from '@types';
 
 interface ViewModeSelectorProps {
   value: ViewMode;

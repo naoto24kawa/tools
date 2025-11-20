@@ -1,5 +1,5 @@
-import type { SizePreset } from '@types';
 import { getSizeCategoryLabel } from '@config/categoryLabels';
+import type { SizePreset } from '@types';
 import { Button } from './ui/button';
 
 interface PresetSelectorProps {

@@ -1,17 +1,17 @@
 import type { TextAlignment, TextVerticalAlignment } from '@types';
 import { createNumberInputHandler } from '@utils/inputValidation';
-import { Input } from './ui/input';
-import { Label } from './ui/label';
-import { Button } from './ui/button';
 import {
-  Type,
-  AlignLeft,
   AlignCenter,
+  AlignLeft,
   AlignRight,
-  AlignVerticalJustifyStart,
   AlignVerticalJustifyCenter,
   AlignVerticalJustifyEnd,
+  AlignVerticalJustifyStart,
+  Type,
 } from 'lucide-react';
+import { Button } from './ui/button';
+import { Input } from './ui/input';
+import { Label } from './ui/label';
 
 interface TextInputProps {
   text: string;

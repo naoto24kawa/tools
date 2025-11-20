@@ -1,7 +1,7 @@
-import type { ColorPreset } from '@types';
 import { getColorCategoryLabel } from '@config/categoryLabels';
-import { Input } from './ui/input';
+import type { ColorPreset } from '@types';
 import { Palette } from 'lucide-react';
+import { Input } from './ui/input';
 
 interface ColorPickerProps {
   label: string;

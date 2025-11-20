@@ -1,4 +1,4 @@
-import type { PixelCrop, ExportSettings } from '@types';
+import type { ExportSettings, PixelCrop } from '@types';
 import { getCroppedImg } from '@utils/imageCropper';
 
 /**

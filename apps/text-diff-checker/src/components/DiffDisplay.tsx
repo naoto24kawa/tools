@@ -1,7 +1,7 @@
-import type { DiffResult, ViewMode, Language } from '@types';
 import { Card } from '@components/ui/card';
-import { UnifiedView } from './UnifiedView';
+import type { DiffResult, Language, ViewMode } from '@types';
 import { SplitView } from './SplitView';
+import { UnifiedView } from './UnifiedView';
 
 interface DiffDisplayProps {
   diffResult: DiffResult | null;

@@ -1,7 +1,7 @@
-import type { DiffResult } from '@types';
 import { Button } from '@components/ui/button';
+import { copyToClipboard, formatPatchDiff, formatUnifiedDiff } from '@services/clipboard';
+import type { DiffResult } from '@types';
 import { Copy } from 'lucide-react';
-import { copyToClipboard, formatUnifiedDiff, formatPatchDiff } from '@services/clipboard';
 
 interface ExportActionsProps {
   diffResult: DiffResult | null;

@@ -9,4 +9,3 @@ export interface DeduplicateSettings {
   /** 空行を保持する */
   keepEmptyLines: boolean;
 }
-

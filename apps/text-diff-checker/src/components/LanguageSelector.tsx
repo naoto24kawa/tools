@@ -1,4 +1,3 @@
-import type { Language } from '@types';
 import { Label } from '@components/ui/label';
 import {
   Select,
@@ -8,6 +7,7 @@ import {
   SelectValue,
 } from '@components/ui/select';
 import { SUPPORTED_LANGUAGES } from '@config/constants';
+import type { Language } from '@types';
 
 interface LanguageSelectorProps {
   value: Language;

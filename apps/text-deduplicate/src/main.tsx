@@ -14,4 +14,3 @@ ReactDOM.createRoot(rootElement).render(
     <App />
   </StrictMode>
 );
-

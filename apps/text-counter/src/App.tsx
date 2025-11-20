@@ -1,12 +1,23 @@
-import { Card } from '@components/ui/card';
 import { Button } from '@components/ui/button';
-import { Textarea } from '@components/ui/textarea';
+import { Card } from '@components/ui/card';
 import { Label } from '@components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@components/ui/select';
 import { Switch } from '@components/ui/switch';
-import { useTextCounter } from '@hooks/useTextCounter';
-import { formatNumber, formatBytes, formatReadingTime, formatStatsForClipboard } from '@utils/formatters';
+import { Textarea } from '@components/ui/textarea';
 import { LANGUAGE_OPTIONS } from '@config/constants';
+import { useTextCounter } from '@hooks/useTextCounter';
+import {
+  formatBytes,
+  formatNumber,
+  formatReadingTime,
+  formatStatsForClipboard,
+} from '@utils/formatters';
 
 export function App() {
   const { text, setText, settings, setSettings, stats, clearText } = useTextCounter();

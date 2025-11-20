@@ -12,16 +12,26 @@ export function SplitView({ diffResult, language }: SplitViewProps) {
       <div className="border-r">
         <div className="bg-muted px-4 py-2 text-sm font-semibold">Original</div>
         <div className="overflow-x-auto">
-          {diffResult.originalLines.map((line, index) => (
-            <DiffLine key={index} change={line} language={language} side="original" />
+          {diffResult.originalLines.map((line) => (
+            <DiffLine
+              key={`original-${line.lineNumber}-${line.type}`}
+              change={line}
+              language={language}
+              side="original"
+            />
           ))}
         </div>
       </div>
       <div>
         <div className="bg-muted px-4 py-2 text-sm font-semibold">Modified</div>
         <div className="overflow-x-auto">
-          {diffResult.modifiedLines.map((line, index) => (
-            <DiffLine key={index} change={line} language={language} side="modified" />
+          {diffResult.modifiedLines.map((line) => (
+            <DiffLine
+              key={`modified-${line.lineNumber}-${line.type}`}
+              change={line}
+              language={language}
+              side="modified"
+            />
           ))}
         </div>
       </div>

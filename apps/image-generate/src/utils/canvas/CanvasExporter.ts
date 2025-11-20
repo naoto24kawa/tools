@@ -113,8 +113,7 @@ export class CanvasExporter {
       const diff = Math.abs(size - targetSizeBytes);
 
       // 条件を満たす場合のみbestQualityを更新
-      const meetsCondition =
-        mode === 'minimum' ? size >= targetSizeBytes : size <= targetSizeBytes;
+      const meetsCondition = mode === 'minimum' ? size >= targetSizeBytes : size <= targetSizeBytes;
 
       if (meetsCondition && diff < bestDiff) {
         bestQuality = mid;

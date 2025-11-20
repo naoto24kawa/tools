@@ -10,9 +10,9 @@
  *   npm run create-app pdf-converter "PDFコンバーター"
  */
 
-const fs = require('fs');
-const path = require('path');
-const readline = require('readline');
+const fs = require('node:fs');
+const path = require('node:path');
+const readline = require('node:readline');
 const toml = require('@iarna/toml');
 
 // コマンドライン引数を取得
@@ -155,7 +155,7 @@ function updatePackageJson(appName) {
 
     pkg.scripts[scriptName] = scriptCommand;
 
-    fs.writeFileSync(packagePath, JSON.stringify(pkg, null, 2) + '\n');
+    fs.writeFileSync(packagePath, `${JSON.stringify(pkg, null, 2)}\n`);
     console.log(`   ✅ package.json にデプロイスクリプトを追加`);
   } catch (error) {
     console.error(`   ❌ package.json の更新に失敗:`, error.message);
@@ -164,7 +164,7 @@ function updatePackageJson(appName) {
 }
 
 // src/index.tsを更新（マーカーコメント付き）
-function updateIndexTs(appName, appNamePascal, appNameSnake, description) {
+function updateIndexTs(appName, _appNamePascal, appNameSnake, description) {
   const indexPath = path.join(__dirname, '..', 'src', 'index.ts');
 
   backupFile(indexPath);
@@ -173,13 +173,13 @@ function updateIndexTs(appName, appNamePascal, appNameSnake, description) {
     let content = fs.readFileSync(indexPath, 'utf8');
 
     // 1. 型定義に追加
-    const typeBindingMarker = '// Service Bindingsの型定義';
+    const _typeBindingMarker = '// Service Bindingsの型定義';
     const typeBindingCode = `  ${appNameSnake}: Fetcher // BEGIN APP: ${appName}\n`;
 
     const typeBindingRegex = /(type Bindings = \{[^}]*)/;
     if (typeBindingRegex.test(content)) {
       content = content.replace(typeBindingRegex, (match) => {
-        return match + `\n${typeBindingCode}`;
+        return `${match}\n${typeBindingCode}`;
       });
       console.log(`   ✅ 型定義を追加`);
     }
@@ -191,7 +191,7 @@ function updateIndexTs(appName, appNamePascal, appNameSnake, description) {
     if (availableAppsRegex.test(content)) {
       content = content.replace(availableAppsRegex, (match) => {
         // 最後の要素の後に追加
-        return match + `\n${availableAppsCode}`;
+        return `${match}\n${availableAppsCode}`;
       });
       console.log(`   ✅ availableApps配列に追加`);
     }
@@ -234,7 +234,7 @@ app.all('/${appName}/*', async (c) => {
     // 404ハンドラーの前に挿入
     const notFoundRegex = /(\/\/ 404エラーハンドラー)/;
     if (notFoundRegex.test(content)) {
-      content = content.replace(notFoundRegex, routingCode + '\n$1');
+      content = content.replace(notFoundRegex, `${routingCode}\n$1`);
       console.log(`   ✅ ルーティング関数を追加`);
     }
 

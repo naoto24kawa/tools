@@ -1,13 +1,13 @@
-import { ImageUpload } from '@components/ImageUpload';
-import { ImageCropper } from '@components/ImageCropper';
 import { CropInput } from '@components/CropInput';
 import { ExportPanel } from '@components/ExportPanel';
+import { ImageCropper } from '@components/ImageCropper';
+import { ImageUpload } from '@components/ImageUpload';
 import { Button } from '@components/ui/button';
 import { Card } from '@components/ui/card';
 import { Toaster } from '@components/ui/toaster';
+import { ASPECT_RATIOS } from '@config/constants';
 import { useCropState } from '@hooks/useCropState';
 import { calculateAspectRatio } from '@utils/formatters';
-import { ASPECT_RATIOS } from '@config/constants';
 
 export function App() {
   const {

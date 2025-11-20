@@ -1,5 +1,5 @@
-import type { Change } from '@types';
 import { toast } from '@hooks/useToast';
+import type { Change } from '@types';
 
 /**
  * クリップボードにテキストをコピー

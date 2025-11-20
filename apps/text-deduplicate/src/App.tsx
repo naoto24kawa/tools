@@ -1,8 +1,8 @@
-import { Card } from '@components/ui/card';
 import { Button } from '@components/ui/button';
-import { Textarea } from '@components/ui/textarea';
+import { Card } from '@components/ui/card';
 import { Label } from '@components/ui/label';
 import { Switch } from '@components/ui/switch';
+import { Textarea } from '@components/ui/textarea';
 import { useDeduplicate } from '@hooks/useDeduplicate';
 import { Copy, Trash2 } from 'lucide-react';
 
@@ -101,7 +101,7 @@ export function App() {
                   <div className="space-y-0.5">
                     <Label htmlFor="trim-whitespace">先頭・末尾の空白を無視</Label>
                     <p className="text-xs text-muted-foreground">
-                      「  hello  」と「hello」を同じ行として扱う
+                      「 hello 」と「hello」を同じ行として扱う
                     </p>
                   </div>
                   <Switch
@@ -117,9 +117,7 @@ export function App() {
                 <div className="flex items-center justify-between">
                   <div className="space-y-0.5">
                     <Label htmlFor="keep-empty-lines">空行を保持</Label>
-                    <p className="text-xs text-muted-foreground">
-                      空行を結果に含める
-                    </p>
+                    <p className="text-xs text-muted-foreground">空行を結果に含める</p>
                   </div>
                   <Switch
                     id="keep-empty-lines"
@@ -178,4 +176,3 @@ export function App() {
     </div>
   );
 }
-

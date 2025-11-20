@@ -1,11 +1,11 @@
-import type { ViewMode, Language, IgnoreOptions, DiffResult } from '@types';
-import { Card } from '@components/ui/card';
 import { Button } from '@components/ui/button';
-import { ViewModeSelector } from './ViewModeSelector';
-import { LanguageSelector } from './LanguageSelector';
-import { IgnoreOptionsToggles } from './IgnoreOptionsToggles';
+import { Card } from '@components/ui/card';
+import type { DiffResult, IgnoreOptions, Language, ViewMode } from '@types';
 import { DiffStatistics } from './DiffStatistics';
 import { ExportActions } from './ExportActions';
+import { IgnoreOptionsToggles } from './IgnoreOptionsToggles';
+import { LanguageSelector } from './LanguageSelector';
+import { ViewModeSelector } from './ViewModeSelector';
 
 interface SettingsPanelProps {
   viewMode: ViewMode;

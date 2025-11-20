@@ -47,4 +47,3 @@ export function getRemovedLineCount(originalText: string, deduplicatedText: stri
   const deduplicatedLines = deduplicatedText.split('\n').length;
   return originalLines - deduplicatedLines;
 }
-

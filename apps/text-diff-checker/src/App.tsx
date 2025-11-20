@@ -1,7 +1,7 @@
-import { Header } from '@components/Header';
-import { TextInputPanel } from '@components/TextInputPanel';
 import { DiffDisplay } from '@components/DiffDisplay';
+import { Header } from '@components/Header';
 import { SettingsPanel } from '@components/SettingsPanel';
+import { TextInputPanel } from '@components/TextInputPanel';
 import { Toaster } from '@components/ui/toaster';
 import { useDiffState } from '@hooks/useDiffState';
 

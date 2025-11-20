@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
-import { secureHeaders } from 'hono/secure-headers';
 import { cors } from 'hono/cors';
+import { secureHeaders } from 'hono/secure-headers';
 import { APPS_CONFIG, AVAILABLE_PATHS } from './config/apps';
 import { createProxyHandler } from './utils/proxy';
 import { renderToolsPage } from './views/ToolsListView';

@@ -1,7 +1,7 @@
 import { createNumberInputHandler } from '@utils/inputValidation';
+import { Maximize2 } from 'lucide-react';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
-import { Maximize2 } from 'lucide-react';
 
 interface SizeInputProps {
   width: number;

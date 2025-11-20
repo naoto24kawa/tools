@@ -1,7 +1,7 @@
-import { useState, useMemo, useCallback } from 'react';
-import type { ViewMode, Language, IgnoreOptions, DiffResult } from '@types';
 import { DEFAULT_SETTINGS } from '@config/constants';
+import type { DiffResult, IgnoreOptions, Language, ViewMode } from '@types';
 import { calculateDiff } from '@utils/diffCalculator';
+import { useCallback, useMemo, useState } from 'react';
 import { useDebounce } from './useDebounce';
 import { useLocalStorage } from './useLocalStorage';
 

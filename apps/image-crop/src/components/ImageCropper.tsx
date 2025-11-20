@@ -1,8 +1,8 @@
-import { useRef } from 'react';
-import ReactCrop, { centerCrop, makeAspectCrop } from 'react-image-crop';
+import { useAspectRatioSync } from '@hooks/useAspectRatioSync';
 import type { Crop, PixelCrop } from '@types';
 import { convertPercentToPixelCrop } from '@utils/coordinateConverter';
-import { useAspectRatioSync } from '@hooks/useAspectRatioSync';
+import { useRef } from 'react';
+import ReactCrop, { centerCrop, makeAspectCrop } from 'react-image-crop';
 
 interface ImageCropperProps {
   src: string;

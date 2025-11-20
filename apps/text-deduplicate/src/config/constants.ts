@@ -18,4 +18,3 @@ export const STORAGE_KEYS = {
   /** 設定の保存キー */
   SETTINGS: 'text-deduplicate-settings',
 } as const;
-

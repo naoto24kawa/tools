@@ -10,8 +10,8 @@
  */
 
 export { BackgroundRenderer } from './BackgroundRenderer';
-export { TextRenderer } from './TextRenderer';
-export type { TextRenderOptions } from './TextRenderer';
-export { ImageGenerator } from './ImageGenerator';
-export { CanvasExporter } from './CanvasExporter';
 export type { ExportFormat, ExportOptions } from './CanvasExporter';
+export { CanvasExporter } from './CanvasExporter';
+export { ImageGenerator } from './ImageGenerator';
+export type { TextRenderOptions } from './TextRenderer';
+export { TextRenderer } from './TextRenderer';

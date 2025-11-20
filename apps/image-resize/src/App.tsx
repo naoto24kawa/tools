@@ -1,8 +1,8 @@
-import { Card } from '@components/ui/card';
 import { Button } from '@components/ui/button';
-import { useResizeState } from '@hooks/useResizeState';
-import { downloadBlob, generateFilename, formatFileSize } from '@utils/exportImage';
+import { Card } from '@components/ui/card';
 import { FILE_SIZE_PRESETS } from '@config/constants';
+import { useResizeState } from '@hooks/useResizeState';
+import { downloadBlob, formatFileSize, generateFilename } from '@utils/exportImage';
 
 export function App() {
   const {
@@ -101,10 +101,11 @@ export function App() {
 
                   {resizeSettings.method === 'percent' && (
                     <div>
-                      <label className="text-sm font-medium mb-2 block">
+                      <label htmlFor="scale-percent" className="text-sm font-medium mb-2 block">
                         スケール: {resizeSettings.percent}%
                       </label>
                       <input
+                        id="scale-percent"
                         type="range"
                         min="1"
                         max="200"
@@ -123,8 +124,11 @@ export function App() {
                   {resizeSettings.method === 'pixel' && (
                     <div className="space-y-4">
                       <div>
-                        <label className="text-sm font-medium mb-2 block">幅 (px)</label>
+                        <label htmlFor="resize-width" className="text-sm font-medium mb-2 block">
+                          幅 (px)
+                        </label>
                         <input
+                          id="resize-width"
                           type="number"
                           value={resizeSettings.width}
                           onChange={(e) =>
@@ -137,8 +141,11 @@ export function App() {
                         />
                       </div>
                       <div>
-                        <label className="text-sm font-medium mb-2 block">高さ (px)</label>
+                        <label htmlFor="resize-height" className="text-sm font-medium mb-2 block">
+                          高さ (px)
+                        </label>
                         <input
+                          id="resize-height"
                           type="number"
                           value={resizeSettings.height}
                           onChange={(e) =>
@@ -171,10 +178,11 @@ export function App() {
                   {resizeSettings.method === 'filesize' && (
                     <div className="space-y-4">
                       <div>
-                        <label className="text-sm font-medium mb-2 block">
+                        <label htmlFor="target-filesize" className="text-sm font-medium mb-2 block">
                           目標ファイルサイズ (KB)
                         </label>
                         <input
+                          id="target-filesize"
                           type="number"
                           value={Math.round(resizeSettings.targetFileSize / 1024)}
                           onChange={(e) =>

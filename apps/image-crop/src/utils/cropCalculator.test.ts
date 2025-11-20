@@ -1,6 +1,6 @@
-import { describe, test, expect } from 'bun:test';
-import { percentToPixels, pixelsToPercent, calculateCropPixels } from './unitConverter';
-import { formatFileSize, calculateAspectRatio } from './formatters';
+import { describe, expect, test } from 'bun:test';
+import { calculateAspectRatio, formatFileSize } from './formatters';
+import { calculateCropPixels, percentToPixels, pixelsToPercent } from './unitConverter';
 
 describe('cropCalculator', () => {
   describe('percentToPixels', () => {

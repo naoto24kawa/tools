@@ -1,4 +1,4 @@
-import type { ResizeSettings, ResizeResult, ExportSettings } from '@types';
+import type { ExportSettings, ResizeResult, ResizeSettings } from '@types';
 import { resizeAndExport } from './exportImage';
 
 /**

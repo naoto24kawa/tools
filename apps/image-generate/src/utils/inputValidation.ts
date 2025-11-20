@@ -39,7 +39,7 @@ export function validateNumberInput(
 ): NumberValidationResult {
   const value = parseInt(input, 10);
 
-  if (isNaN(value)) {
+  if (Number.isNaN(value)) {
     return { isValid: false, value: null };
   }
 

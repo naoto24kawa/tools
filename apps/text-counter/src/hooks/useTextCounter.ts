@@ -1,8 +1,8 @@
-import { useMemo, useCallback } from 'react';
+import { DEFAULT_COUNT_SETTINGS, STORAGE_KEYS } from '@config/constants';
+import { useLocalStorage } from '@hooks/useLocalStorage';
 import type { CountSettings } from '@types';
 import { analyzeText } from '@utils/textAnalysis';
-import { useLocalStorage } from '@hooks/useLocalStorage';
-import { DEFAULT_COUNT_SETTINGS, STORAGE_KEYS } from '@config/constants';
+import { useCallback, useMemo } from 'react';
 
 /**
  * テキストカウンター機能を提供するカスタムフック

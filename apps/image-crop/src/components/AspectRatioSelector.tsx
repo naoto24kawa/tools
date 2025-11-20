@@ -1,6 +1,6 @@
 import type { AspectRatioOption } from '@types';
-import { Button } from './ui/button';
 import { Crop } from 'lucide-react';
+import { Button } from './ui/button';
 
 interface AspectRatioSelectorProps {
   aspectRatios: readonly AspectRatioOption[];

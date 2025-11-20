@@ -1,6 +1,6 @@
-import { useState, useCallback, useMemo } from 'react';
-import type { ImageState, Crop, PixelCrop, ExportSettings, UserPreferences } from '@types';
 import { CropPreferencesManager } from '@services/CropPreferencesManager';
+import type { Crop, ExportSettings, ImageState, PixelCrop, UserPreferences } from '@types';
+import { useCallback, useMemo, useState } from 'react';
 
 /**
  * クロップ状態管理フック
@@ -71,35 +71,32 @@ export function useCropState() {
   /**
    * 画像読み込み時の処理
    */
-  const handleImageLoad = useCallback(
-    (file: File, src: string, width: number, height: number) => {
-      // 画像状態を更新
-      setImage({
-        status: 'loaded',
-        file,
-        src,
-        naturalWidth: width,
-        naturalHeight: height,
-      });
+  const handleImageLoad = useCallback((file: File, src: string, width: number, height: number) => {
+    // 画像状態を更新
+    setImage({
+      status: 'loaded',
+      file,
+      src,
+      naturalWidth: width,
+      naturalHeight: height,
+    });
 
-      // ファイル名に基づいてエクスポート設定を更新
-      setExportSettings((prev) => ({
-        ...prev,
-        filename: `cropped-${file.name.split('.')[0]}.${prev.format}`,
-      }));
+    // ファイル名に基づいてエクスポート設定を更新
+    setExportSettings((prev) => ({
+      ...prev,
+      filename: `cropped-${file.name.split('.')[0]}.${prev.format}`,
+    }));
 
-      // cropの初期化はImageCropperのonImageLoadに任せる
-      // ここではcropをリセットしてImageCropperが初期化できるようにする
-      setCrop({
-        unit: '%',
-        x: 0,
-        y: 0,
-        width: 0,
-        height: 0,
-      });
-    },
-    []
-  );
+    // cropの初期化はImageCropperのonImageLoadに任せる
+    // ここではcropをリセットしてImageCropperが初期化できるようにする
+    setCrop({
+      unit: '%',
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0,
+    });
+  }, []);
 
   /**
    * クロップ領域変更時の処理

@@ -1,5 +1,5 @@
-import type { TextStats, CountSettings, Language } from '@types';
 import { READING_SPEED } from '@config/constants';
+import type { CountSettings, Language, TextStats } from '@types';
 
 /**
  * 言語を自動検出
@@ -24,9 +24,7 @@ function countWords(text: string, language: Language): number {
 
   if (language === 'ja') {
     // 日本語: スペース、句読点、記号で区切られた単位をカウント
-    const words = text
-      .split(/[\s、。！？]/g)
-      .filter((word) => word.trim().length > 0);
+    const words = text.split(/[\s、。！？]/g).filter((word) => word.trim().length > 0);
     return words.length;
   } else {
     // 英語: スペースで区切られた単語をカウント
@@ -42,9 +40,7 @@ function countParagraphs(text: string): number {
   if (!text.trim()) return 0;
 
   // 空行で区切られた段落をカウント
-  const paragraphs = text
-    .split(/\n\n+/)
-    .filter((paragraph) => paragraph.trim().length > 0);
+  const paragraphs = text.split(/\n\n+/).filter((paragraph) => paragraph.trim().length > 0);
 
   return paragraphs.length;
 }
@@ -59,11 +55,7 @@ function calculateBytes(text: string): number {
 /**
  * 読了時間を計算（分）
  */
-function calculateReadingTime(
-  language: Language,
-  wordCount: number,
-  charCount: number
-): number {
+function calculateReadingTime(language: Language, wordCount: number, charCount: number): number {
   if (language === 'ja') {
     // 日本語: 文字数ベース
     return Math.ceil(charCount / READING_SPEED.ja);
@@ -76,10 +68,7 @@ function calculateReadingTime(
 /**
  * テキストを解析して統計情報を取得
  */
-export function analyzeText(
-  text: string,
-  settings: CountSettings
-): TextStats {
+export function analyzeText(text: string, settings: CountSettings): TextStats {
   // 言語検出
   const detectedLanguage = detectLanguage(text);
   const language = settings.language === 'auto' ? detectedLanguage : settings.language;
@@ -101,11 +90,7 @@ export function analyzeText(
   const bytes = calculateBytes(text);
 
   // 読了時間計算
-  const readingTimeMinutes = calculateReadingTime(
-    language,
-    words,
-    charsWithoutSpaces
-  );
+  const readingTimeMinutes = calculateReadingTime(language, words, charsWithoutSpaces);
 
   return {
     charsWithSpaces,

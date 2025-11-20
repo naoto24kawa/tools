@@ -1,5 +1,5 @@
 import type { PreviewInfo as PreviewInfoType } from '@types';
-import { Image, Scissors, Ratio } from 'lucide-react';
+import { Image, Ratio, Scissors } from 'lucide-react';
 
 interface PreviewInfoProps {
   previewInfo: PreviewInfoType;

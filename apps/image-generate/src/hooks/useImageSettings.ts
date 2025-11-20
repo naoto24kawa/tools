@@ -1,12 +1,12 @@
-import { useState } from 'react';
+import { DEFAULT_SETTINGS } from '@config/presets';
 import type {
   ImageGeneratorSettings,
-  SizePreset,
   PatternType,
+  SizePreset,
   TextAlignment,
   TextVerticalAlignment,
 } from '@types';
-import { DEFAULT_SETTINGS } from '@config/presets';
+import { useState } from 'react';
 
 /**
  * 画像設定の変更ハンドラー群

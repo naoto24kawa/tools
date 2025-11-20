@@ -1,8 +1,8 @@
-import { useState, useCallback } from 'react';
-import { Upload } from 'lucide-react';
 import { IMAGE_UPLOAD_CONFIG } from '@config/constants';
-import { validateFile } from '@utils/imageValidator';
 import { loadImage } from '@utils/imageLoader';
+import { validateFile } from '@utils/imageValidator';
+import { Upload } from 'lucide-react';
+import { useCallback, useState } from 'react';
 import { cn } from '../lib/utils';
 
 interface ImageUploadProps {
@@ -68,8 +68,22 @@ export function ImageUpload({ onImageLoad }: ImageUploadProps) {
     }
   };
 
+  const handleClick = () => {
+    document.getElementById('file-input')?.click();
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      handleClick();
+    }
+  };
+
   return (
+    // biome-ignore lint/a11y/useSemanticElements: ファイルアップロード領域のため、divを使用
     <div
+      role="button"
+      tabIndex={0}
       className={cn(
         'relative cursor-pointer rounded-lg border-2 border-dashed border-muted-foreground/25 bg-background p-12 text-center transition-colors hover:border-primary hover:bg-muted/50',
         dragActive && 'border-primary border-solid bg-muted/50'
@@ -78,7 +92,9 @@ export function ImageUpload({ onImageLoad }: ImageUploadProps) {
       onDragLeave={handleDrag}
       onDragOver={handleDrag}
       onDrop={handleDrop}
-      onClick={() => document.getElementById('file-input')?.click()}
+      onClick={handleClick}
+      onKeyDown={handleKeyDown}
+      aria-label="画像をアップロード"
     >
       <input
         id="file-input"

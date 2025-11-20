@@ -1,5 +1,5 @@
-import { diffLines } from 'diff';
 import type { Change, DiffResult, DiffStatistics, IgnoreOptions } from '@types';
+import { diffLines } from 'diff';
 import { preprocessText } from './textPreprocessor';
 
 /**

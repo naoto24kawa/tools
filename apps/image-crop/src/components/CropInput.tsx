@@ -1,8 +1,8 @@
 import type { Crop } from '@types';
-import { updateCropField, convertCropUnit } from '@utils/cropAdjuster';
+import { convertCropUnit, updateCropField } from '@utils/cropAdjuster';
+import { Maximize2, Move, Ruler } from 'lucide-react';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
-import { Move, Maximize2, Ruler } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 
 interface CropInputProps {
