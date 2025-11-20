@@ -101,7 +101,7 @@ function copyDirectory(src, dest, replacements) {
 
 // wrangler.tomlにService Bindingを追加
 function updateWranglerToml(appName, appNameSnake) {
-  const wranglerPath = path.join(__dirname, '..', 'wrangler.toml');
+  const wranglerPath = path.join(__dirname, '..', 'packages', 'router', 'wrangler.toml');
 
   backupFile(wranglerPath);
 
@@ -165,7 +165,7 @@ function updatePackageJson(appName) {
 
 // src/index.tsを更新（マーカーコメント付き）
 function updateIndexTs(appName, _appNamePascal, appNameSnake, description) {
-  const indexPath = path.join(__dirname, '..', 'src', 'index.ts');
+  const indexPath = path.join(__dirname, '..', 'packages', 'router', 'src', 'index.ts');
 
   backupFile(indexPath);
 

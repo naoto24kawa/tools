@@ -5,3 +5,7 @@ compatibility_date = "2024-12-01"
 [[routes]]
 pattern = "tools.elchika.app"
 custom_domain = true
+
+[[services]]
+binding = "IMAGE_ASSET_GENERATOR"
+service = "tools-image-asset-generator"
