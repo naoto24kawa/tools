@@ -1,4 +1,4 @@
-import type { ExportSettings, ResizeSettings } from '@types';
+import type { ExportSettings, ResizeSettings } from '../types';
 
 /**
  * 最大ファイルサイズ (10MB)

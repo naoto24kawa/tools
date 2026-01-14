@@ -1,5 +1,5 @@
-import type { ImageGeneratorSettings } from '@types';
-import { createNumberInputHandler } from '@utils/inputValidation';
+import type { ImageGeneratorSettings } from '../types';
+import { createNumberInputHandler } from '../utils/inputValidation';
 import { Download, File, FileType, Sliders } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';

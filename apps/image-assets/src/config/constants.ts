@@ -1,0 +1,67 @@
+export const ASSET_CONFIGS = [
+  {
+    id: 'ogp',
+    name: 'OGP Image',
+    width: 1200,
+    height: 630,
+    format: 'png',
+    filename: 'ogp.png',
+    description: 'Social media sharing image (Open Graph Protocol)',
+  },
+  {
+    id: 'twitter-summary',
+    name: 'Twitter Card (Summary)',
+    width: 144,
+    height: 144,
+    format: 'png',
+    filename: 'twitter-summary.png',
+    description: 'Twitter Card Summary (Square)',
+  },
+  {
+    id: 'twitter-summary-large',
+    name: 'Twitter Card (Large)',
+    width: 600, // Minimum width, often displayed larger. 2:1 ratio roughly.
+    height: 314,
+    format: 'png',
+    filename: 'twitter-summary-large.png',
+    description: 'Twitter Card Summary with Large Image',
+  },
+  {
+    id: 'favicon-ico',
+    name: 'Favicon (.ico)',
+    width: 32,
+    height: 32,
+    format: 'ico',
+    filename: 'favicon.ico',
+    description: 'Standard browser favicon (Multi-size 32x32)',
+  },
+  {
+    id: 'apple-touch-icon',
+    name: 'Apple Touch Icon',
+    width: 180,
+    height: 180,
+    format: 'png',
+    filename: 'apple-touch-icon.png',
+    description: 'Icon for iOS home screen',
+  },
+  {
+    id: 'icon-192',
+    name: 'PWA Icon (192)',
+    width: 192,
+    height: 192,
+    format: 'png',
+    filename: 'icon-192.png',
+    description: 'PWA icon for Android/Windows',
+  },
+  {
+    id: 'icon-512',
+    name: 'PWA Icon (512)',
+    width: 512,
+    height: 512,
+    format: 'png',
+    filename: 'icon-512.png',
+    description: 'PWA icon for Android/Windows (Large)',
+  },
+] as const;
+
+export type AssetConfig = typeof ASSET_CONFIGS[number];

@@ -1,11 +1,11 @@
-import { DEFAULT_SETTINGS } from '@config/presets';
+import { DEFAULT_SETTINGS } from '../config/presets';
 import type {
   ImageGeneratorSettings,
   PatternType,
   SizePreset,
   TextAlignment,
   TextVerticalAlignment,
-} from '@types';
+} from '../types';
 import { useState } from 'react';
 
 /**

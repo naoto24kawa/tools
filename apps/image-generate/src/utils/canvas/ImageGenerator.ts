@@ -1,4 +1,4 @@
-import type { ImageGeneratorSettings } from '@types';
+import type { ImageGeneratorSettings } from '../types';
 import { BackgroundRenderer } from './BackgroundRenderer';
 import { TextRenderer } from './TextRenderer';
 

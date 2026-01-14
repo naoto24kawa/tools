@@ -1,4 +1,4 @@
-import type { ImageGeneratorSettings } from '@types';
+import type { ImageGeneratorSettings } from '../types';
 import { CanvasExporter, ImageGenerator } from './canvas';
 
 /**

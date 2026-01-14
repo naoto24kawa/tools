@@ -8,7 +8,7 @@
     "dev": "vite dev",
     "build": "vite build",
     "preview": "vite preview",
-    "type-check": "tsc --noEmit",
+    "type-check": "tsgo --noEmit",
     "deploy": "bun run build && wrangler pages deploy dist --project-name=tools-image-generate",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",

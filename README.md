@@ -116,7 +116,92 @@ bun install
 bun run dev:image-crop        # Image Crop
 bun run dev:image-generate    # Image Generate
 bun run dev:text-diff-checker # Text Diff Checker
+
+# Storybookの起動
+bun run storybook             # UIコンポーネントのカタログを表示
 ```
+
+### Storybook
+
+UIコンポーネントのドキュメントとカタログを確認できます。
+
+```bash
+# Storybookの起動
+bun run storybook
+
+# Storybookのビルド
+bun run build-storybook
+```
+
+### E2Eテスト
+
+Playwrightを使用したE2Eテストを実行できます。
+
+```bash
+# E2Eテストを実行
+bun run test:e2e
+
+# UIモードで実行（インタラクティブ）
+bun run test:e2e:ui
+
+# ヘッド付きモードで実行（ブラウザを表示）
+bun run test:e2e:headed
+
+# デバッグモードで実行
+bun run test:e2e:debug
+
+# HTMLレポートを表示
+bun run test:e2e:report
+```
+
+## 🧪 テスト
+
+このプロジェクトでは、包括的なテストカバレッジを実現しています。
+
+### テストの種類
+
+- **単体テスト（bun test）**: コンポーネント、ユーティリティ関数、カスタムフックのテスト
+- **結合テスト（Playwright）**: E2Eでアプリケーション全体の動作をテスト
+
+### テストの実行
+
+```bash
+# すべての単体テストを実行
+bun test
+
+# ウォッチモードで実行
+bun test --watch
+
+# カバレッジを表示
+bun test --coverage
+
+# すべてのテスト（単体+結合）を実行
+bun run test:all
+```
+
+### カバレッジ目標
+
+- **Lines**: 90%以上
+- **Functions**: 90%以上
+- **Branches**: 85%以上
+- **Statements**: 90%以上
+
+### テスト実装状況
+
+✅ **Router パッケージ**: 単体テスト3ファイル  
+✅ **URL Encoder**: 単体テスト5ファイル + 結合テスト2ファイル  
+✅ **Text Counter**: 単体テスト5ファイル + 結合テスト1ファイル  
+✅ **Text Deduplicate**: 単体テスト2ファイル + 結合テスト1ファイル  
+✅ **Text Diff Checker**: 単体テスト3ファイル + 結合テスト1ファイル  
+✅ **Image Resize**: 単体テスト1ファイル + 結合テスト1ファイル  
+✅ **Image Crop**: 単体テスト1ファイル + 結合テスト1ファイル  
+✅ **Image Generate**: 単体テスト1ファイル + 結合テスト1ファイル  
+✅ **Image Grayscale**: 単体テスト1ファイル + 結合テスト1ファイル  
+✅ **Image Assets**: 単体テスト1ファイル + 結合テスト1ファイル
+
+**合計: 36ファイル（単体テスト23 + 結合テスト10 + テスト基盤3）**
+
+詳細は[テスト実装ガイド](./__docs__/TESTING_GUIDE.md)をご覧ください。
 
 詳しくは [開発者向けドキュメント](./__docs__/README.md) をご覧ください。
 

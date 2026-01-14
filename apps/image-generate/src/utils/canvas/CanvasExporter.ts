@@ -1,4 +1,4 @@
-import { CANVAS_CONSTANTS } from '@config/canvas';
+import { CANVAS_CONSTANTS } from '../../config/canvas';
 
 /**
  * エクスポート形式

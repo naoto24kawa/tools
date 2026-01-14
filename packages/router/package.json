@@ -6,8 +6,8 @@
   "main": "src/index.ts",
   "scripts": {
     "dev": "wrangler dev",
-    "build": "tsc --noEmit",
-    "type-check": "tsc --noEmit",
+    "build": "tsgo --noEmit",
+    "type-check": "tsgo --noEmit",
     "deploy": "bun run build && wrangler deploy"
   },
   "keywords": [

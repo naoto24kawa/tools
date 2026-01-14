@@ -67,3 +67,8 @@ CLAUDE.md
 
 # Playwright MCP temporary files
 .playwright-mcp/
+
+# Playwright
+test-results/
+playwright-report/
+playwright/.cache/

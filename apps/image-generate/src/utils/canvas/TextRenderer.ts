@@ -1,5 +1,5 @@
-import { CANVAS_CONSTANTS } from '@config/canvas';
-import type { TextAlignment, TextVerticalAlignment } from '@types';
+import { CANVAS_CONSTANTS } from '../../config/canvas';
+import type { TextAlignment, TextVerticalAlignment } from '../types';
 
 /**
  * テキスト描画の設定

@@ -1,6 +1,6 @@
-import { CANVAS_CONSTANTS } from '@config/canvas';
-import type { ImageGeneratorSettings } from '@types';
-import { generateCanvas } from '@utils/canvasGenerator';
+import { CANVAS_CONSTANTS } from '../config/canvas';
+import type { ImageGeneratorSettings } from '../types';
+import { generateCanvas } from '../utils/canvasGenerator';
 import { useEffect, useRef } from 'react';
 
 interface PreviewCanvasProps {

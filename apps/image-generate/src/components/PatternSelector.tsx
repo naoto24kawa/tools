@@ -1,4 +1,4 @@
-import type { PatternType } from '@types';
+import type { PatternType } from '../types';
 import { Button } from './ui/button';
 
 interface PatternSelectorProps {

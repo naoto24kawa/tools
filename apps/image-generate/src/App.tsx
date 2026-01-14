@@ -1,13 +1,13 @@
-import { AspectRatioSelector } from '@components/AspectRatioSelector';
-import { ColorPicker } from '@components/ColorPicker';
-import { ExportPanel } from '@components/ExportPanel';
-import { PatternSelector } from '@components/PatternSelector';
-import { PresetSelector } from '@components/PresetSelector';
-import { SizeInput } from '@components/SizeInput';
-import { TextInput } from '@components/TextInput';
-import { Card } from '@components/ui/card';
-import { ASPECT_RATIOS, COLOR_PRESETS, SIZE_PRESETS } from '@config/presets';
-import { useImageSettings } from '@hooks/useImageSettings';
+import { AspectRatioSelector } from './components/AspectRatioSelector';
+import { ColorPicker } from './components/ColorPicker';
+import { ExportPanel } from './components/ExportPanel';
+import { PatternSelector } from './components/PatternSelector';
+import { PresetSelector } from './components/PresetSelector';
+import { SizeInput } from './components/SizeInput';
+import { TextInput } from './components/TextInput';
+import { Card } from './components/ui/card';
+import { ASPECT_RATIOS, COLOR_PRESETS, SIZE_PRESETS } from './config/presets';
+import { useImageSettings } from './hooks/useImageSettings';
 
 export function App() {
   const { settings, handlers } = useImageSettings();

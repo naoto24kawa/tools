@@ -1,4 +1,4 @@
-import type { AspectRatioOption } from '@types';
+import type { AspectRatioOption } from '../types';
 import { Crop } from 'lucide-react';
 import { Button } from './ui/button';
 

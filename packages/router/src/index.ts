@@ -47,27 +47,8 @@ APPS_CONFIG.forEach((appConfig) => {
 });
 
 
-//  へのルーティング // BEGIN APP: image-asset-generator
-app.all('/image-asset-generator/*', async (c) => {
-  try {
-    const path = c.req.path.replace('/image-asset-generator', '') || '/'
-    const url = new URL(path, 'http://internal')
 
-    const request = new Request(url, {
-      method: c.req.method,
-      headers: c.req.raw.headers,
-      body: c.req.raw.body,
-    })
 
-    return await c.env.IMAGE_ASSET_GENERATOR.fetch(request)
-  } catch (error) {
-    console.error('Error proxying to image-asset-generator:', error)
-    return c.json({
-      error: 'Service unavailable',
-      message: 'への接続に失敗しました'
-    }, 503)
-  }
-}) // END APP: image-asset-generator
 
 // 404エラーハンドラー
 app.notFound((c) => {

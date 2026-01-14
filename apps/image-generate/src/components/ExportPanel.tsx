@@ -1,5 +1,5 @@
-import type { ImageGeneratorSettings } from '@types';
-import { downloadCanvas, generateCanvas } from '@utils/canvasGenerator';
+import type { ImageGeneratorSettings } from '../types';
+import { downloadCanvas, generateCanvas } from '../utils/canvasGenerator';
 import { Eye } from 'lucide-react';
 import { ExportSettings } from './ExportSettings';
 import { PreviewCanvas } from './PreviewCanvas';

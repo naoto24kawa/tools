@@ -21,6 +21,14 @@ export const APPS_CONFIG = [
     description: 'プレースホルダー画像を生成 - モックアップやテストデータ作成に',
   },
   {
+    path: '/image-grayscale',
+    url: 'https://tools-image-grayscale.elchika.app',
+    name: 'グレースケール変換',
+    icon: '⚫',
+    displayName: 'Image Grayscale',
+    description: '画像をグレースケールに変換 - モノクロ画像の作成に',
+  },
+  {
     path: '/image-resize',
     url: 'https://tools-image-resize.elchika.app',
     name: '画像のリサイズ',
@@ -51,6 +59,30 @@ export const APPS_CONFIG = [
     icon: '🔀',
     displayName: 'Text Deduplicate',
     description: 'テキストの重複行を削除して整理 - ログファイルやデータの整理に最適',
+  },
+  {
+    path: '/image-assets',
+    url: 'https://tools-image-assets.elchika.app',
+    name: 'アセット画像生成',
+    icon: '🖼️',
+    displayName: 'Image Assets',
+    description: 'OGP、Favicon、Twitter Card、PWAアイコンを一括生成 - Web開発に必要な画像を一度に作成',
+  },
+  {
+    path: '/url-encoder',
+    url: 'https://tools-url-encoder.elchika.app',
+    name: 'URL encode and decode tool',
+    icon: '✨',
+    displayName: 'UrlEncoder',
+    description: 'URL encode and decode tool',
+  },
+  {
+    path: '/image-transparent',
+    url: 'https://tools-image-transparent.elchika.app',
+    name: '画像透過ツール',
+    icon: '🔍',
+    displayName: 'Image Transparent',
+    description: '画像の特定の色を透過に変換 - 背景除去やロゴ作成に',
   },
 ] as const;
 

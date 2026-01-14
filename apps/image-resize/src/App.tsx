@@ -1,8 +1,8 @@
-import { Button } from '@components/ui/button';
-import { Card } from '@components/ui/card';
-import { FILE_SIZE_PRESETS } from '@config/constants';
-import { useResizeState } from '@hooks/useResizeState';
-import { downloadBlob, formatFileSize, generateFilename } from '@utils/exportImage';
+import { Button } from './components/ui/button';
+import { Card } from './components/ui/card';
+import { FILE_SIZE_PRESETS } from './config/constants';
+import { useResizeState } from './hooks/useResizeState';
+import { downloadBlob, formatFileSize, generateFilename } from './utils/exportImage';
 
 export function App() {
   const {

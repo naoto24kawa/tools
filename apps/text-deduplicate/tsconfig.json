@@ -3,16 +3,16 @@
   "compilerOptions": {
     "allowJs": true,
 
-    /* Path aliases */
-    "baseUrl": ".",
+    /* Path aliases - tsgo compatible */
     "paths": {
-      "@/*": ["src/*"],
-      "@components/*": ["src/components/*"],
-      "@utils/*": ["src/utils/*"],
-      "@types": ["src/types"],
-      "@config/*": ["src/config/*"],
-      "@hooks/*": ["src/hooks/*"],
-      "@services/*": ["src/services/*"]
+      "*": ["./*"],
+      "@/*": ["./src/*"],
+      "@components/*": ["./src/components/*"],
+      "@utils/*": ["./src/utils/*"],
+      "@types": ["./src/types"],
+      "@config/*": ["./src/config/*"],
+      "@hooks/*": ["./src/hooks/*"],
+      "@services/*": ["./src/services/*"]
     }
   },
   "include": ["src"]

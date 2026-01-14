@@ -1,5 +1,5 @@
-import type { TextAlignment, TextVerticalAlignment } from '@types';
-import { createNumberInputHandler } from '@utils/inputValidation';
+import type { TextAlignment, TextVerticalAlignment } from '../types';
+import { createNumberInputHandler } from '../utils/inputValidation';
 import {
   AlignCenter,
   AlignLeft,

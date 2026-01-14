@@ -164,7 +164,7 @@ function updatePackageJson(appName) {
 }
 
 // src/index.tsを更新（マーカーコメント付き）
-function updateIndexTs(appName, _appNamePascal, appNameSnake, description) {
+function updateRouterIndex(appName, _appNamePascal, appNameSnake, description) {
   const indexPath = path.join(__dirname, '..', 'packages', 'router', 'src', 'index.ts');
 
   backupFile(indexPath);
@@ -173,9 +173,7 @@ function updateIndexTs(appName, _appNamePascal, appNameSnake, description) {
     let content = fs.readFileSync(indexPath, 'utf8');
 
     // 1. 型定義に追加
-    const _typeBindingMarker = '// Service Bindingsの型定義';
     const typeBindingCode = `  ${appNameSnake}: Fetcher // BEGIN APP: ${appName}\n`;
-
     const typeBindingRegex = /(type Bindings = \{[^}]*)/;
     if (typeBindingRegex.test(content)) {
       content = content.replace(typeBindingRegex, (match) => {
@@ -184,29 +182,7 @@ function updateIndexTs(appName, _appNamePascal, appNameSnake, description) {
       console.log(`   ✅ 型定義を追加`);
     }
 
-    // 2. availableApps配列に追加
-    const availableAppsCode = `      {\n        name: '${appName}',\n        path: '/${appName}',\n        description: '${description}'\n      }, // BEGIN APP: ${appName}\n`;
-
-    const availableAppsRegex = /(availableApps: \[[^\]]*)/;
-    if (availableAppsRegex.test(content)) {
-      content = content.replace(availableAppsRegex, (match) => {
-        // 最後の要素の後に追加
-        return `${match}\n${availableAppsCode}`;
-      });
-      console.log(`   ✅ availableApps配列に追加`);
-    }
-
-    // 3. availablePaths配列に追加
-    const availablePathsCode = `, '/${appName}' // BEGIN APP: ${appName}`;
-    const availablePathsRegex = /(availablePaths: \[[^\]]*)/;
-    if (availablePathsRegex.test(content)) {
-      content = content.replace(availablePathsRegex, (match) => {
-        return match + availablePathsCode;
-      });
-      console.log(`   ✅ availablePaths配列に追加`);
-    }
-
-    // 4. ルーティング関数を追加
+    // 2. ルーティング関数を追加
     const routingCode = `
 // ${description} へのルーティング // BEGIN APP: ${appName}
 app.all('/${appName}/*', async (c) => {
@@ -241,6 +217,55 @@ app.all('/${appName}/*', async (c) => {
     fs.writeFileSync(indexPath, content, 'utf8');
   } catch (error) {
     console.error(`   ❌ src/index.ts の更新に失敗:`, error.message);
+    throw error;
+  }
+}
+
+// packages/router/src/config/apps.ts にアプリケーション設定を追加
+function updateAppsConfig(appName, description) {
+  const appsConfigPath = path.join(__dirname, '..', 'packages', 'router', 'src', 'config', 'apps.ts');
+
+  backupFile(appsConfigPath);
+
+  try {
+    let content = fs.readFileSync(appsConfigPath, 'utf8');
+
+    const appConfigCode = `  {
+    path: '/${appName}',
+    url: 'https://tools-${appName}.elchika.app',
+    name: '${description}',
+    icon: '✨', // 仮のアイコン。後で変更してください
+    displayName: '${kebabToPascal(appName)}',
+    description: '${description}',
+  }, // BEGIN APP: ${appName}\n`;
+
+    // APPS_CONFIG 配列の最後に追加
+    const appsConfigRegex = /(export const APPS_CONFIG = \[[^\]]*)/;
+    if (appsConfigRegex.test(content)) {
+      content = content.replace(appsConfigRegex, (match) => {
+        // 最後の要素の後に追加
+        const lastBracketIndex = match.lastIndexOf('}');
+        if (lastBracketIndex !== -1) {
+          return match.substring(0, lastBracketIndex + 1) + ',\n' + appConfigCode + match.substring(lastBracketIndex + 1);
+        }
+        return `${match}\n${appConfigCode}`;
+      });
+      console.log(`   ✅ APPS_CONFIG にアプリケーション設定を追加`);
+    }
+
+    // AVAILABLE_PATHS を更新
+    const availablePathsCode = `, '/${appName}' // BEGIN APP: ${appName}`;
+    const availablePathsRegex = /(export const AVAILABLE_PATHS = \[\.\.\.SYSTEM_PATHS, \.\.\.APPS_CONFIG\.map\(\(app\) => app\.path\)\]) as const;/;
+    if (availablePathsRegex.test(content)) {
+      content = content.replace(availablePathsRegex, (match) => {
+        return match.replace('] as const;', `, '/${appName}'] as const;`);
+      });
+      console.log(`   ✅ AVAILABLE_PATHS を更新`);
+    }
+
+    fs.writeFileSync(appsConfigPath, content, 'utf8');
+  } catch (error) {
+    console.error(`   ❌ packages/router/src/config/apps.ts の更新に失敗:`, error.message);
     throw error;
   }
 }
@@ -369,7 +394,8 @@ async function main() {
 
       updateWranglerToml(appName, appNameSnake);
       updatePackageJson(appName);
-      updateIndexTs(appName, appNamePascal, appNameSnake, description);
+      updateRouterIndex(appName, appNamePascal, appNameSnake, description);
+      updateAppsConfig(appName, description);
 
       console.log();
     }

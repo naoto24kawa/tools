@@ -1,5 +1,5 @@
-import { CANVAS_CONSTANTS } from '@config/canvas';
-import type { PatternType } from '@types';
+import { CANVAS_CONSTANTS } from '../../config/canvas';
+import type { PatternType } from '../types';
 
 /**
  * 背景とパターンの描画を担当するクラス

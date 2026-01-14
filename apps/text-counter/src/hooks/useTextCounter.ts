@@ -1,7 +1,7 @@
-import { DEFAULT_COUNT_SETTINGS, STORAGE_KEYS } from '@config/constants';
-import { useLocalStorage } from '@hooks/useLocalStorage';
-import type { CountSettings } from '@types';
-import { analyzeText } from '@utils/textAnalysis';
+import { DEFAULT_COUNT_SETTINGS, STORAGE_KEYS } from '../config/constants';
+import { useLocalStorage } from './useLocalStorage';
+import type { CountSettings } from '../types';
+import { analyzeText } from '../utils/textAnalysis';
 import { useCallback, useMemo } from 'react';
 
 /**

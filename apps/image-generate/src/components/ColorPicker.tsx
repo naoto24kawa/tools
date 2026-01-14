@@ -1,5 +1,5 @@
-import { getColorCategoryLabel } from '@config/categoryLabels';
-import type { ColorPreset } from '@types';
+import { getColorCategoryLabel } from '../config/categoryLabels';
+import type { ColorPreset } from '../types';
 import { Palette } from 'lucide-react';
 import { Input } from './ui/input';
 
