@@ -84,6 +84,14 @@ export const APPS_CONFIG = [
     displayName: 'Image Transparent',
     description: '画像の特定の色を透過に変換 - 背景除去やロゴ作成に',
   },
+  {
+    path: '/image-trim',
+    url: 'https://tools-image-trim.elchika.app',
+    name: '透過余白トリミング',
+    icon: '✂️',
+    displayName: 'Image Trim',
+    description: '透過PNGの余白を自動トリミング - アイコンやロゴの余白除去に最適',
+  },
 ] as const;
 
 /**
