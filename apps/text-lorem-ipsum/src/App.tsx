@@ -1,0 +1,132 @@
+import { Copy, RefreshCw, Trash2 } from 'lucide-react';
+import { useCallback, useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import { Toaster } from '@/components/ui/toaster';
+import { useToast } from '@/hooks/useToast';
+import { generateLoremIpsum, UNIT_OPTIONS, type UnitType } from '@/utils/loremIpsum';
+
+export default function App() {
+  const [count, setCount] = useState(3);
+  const [unit, setUnit] = useState<UnitType>('paragraphs');
+  const [startWithLorem, setStartWithLorem] = useState(true);
+  const [output, setOutput] = useState('');
+  const { toast } = useToast();
+
+  const generate = useCallback(() => {
+    try {
+      const text = generateLoremIpsum({ count, unit, startWithLorem });
+      setOutput(text);
+    } catch (error) {
+      console.error('Lorem Ipsum generation failed:', error);
+      toast({ title: '生成に失敗しました', variant: 'destructive' });
+    }
+  }, [count, unit, startWithLorem, toast]);
+
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(output);
+      toast({ title: 'Copied to clipboard' });
+    } catch {
+      toast({ title: 'コピーに失敗しました', variant: 'destructive' });
+    }
+  };
+
+  const clearAll = () => {
+    setOutput('');
+  };
+
+  return (
+    <div className="min-h-screen bg-background p-8">
+      <div className="max-w-6xl mx-auto space-y-6">
+        <header className="space-y-2">
+          <h1 className="text-3xl font-bold tracking-tight">Lorem Ipsum Generator</h1>
+          <p className="text-muted-foreground">ダミーテキスト(Lorem Ipsum)を生成します。</p>
+        </header>
+
+        <div className="grid gap-4 md:grid-cols-[280px,1fr]">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">設定</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="count">生成数</Label>
+                <input
+                  id="count"
+                  type="number"
+                  min={1}
+                  max={100}
+                  value={count}
+                  onChange={(e) => setCount(Math.max(1, Math.min(100, Number(e.target.value))))}
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>単位</Label>
+                <div className="space-y-1">
+                  {UNIT_OPTIONS.map((option) => (
+                    <button
+                      type="button"
+                      key={option.value}
+                      onClick={() => setUnit(option.value)}
+                      className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors ${
+                        unit === option.value
+                          ? 'bg-primary text-primary-foreground'
+                          : 'hover:bg-muted'
+                      }`}
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <input
+                  id="startWithLorem"
+                  type="checkbox"
+                  checked={startWithLorem}
+                  onChange={(e) => setStartWithLorem(e.target.checked)}
+                  className="h-4 w-4 rounded border-input"
+                />
+                <Label htmlFor="startWithLorem">&quot;Lorem ipsum...&quot; から開始</Label>
+              </div>
+
+              <Button onClick={generate} className="w-full">
+                <RefreshCw className="mr-2 h-4 w-4" /> 生成
+              </Button>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Output</CardTitle>
+              <CardDescription>生成ボタンを押すとダミーテキストが出力されます。</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <textarea
+                readOnly
+                className="flex min-h-[400px] w-full rounded-md border border-input bg-muted px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none"
+                placeholder="ここに生成結果が表示されます..."
+                value={output}
+              />
+
+              <div className="flex justify-end gap-2 pt-4 border-t">
+                <Button variant="outline" onClick={clearAll}>
+                  <Trash2 className="mr-2 h-4 w-4" /> Clear
+                </Button>
+                <Button onClick={copyToClipboard} disabled={!output}>
+                  <Copy className="mr-2 h-4 w-4" /> Copy Result
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+      <Toaster />
+    </div>
+  );
+}
