@@ -115,6 +115,17 @@ describe('replaceText', () => {
     expect(result.matchCount).toBe(2);
   });
 
+  test('regex capture group replacement', () => {
+    const result = replaceText('John Smith', {
+      ...defaults,
+      searchText: '(\\w+) (\\w+)',
+      replaceText: '$2, $1',
+      useRegex: true,
+    });
+    expect(result.text).toBe('Smith, John');
+    expect(result.matchCount).toBe(1);
+  });
+
   test('Japanese text', () => {
     const result = replaceText('こんにちは世界', {
       ...defaults,

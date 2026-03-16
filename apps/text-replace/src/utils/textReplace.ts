@@ -12,7 +12,7 @@ export interface ReplaceResult {
 }
 
 export function replaceText(input: string, options: ReplaceOptions): ReplaceResult {
-  const { searchText, replaceText, useRegex, caseSensitive, global } = options;
+  const { searchText, replaceText: replacement, useRegex, caseSensitive, global } = options;
 
   if (!searchText) {
     return { text: input, matchCount: 0 };
@@ -28,11 +28,9 @@ export function replaceText(input: string, options: ReplaceOptions): ReplaceResu
     regex = new RegExp(escaped, flags);
   }
 
-  let matchCount = 0;
-  const text = input.replace(regex, (_match) => {
-    matchCount++;
-    return replaceText;
-  });
+  const matches = input.match(regex);
+  const matchCount = matches ? matches.length : 0;
+  const text = matchCount > 0 ? input.replace(regex, replacement) : input;
 
   return { text, matchCount };
 }
