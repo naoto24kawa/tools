@@ -104,13 +104,11 @@ function generateParagraph(minSentences: number, maxSentences: number): string {
   return sentences.join(' ');
 }
 
-const UNIT_OPTIONS = [
+export const UNIT_OPTIONS = [
   { value: 'paragraphs', label: '段落' },
   { value: 'sentences', label: '文' },
   { value: 'words', label: '単語' },
 ] as const;
-
-export { UNIT_OPTIONS };
 
 export type UnitType = (typeof UNIT_OPTIONS)[number]['value'];
 
@@ -147,7 +145,7 @@ function generateSentences(count: number, startWithLorem: boolean): string {
 function generateWords(count: number, startWithLorem: boolean): string {
   const words: string[] = [];
   if (startWithLorem) {
-    const loremWords = FIRST_SENTENCE.replace('.', '').split(' ');
+    const loremWords = FIRST_SENTENCE.replace(/[.,]/g, '').split(' ');
     for (let i = 0; i < Math.min(count, loremWords.length); i++) {
       words.push(loremWords[i]);
     }

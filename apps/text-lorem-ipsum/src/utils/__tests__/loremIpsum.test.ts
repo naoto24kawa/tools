@@ -39,7 +39,7 @@ describe('generateLoremIpsum', () => {
     test('generates specified number of sentences', () => {
       const result = generateLoremIpsum({ count: 5, unit: 'sentences', startWithLorem: false });
       const sentences = result.split('. ').length;
-      expect(sentences).toBeGreaterThanOrEqual(4);
+      expect(sentences).toBe(5);
     });
 
     test('starts with Lorem ipsum when enabled', () => {
@@ -75,6 +75,13 @@ describe('generateLoremIpsum', () => {
     test('startWithLorem with fewer words than first sentence', () => {
       const result = generateLoremIpsum({ count: 3, unit: 'words', startWithLorem: true });
       expect(result).toBe('Lorem ipsum dolor');
+    });
+
+    test('startWithLorem words do not contain punctuation', () => {
+      const result = generateLoremIpsum({ count: 6, unit: 'words', startWithLorem: true });
+      expect(result).not.toContain(',');
+      expect(result).not.toContain('.');
+      expect(result.startsWith('Lorem ipsum dolor sit amet')).toBe(true);
     });
   });
 
