@@ -14,12 +14,21 @@ export default function App() {
 
   const output = useMemo(() => {
     if (!input) return '';
-    return convertCase(input, caseType);
+    try {
+      return convertCase(input, caseType);
+    } catch (error) {
+      console.error('Case conversion failed:', error);
+      return '';
+    }
   }, [input, caseType]);
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(output);
-    toast({ title: 'Copied to clipboard' });
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(output);
+      toast({ title: 'Copied to clipboard' });
+    } catch {
+      toast({ title: 'コピーに失敗しました', variant: 'destructive' });
+    }
   };
 
   const clearAll = () => {
