@@ -44,6 +44,14 @@ describe('textReverse', () => {
     test('preserves lines and reverses within each', () => {
       expect(reverseWords('a b\nc d')).toBe('b a\nd c');
     });
+
+    test('preserves multiple spaces', () => {
+      expect(reverseWords('a  b  c')).toBe('c  b  a');
+    });
+
+    test('preserves leading/trailing spaces', () => {
+      expect(reverseWords(' hello world ')).toBe(' world hello ');
+    });
   });
 
   describe('reverseLines', () => {

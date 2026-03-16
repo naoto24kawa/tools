@@ -15,7 +15,7 @@ export function reverseCharacters(text: string): string {
 export function reverseWords(text: string): string {
   return text
     .split('\n')
-    .map((line) => line.split(/\s+/).reverse().join(' '))
+    .map((line) => line.split(' ').reverse().join(' '))
     .join('\n');
 }
 
