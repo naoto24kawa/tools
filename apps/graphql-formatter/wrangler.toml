@@ -1,0 +1,7 @@
+name = "tools-graphql-formatter"
+compatibility_date = "2024-10-19"
+
+# Cloudflare Pages Configuration
+# Deploy: wrangler pages deploy dist --project-name=tools-graphql-formatter
+# Build output directory: dist
+# Framework: React + Vite
