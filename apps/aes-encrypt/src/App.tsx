@@ -1,0 +1,126 @@
+import { useState } from 'react';
+import { Button } from './components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './components/ui/card';
+import { Input } from './components/ui/input';
+import { Label } from './components/ui/label';
+import { Toaster } from './components/ui/toaster';
+import { useToast } from './hooks/useToast';
+import { aesDecrypt, aesEncrypt } from './utils/aes';
+
+const MODES = ['encrypt', 'decrypt'] as const;
+type Mode = (typeof MODES)[number];
+
+function App() {
+  const [input, setInput] = useState('');
+  const [password, setPassword] = useState('');
+  const [output, setOutput] = useState('');
+  const [mode, setMode] = useState<Mode>('encrypt');
+  const [error, setError] = useState('');
+  const { toast } = useToast();
+
+  const handleProcess = async () => {
+    if (!input || !password) return;
+    setError('');
+    try {
+      if (mode === 'encrypt') {
+        setOutput(await aesEncrypt(input, password));
+      } else {
+        setOutput(await aesDecrypt(input, password));
+      }
+    } catch {
+      setError(
+        mode === 'decrypt'
+          ? 'Decryption failed. Wrong password or invalid data.'
+          : 'Encryption failed.'
+      );
+    }
+  };
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(output);
+      toast({ title: 'Copied!' });
+    } catch {
+      toast({ title: 'Copy failed', variant: 'destructive' });
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50 p-4">
+      <div className="mx-auto max-w-2xl">
+        <Card>
+          <CardHeader>
+            <CardTitle>AES Encrypt / Decrypt</CardTitle>
+            <CardDescription>AES-256-GCM encryption with PBKDF2 key derivation</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label>Mode</Label>
+              <div className="flex gap-2">
+                {MODES.map((m) => (
+                  <Button
+                    key={m}
+                    variant={mode === m ? 'default' : 'outline'}
+                    onClick={() => {
+                      setMode(m);
+                      setOutput('');
+                      setError('');
+                    }}
+                    type="button"
+                  >
+                    {m === 'encrypt' ? 'Encrypt' : 'Decrypt'}
+                  </Button>
+                ))}
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter password..."
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="input">
+                {mode === 'encrypt' ? 'Plaintext' : 'Ciphertext (Base64)'}
+              </Label>
+              <textarea
+                id="input"
+                className="w-full rounded-md border p-3 font-mono text-sm"
+                rows={6}
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+              />
+            </div>
+            <Button onClick={handleProcess} disabled={!input || !password} type="button">
+              {mode === 'encrypt' ? 'Encrypt' : 'Decrypt'}
+            </Button>
+            {error && <div className="rounded-md bg-red-100 p-3 text-sm text-red-800">{error}</div>}
+            {output && (
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label>Output</Label>
+                  <Button variant="outline" size="sm" onClick={handleCopy} type="button">
+                    Copy
+                  </Button>
+                </div>
+                <textarea
+                  className="w-full rounded-md border bg-gray-50 p-3 font-mono text-sm"
+                  rows={6}
+                  value={output}
+                  readOnly
+                />
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+      <Toaster />
+    </div>
+  );
+}
+
+export default App;
