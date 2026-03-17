@@ -41,7 +41,7 @@ APPS_CONFIG.forEach((appConfig) => {
     createProxyHandler({
       basePath: appConfig.path,
       targetUrl: appConfig.url,
-      serviceName: appConfig.name,
+      serviceName: appConfig.displayName,
     })
   );
 });

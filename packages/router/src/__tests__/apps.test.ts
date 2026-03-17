@@ -12,10 +12,10 @@ describe('Router - Apps Configuration', () => {
       APPS_CONFIG.forEach((app) => {
         expect(app).toHaveProperty('path');
         expect(app).toHaveProperty('url');
-        expect(app).toHaveProperty('name');
         expect(app).toHaveProperty('icon');
         expect(app).toHaveProperty('displayName');
         expect(app).toHaveProperty('description');
+        expect(app).toHaveProperty('category');
       });
     });
 
