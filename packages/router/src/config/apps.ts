@@ -92,6 +92,14 @@ export const APPS_CONFIG = [
     displayName: 'Image Trim',
     description: '透過PNGの余白を自動トリミング - アイコンやロゴの余白除去に最適',
   },
+  {
+    path: '/pdf-password',
+    url: 'https://tools-pdf-password.elchika.app',
+    name: 'PDFパスワード保護',
+    icon: '🔒',
+    displayName: 'PDF Password',
+    description: 'PDFファイルをAES暗号化でパスワード保護 - 機密文書の安全な共有に',
+  },
 ] as const;
 
 /**
