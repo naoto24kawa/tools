@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
-    "type-check": "vp check"
+    "type-check": "tsc --noEmit"
   },
   "keywords": [
     "cloudflare-workers",

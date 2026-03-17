@@ -221,7 +221,7 @@ cp apps/url-encoder/src/components/ui/button.stories.tsx \
 
 1. 依存関係を再インストール
    ```bash
-   vp install
+   pnpm install
    ```
 
 2. キャッシュをクリア

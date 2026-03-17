@@ -35,7 +35,7 @@
 
 プロジェクトルートに以下のファイルが設定済み:
 
-- `vite.config.ts` - ルートのVitest設定 (environment: happy-dom, setupFiles)
+- `vite.config.ts` - ルートのVite+設定 (Vitest environment/setupFiles を含む)
 - `vitest-setup.ts` - グローバルセットアップ (jest-domマッチャー登録、cleanup)
 - `test-utils/index.tsx` - 共通テストユーティリティ
 
@@ -86,6 +86,9 @@ describe('myUtilFunction', () => {
 
 ```typescript
 import { describe, test, expect, vi } from 'vitest';
+// NOTE: test-utils の相対パスの深さはファイルの配置場所により異なります
+// 例: src/components/__tests__/ からは '../../../test-utils'
+//     src/utils/__tests__/ からは '../../../test-utils'
 import { render, screen } from '../../../test-utils';
 import userEvent from '@testing-library/user-event';
 import MyComponent from '../MyComponent';
@@ -186,7 +189,7 @@ e2e/
 │   └── ...
 └── shared/
     ├── helpers/
-    └── page-objects/
+    └── fixtures/
 ```
 
 ### 基本的なテストの書き方
