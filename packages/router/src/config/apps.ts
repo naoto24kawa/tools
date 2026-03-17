@@ -234,15 +234,3 @@ export const SYSTEM_PATHS = ['/', '/health'] as const;
  */
 export const AVAILABLE_PATHS = [...SYSTEM_PATHS, ...APPS_CONFIG.map((app) => app.path)] as const;
 
-/**
- * カテゴリ別にグループ化
- */
-export function getAppsByCategory(apps: readonly AppConfig[]): Map<AppCategory, AppConfig[]> {
-  const categories = new Map<AppCategory, AppConfig[]>();
-  for (const app of apps) {
-    const list = categories.get(app.category) ?? [];
-    list.push(app);
-    categories.set(app.category, list);
-  }
-  return categories;
-}
