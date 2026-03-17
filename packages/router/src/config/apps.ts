@@ -92,6 +92,14 @@ export const APPS_CONFIG = [
     displayName: 'Image Trim',
     description: '透過PNGの余白を自動トリミング - アイコンやロゴの余白除去に最適',
   },
+  {
+    path: '/video-to-gif',
+    url: 'https://tools-video-to-gif.elchika.app',
+    name: 'Video to GIF',
+    icon: '🎬',
+    displayName: 'Video to GIF',
+    description: '動画からフレームを抽出してダウンロード - GIF作成やサムネイル抽出に',
+  },
 ] as const;
 
 /**
