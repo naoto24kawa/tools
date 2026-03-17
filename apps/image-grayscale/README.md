@@ -1,85 +1,66 @@
-# 画像トリミングアプリ
+# Image Grayscale
 
-クライアントサイドで完結する画像トリミングアプリケーション
+画像のグレースケール変換。ブラウザ上で完結するクライアントサイドツール。
 
-## 特徴
-
-- **完全クライアントサイド処理**: 画像データをサーバーに送信しません
-- **直感的な操作**: マウス/タッチ操作と数値入力の両方に対応
-- **高速動作**: bun + Vite による高速な開発環境
-- **複数フォーマット対応**: JPEG、PNG、WebP形式でのエクスポート
+**URL**: https://tools.elchika.app/image-grayscale
 
 ## 技術スタック
 
-- **ランタイム**: bun
-- **フロントエンド**: React + TypeScript
-- **ビルドツール**: Vite
-- **画像処理**: react-image-crop + Canvas API
-- **デプロイ**: Cloudflare Pages
+- React 18 + TypeScript
+- Vite 6
+- Tailwind CSS 3.4 + shadcn/ui
+- Cloudflare Pages
 
-## セットアップ
+## 開発
 
 ```bash
-# 依存関係のインストール
+# 依存関係のインストール (ルートから)
 bun install
 
-# 開発サーバーの起動
+# 開発サーバー起動
+cd apps/image-grayscale
 bun run dev
 
 # ビルド
 bun run build
 
-# プレビュー
-bun run preview
+# デプロイ
+bun run deploy
 ```
 
 ## テスト
 
 ```bash
-# テスト実行
 bun test
-
-# ウォッチモード
-bun test --watch
-
-# カバレッジ測定
-bun test --coverage
 ```
 
-## デプロイ
+## ディレクトリ構成
 
-```bash
-# Cloudflare Pagesへデプロイ
-bun run deploy
 ```
-
-## 使い方
-
-1. 画像をドラッグ＆ドロップまたはクリックして選択
-2. マウスでトリミング領域を調整
-3. 必要に応じて座標を数値入力で微調整
-4. フォーマットと品質を選択
-5. ダウンロードボタンをクリック
-
-## 対応フォーマット
-
-### 入力
-
-- JPEG (.jpg, .jpeg)
-- PNG (.png)
-- WebP (.webp)
-- GIF (.gif)
-
-### 出力
-
-- JPEG (品質調整可能)
-- PNG
-- WebP (品質調整可能)
-
-## 制限事項
-
-- 最大ファイルサイズ: 10MB
-- 最大解像度: 8000 x 8000 px
+apps/image-grayscale/
+  src/
+    App.tsx          # メインコンポーネント
+    main.tsx         # エントリポイント
+    components/ui/   # shadcn/ui コンポーネント
+    utils/           # ユーティリティ関数
+      grayscaleConverter.ts
+      errorHandler.ts
+      imageCropper.ts
+      typeGuards.ts
+      coordinateConverter.ts
+      imageValidator.ts
+      unitConverter.ts
+      imageLoader.ts
+      formatters.ts
+      cropAdjuster.ts
+  index.html
+  package.json
+  vite.config.ts
+  tailwind.config.js
+  tsconfig.json
+  postcss.config.js
+  wrangler.toml
+```
 
 ## ライセンス
 

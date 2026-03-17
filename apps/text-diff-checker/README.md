@@ -1,122 +1,63 @@
 # Text Diff Checker
 
-2つのテキストを比較して差分を視覚的に表示するWebツールです。
+2つのテキストの差分を比較表示。ブラウザ上で完結するクライアントサイドツール。
 
-## 🎯 特徴
+**URL**: https://tools.elchika.app/text-diff-checker
 
-- **完全クライアントサイド**: すべての処理はブラウザ内で完結。データは外部に送信されません
-- **複数の表示モード**: Unified形式とSplit形式の2つの表示モードに対応
-- **シンタックスハイライト**: JavaScript、TypeScript、Python、HTML、CSS、JSON、Markdownなどに対応
-- **柔軟な比較オプション**: 空白や空行を無視するオプション
-- **詳細な統計情報**: 追加・削除・変更なし行数、文字数を表示
-- **エクスポート機能**: Unified形式やGit patch形式でクリップボードにコピー
-- **ファイル読み込み**: テキストファイルから直接読み込み可能
-- **レスポンシブデザイン**: モバイル、タブレット、デスクトップに対応
+## 技術スタック
 
-## 🚀 使い方
+- React 18 + TypeScript
+- Vite 6
+- Tailwind CSS 3.4 + shadcn/ui
+- Cloudflare Pages
 
-### 基本的な使い方
+### 主要ライブラリ
 
-1. **テキストを入力**: 左側に元のテキスト、右側に変更後のテキストを入力
-2. **差分を確認**: 自動的に差分が計算され、追加行は緑、削除行は赤で表示されます
-3. **表示モードを選択**: Unified（統合）またはSplit（分割）表示を選択
-4. **オプションを調整**: 必要に応じて空白や空行を無視するオプションを有効化
+- `diff`
 
-### ファイルから読み込み
-
-各テキスト入力エリアの右上にある「ファイル」ボタンをクリックして、テキストファイルを読み込めます。
-
-対応ファイル形式:
-- .txt, .md, .json
-- .js, .ts, .tsx, .jsx
-- .py, .html, .css
-- その他のテキストファイル
-
-### エクスポート
-
-設定パネルの「エクスポート」セクションから、差分を以下の形式でクリップボードにコピーできます:
-
-- **Unified形式**: +/- 記号付きの標準的な差分形式
-- **Patch形式**: Git互換のpatch形式
-
-## 🛠️ 技術スタック
-
-- **React 18** - UIフレームワーク
-- **TypeScript** - 型安全な開発
-- **Vite** - 高速ビルドツール
-- **Tailwind CSS** - ユーティリティファーストCSS
-- **shadcn/ui** - UIコンポーネントライブラリ
-- **diff** - 差分計算ライブラリ
-- **Cloudflare Pages** - ホスティング
-
-## 📦 開発
-
-### セットアップ
+## 開発
 
 ```bash
-# 依存関係のインストール
+# 依存関係のインストール (ルートから)
 bun install
 
-# 開発サーバーの起動
+# 開発サーバー起動
+cd apps/text-diff-checker
 bun run dev
 
 # ビルド
 bun run build
 
-# 型チェック
-bun run type-check
-
-# Lint
-bun run lint
+# デプロイ
+bun run deploy
 ```
 
-### ディレクトリ構造
+## テスト
 
-```
-src/
-├── components/       # Reactコンポーネント
-│   ├── ui/          # shadcn/uiコンポーネント
-│   ├── Header.tsx
-│   ├── TextInput.tsx
-│   ├── DiffDisplay.tsx
-│   └── ...
-├── hooks/           # カスタムフック
-│   ├── useDiffState.ts
-│   ├── useDebounce.ts
-│   └── useLocalStorage.ts
-├── utils/           # ユーティリティ関数
-│   ├── diffCalculator.ts
-│   └── textPreprocessor.ts
-├── services/        # サービス層
-│   ├── fileLoader.ts
-│   └── clipboard.ts
-├── config/          # 設定・定数
-│   └── constants.ts
-├── types/           # 型定義
-│   └── index.ts
-├── App.tsx          # メインコンポーネント
-└── main.tsx         # エントリーポイント
+```bash
+bun test
 ```
 
-## 🔧 設定
+## ディレクトリ構成
 
-### ローカルストレージ
+```
+apps/text-diff-checker/
+  src/
+    App.tsx          # メインコンポーネント
+    main.tsx         # エントリポイント
+    components/ui/   # shadcn/ui コンポーネント
+    utils/           # ユーティリティ関数
+      textPreprocessor.ts
+      diffCalculator.ts
+  index.html
+  package.json
+  vite.config.ts
+  tailwind.config.js
+  tsconfig.json
+  postcss.config.js
+  wrangler.toml
+```
 
-以下の設定がブラウザのローカルストレージに保存されます:
-
-- 表示モード（Unified / Split）
-- 選択言語
-- 無視オプション（空白、空行）
-
-## 📝 ライセンス
+## ライセンス
 
 MIT
-
-## 🤝 貢献
-
-プルリクエストを歓迎します！大きな変更の場合は、まずissueを開いて変更内容を議論してください。
-
-## 🔗 関連リンク
-
-- [Elchika Tools](https://tools.elchika.app)
-- [開発者向けドキュメント](../../__docs__/README.md)
