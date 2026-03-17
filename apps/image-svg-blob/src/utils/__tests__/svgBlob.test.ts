@@ -4,8 +4,8 @@ import { generateBlobPath, generateBlobSVG } from '../svgBlob';
 describe('svgBlob', () => {
   test('generateBlobPath returns valid path', () => {
     const path = generateBlobPath(6, 300, 0.3);
-    expect(path).toStartWith('M ');
-    expect(path).toEndWith(' Z');
+    expect(path.startsWith('M ')).toBe(true);
+    expect(path.endsWith(' Z')).toBe(true);
   });
 
   test('generateBlobSVG includes xmlns', () => {

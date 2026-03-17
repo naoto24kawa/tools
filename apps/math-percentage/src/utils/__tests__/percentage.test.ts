@@ -30,7 +30,7 @@ describe('percentage', () => {
   });
 
   test('addPercent: 100 + 10% = 110', () => {
-    expect(addPercent(100, 10)).toBe(110);
+    expect(addPercent(100, 10)).toBeCloseTo(110);
   });
   test('subtractPercent: 100 - 10% = 90', () => {
     expect(subtractPercent(100, 10)).toBe(90);

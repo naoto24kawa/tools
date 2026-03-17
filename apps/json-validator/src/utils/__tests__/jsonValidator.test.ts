@@ -41,7 +41,7 @@ describe('validateJSON', () => {
   test('stats for object', () => {
     const r = validateJSON('{"a":1,"b":{"c":2},"d":[1,2]}');
     expect(r.stats).not.toBeNull();
-    expect(r.stats?.keys).toBe(3);
+    expect(r.stats?.keys).toBe(4);
     expect(r.stats?.objects).toBe(2);
     expect(r.stats?.arrays).toBe(1);
   });

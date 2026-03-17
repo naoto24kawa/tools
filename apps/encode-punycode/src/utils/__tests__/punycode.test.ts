@@ -23,6 +23,6 @@ describe('punycode', () => {
 
   test('international domain gets xn-- prefix', () => {
     const result = domainToASCII('\u00FC.com');
-    expect(result).toStartWith('xn--');
+    expect(result.startsWith('xn--')).toBe(true);
   });
 });

@@ -1,4 +1,4 @@
-import { describe, test, expect } from 'vitest';
+import { describe, test, expect, vi } from 'vitest';
 import { render, screen, waitFor } from '../../../../test-utils';
 import userEvent from '@testing-library/user-event';
 import App from '../App';
@@ -181,25 +181,33 @@ describe('URL Encoder - App Component', () => {
 
   describe('Copy to Clipboard', () => {
     test('should copy output to clipboard', async () => {
+      const writeTextMock = vi.fn().mockResolvedValue(undefined);
+      Object.defineProperty(navigator, 'clipboard', {
+        value: { writeText: writeTextMock },
+        writable: true,
+        configurable: true,
+      });
+
       const user = userEvent.setup();
       render(<App />);
-      
+
       const input = screen.getAllByRole('textbox')[0];
       const encodeButton = screen.getByRole('button', { name: /Encode/i });
-      
+
       await user.type(input, 'test');
       await user.click(encodeButton);
-      
+
       await waitFor(() => {
         const output = screen.getAllByRole('textbox')[1];
         expect(output).toHaveValue('test');
       });
-      
+
       const copyButton = screen.getByRole('button', { name: /Copy Result/i });
       await user.click(copyButton);
-      
-      // クリップボードAPIがモックされていることを確認
-      expect(navigator.clipboard.writeText).toHaveBeenCalledWith('test');
+
+      await waitFor(() => {
+        expect(writeTextMock).toHaveBeenCalledWith('test');
+      });
     });
   });
 });

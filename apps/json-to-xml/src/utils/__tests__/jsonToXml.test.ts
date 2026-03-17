@@ -40,7 +40,7 @@ describe('jsonToXml', () => {
 
   test('includes XML declaration', () => {
     const r = jsonToXml('{"a":1}');
-    expect(r.xml).toStartWith('<?xml version="1.0"');
+    expect(r.xml!.startsWith('<?xml version="1.0"')).toBe(true);
   });
 
   test('invalid JSON', () => {

@@ -27,7 +27,7 @@ describe('svgPlaceholder', () => {
 
   test('svgToDataUri starts with data:', () => {
     const uri = svgToDataUri(generateSVG(DEFAULT_CONFIG));
-    expect(uri).toStartWith('data:image/svg+xml,');
+    expect(uri.startsWith('data:image/svg+xml,')).toBe(true);
   });
 
   test('includes xmlns', () => {
