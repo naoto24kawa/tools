@@ -27,7 +27,7 @@ bun run deploy   # デプロイ
 
 ## 規約
 
-- パスエイリアス: `@/` = `src/`, `@components/` = `src/components/`
+- パスエイリアス: `@/` = `src/`, `@components/`, `@utils/`, `@types/`, `@config/`, `@hooks/`, `@services/`
 - ボタンには必ず `type="button"` を付与
 - 非同期クリップボード操作は try/catch で囲む
 - linter: Biome (`bun run lint`)

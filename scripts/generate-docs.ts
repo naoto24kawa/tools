@@ -215,6 +215,9 @@ const APP_META: Record<string, { title: string; descJa: string; category: string
   'list-randomize': { title: 'List Randomizer', descJa: 'リストの並び替え・ランダム化', category: 'Network' },
 };
 
+// Apps that require network access (CDN downloads etc.)
+const NETWORK_APPS = new Set(['image-ocr']);
+
 interface AppInfo {
   name: string;
   title: string;
@@ -225,6 +228,7 @@ interface AppInfo {
   keyDeps: string[];
   utilFiles: string[];
   hasTests: boolean;
+  testDir: string | null;
 }
 
 function getAppInfo(appName: string): AppInfo {
@@ -265,18 +269,26 @@ function getAppInfo(appName: string): AppInfo {
   try {
     const utilsDir = join(appDir, 'src', 'utils');
     if (existsSync(utilsDir)) {
-      utilFiles = readdirSync(utilsDir).filter(f => f.endsWith('.ts') && !f.endsWith('.test.ts') && f !== '__tests__');
+      utilFiles = readdirSync(utilsDir).filter(f => f.endsWith('.ts') && !f.endsWith('.test.ts'));
     }
   } catch {}
 
-  // Has tests
+  // Has tests - check both src/utils/__tests__/ and src/__tests__/
   let hasTests = false;
+  let testDir: string | null = null;
   try {
-    const testsDir = join(appDir, 'src', 'utils', '__tests__');
-    hasTests = existsSync(testsDir) && readdirSync(testsDir).some(f => f.endsWith('.test.ts'));
+    const utilTestsDir = join(appDir, 'src', 'utils', '__tests__');
+    const srcTestsDir = join(appDir, 'src', '__tests__');
+    if (existsSync(utilTestsDir) && readdirSync(utilTestsDir).some(f => f.endsWith('.test.ts') || f.endsWith('.test.tsx'))) {
+      hasTests = true;
+      testDir = 'src/utils/__tests__/';
+    } else if (existsSync(srcTestsDir) && readdirSync(srcTestsDir).some(f => f.endsWith('.test.ts') || f.endsWith('.test.tsx'))) {
+      hasTests = true;
+      testDir = 'src/__tests__/';
+    }
   } catch {}
 
-  return { name: appName, title, descJa, category, port, wranglerName, keyDeps, utilFiles, hasTests };
+  return { name: appName, title, descJa, category, port, wranglerName, keyDeps, utilFiles, hasTests, testDir };
 }
 
 function generateReadme(info: AppInfo): string {
@@ -349,6 +361,9 @@ function generateReadme(info: AppInfo): string {
   lines.push('  index.html');
   lines.push('  package.json');
   lines.push('  vite.config.ts');
+  lines.push('  tailwind.config.js');
+  lines.push('  tsconfig.json');
+  lines.push('  postcss.config.js');
   lines.push('  wrangler.toml');
   lines.push('```');
   lines.push('');
@@ -374,18 +389,20 @@ function generateClaudeMd(info: AppInfo): string {
   lines.push('- SPA: React 18 + TypeScript + Vite 6');
   lines.push('- UI: Tailwind CSS 3.4 + shadcn/ui (Radix UI)');
   lines.push('- デプロイ: Cloudflare Pages');
-  lines.push('- 完全クライアントサイド処理(サーバー通信なし)');
+  if (NETWORK_APPS.has(info.name)) {
+    lines.push('- 処理はブラウザ内で実行。初回使用時にCDNから必要なデータをダウンロード');
+  } else {
+    lines.push('- 完全クライアントサイド処理(サーバー通信なし)');
+  }
   lines.push('');
 
-  if (info.utilFiles.length > 0) {
-    lines.push('## 主要ファイル');
-    lines.push('');
-    lines.push('- `src/App.tsx` - メインUI');
-    for (const f of info.utilFiles) {
-      lines.push(`- \`src/utils/${f}\` - コアロジック`);
-    }
-    lines.push('');
+  lines.push('## 主要ファイル');
+  lines.push('');
+  lines.push('- `src/App.tsx` - メインUI');
+  for (const f of info.utilFiles) {
+    lines.push(`- \`src/utils/${f}\` - コアロジック`);
   }
+  lines.push('');
 
   if (info.keyDeps.length > 0) {
     lines.push('## 外部依存');
@@ -408,11 +425,13 @@ function generateClaudeMd(info: AppInfo): string {
 
   lines.push('## 規約');
   lines.push('');
-  lines.push('- パスエイリアス: `@/` = `src/`, `@components/` = `src/components/`');
+  lines.push('- パスエイリアス: `@/` = `src/`, `@components/`, `@utils/`, `@types/`, `@config/`, `@hooks/`, `@services/`');
   lines.push('- ボタンには必ず `type="button"` を付与');
   lines.push('- 非同期クリップボード操作は try/catch で囲む');
   lines.push('- linter: Biome (`bun run lint`)');
-  lines.push('- テスト: bun test (`src/utils/__tests__/`)');
+  if (info.hasTests && info.testDir) {
+    lines.push(`- テスト: bun test (\`${info.testDir}\`)`);
+  }
   lines.push('');
 
   return lines.join('\n');
@@ -424,7 +443,6 @@ const appDirs = readdirSync(APPS_DIR)
   .sort();
 
 let created = 0;
-let skippedReadme = 0;
 
 for (const appName of appDirs) {
   const info = getAppInfo(appName);

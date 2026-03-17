@@ -47,6 +47,9 @@ apps/css-box-shadow/
   index.html
   package.json
   vite.config.ts
+  tailwind.config.js
+  tsconfig.json
+  postcss.config.js
   wrangler.toml
 ```
 

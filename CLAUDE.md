@@ -30,6 +30,8 @@ apps/<tool-name>/
   package.json
   vite.config.ts
   tailwind.config.js
+  tsconfig.json
+  postcss.config.js
   wrangler.toml        # Cloudflare Pages デプロイ設定
 ```
 
@@ -69,13 +71,14 @@ cd apps/<tool-name> && bun run deploy
 bun run storybook
 
 # アプリ管理
-node scripts/create-app.js  # 新規アプリ作成
-node scripts/delete-app.js  # アプリ削除
+node scripts/create-app.js       # 新規アプリ作成
+node scripts/delete-app.js       # アプリ削除
+bun run scripts/generate-docs.ts # ドキュメント一括生成
 ```
 
 ## コーディング規約
 
-- パスエイリアス: `@/` → `src/`, `@components/` → `src/components/`, `@utils/` → `src/utils/`
+- パスエイリアス: `@/` → `src/`, `@components/`, `@utils/`, `@types/`, `@config/`, `@hooks/`, `@services/`
 - ボタン要素には必ず `type="button"` を付与
 - 非同期クリップボード操作は try/catch で囲む
 - UI コンポーネントは shadcn/ui を使用(Radix UI ベース)
@@ -101,7 +104,7 @@ node scripts/delete-app.js  # アプリ削除
 
 ## Gotchas
 
-- 全アプリが完全クライアントサイド。サーバーAPI呼び出しは一切なし
+- ほぼ全アプリが完全クライアントサイド (例外: image-ocr は tesseract.js がCDNから言語データをダウンロード)
 - `url-encoder` が最初期のテンプレート。多くのアプリがこれをベースにコピーされている
 - 一部アプリの `index.html` に元テンプレートの title/description が残っている場合がある
 - `packages/router` は Cloudflare Workers で動作し、各アプリへのプロキシルーティングを行う

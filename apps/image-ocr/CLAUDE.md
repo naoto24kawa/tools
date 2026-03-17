@@ -7,7 +7,7 @@
 - SPA: React 18 + TypeScript + Vite 6
 - UI: Tailwind CSS 3.4 + shadcn/ui (Radix UI)
 - デプロイ: Cloudflare Pages
-- 完全クライアントサイド処理(サーバー通信なし)
+- 処理はブラウザ内で実行。初回使用時にCDNから必要なデータをダウンロード
 
 ## 主要ファイル
 
@@ -29,7 +29,7 @@ bun run deploy   # デプロイ
 
 ## 規約
 
-- パスエイリアス: `@/` = `src/`, `@components/` = `src/components/`
+- パスエイリアス: `@/` = `src/`, `@components/`, `@utils/`, `@types/`, `@config/`, `@hooks/`, `@services/`
 - ボタンには必ず `type="button"` を付与
 - 非同期クリップボード操作は try/catch で囲む
 - linter: Biome (`bun run lint`)
