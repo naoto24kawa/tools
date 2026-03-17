@@ -1,12 +1,12 @@
-import { describe, expect, test } from 'bun:test';
+import { describe, expect, test } from 'vitest';
 import { railFenceDecrypt, railFenceEncrypt } from '../railFence';
 
 describe('railFence', () => {
   test('encrypt 3 rails', () => {
-    expect(railFenceEncrypt('WEAREDISCOVERED', 3)).toBe('WECRLTEERDSOIAE');
+    expect(railFenceEncrypt('WEAREDISCOVERED', 3)).toBe('WECRERDSOEEAIVD');
   });
   test('decrypt 3 rails', () => {
-    expect(railFenceDecrypt('WECRLTEERDSOIAE', 3)).toBe('WEAREDISCOVERED');
+    expect(railFenceDecrypt('WECRERDSOEEAIVD', 3)).toBe('WEAREDISCOVERED');
   });
   test('round-trip', () => {
     expect(railFenceDecrypt(railFenceEncrypt('Hello World', 4), 4)).toBe('Hello World');

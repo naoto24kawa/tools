@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'bun:test';
+import { describe, expect, test } from 'vitest';
 import { DEFAULT_SHADOW, generateCSS, generateFullCSS, layerToCSS } from '../boxShadow';
 
 describe('boxShadow', () => {
@@ -10,7 +10,7 @@ describe('boxShadow', () => {
 
   test('inset shadow', () => {
     const css = layerToCSS({ ...DEFAULT_SHADOW, inset: true });
-    expect(css).toStartWith('inset ');
+    expect(css.startsWith('inset ')).toBe(true);
   });
 
   test('generateCSS single layer', () => {
@@ -20,7 +20,9 @@ describe('boxShadow', () => {
 
   test('generateCSS multiple layers', () => {
     const css = generateCSS([DEFAULT_SHADOW, DEFAULT_SHADOW]);
-    expect(css.split(',').length).toBe(2);
+    // Each layer contains rgba() with commas, so split by ', ' between layers
+    const layers = css.split('), ');
+    expect(layers.length).toBe(2);
   });
 
   test('generateCSS empty', () => {
@@ -29,8 +31,8 @@ describe('boxShadow', () => {
 
   test('generateFullCSS', () => {
     const css = generateFullCSS([DEFAULT_SHADOW]);
-    expect(css).toStartWith('box-shadow:');
-    expect(css).toEndWith(';');
+    expect(css.startsWith('box-shadow:')).toBe(true);
+    expect(css.endsWith(';')).toBe(true);
   });
 
   test('custom opacity', () => {

@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'bun:test';
+import { describe, expect, test } from 'vitest';
 import { CLIP_PRESETS, generateCSS } from '../clipPath';
 
 describe('clipPath', () => {

@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'bun:test';
+import { describe, expect, test } from 'vitest';
 import { desDecrypt, desEncrypt } from '../des';
 
 describe('des', () => {

@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'bun:test';
+import { describe, expect, test } from 'vitest';
 import { dateToISO8601, formatISO8601Variants, iso8601ToDate } from '../iso8601';
 
 describe('iso8601', () => {

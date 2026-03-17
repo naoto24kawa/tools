@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'bun:test';
+import { describe, expect, test } from 'vitest';
 import { getStats, type JsMinifyOptions, minifyJs } from '../utils/jsMinifier';
 
 describe('minifyJs', () => {

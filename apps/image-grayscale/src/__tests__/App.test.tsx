@@ -1,6 +1,6 @@
-import { describe, test, expect } from 'bun:test';
+import { describe, test, expect } from 'vitest';
 import { render, screen } from '../../../../test-utils';
-import App from '../App';
+import { App } from '../App';
 
 describe('Image Grayscale - App Component', () => {
   describe('Rendering', () => {

@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'bun:test';
+import { describe, expect, test } from 'vitest';
 import { generateULID, generateUUIDv4, parseUUID } from '../uuidGenerator';
 
 describe('UUID/ULID Generator', () => {

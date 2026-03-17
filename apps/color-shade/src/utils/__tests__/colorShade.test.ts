@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'bun:test';
+import { describe, expect, test } from 'vitest';
 import { generatePalette, generateShades, generateTints, hexToRgb, rgbToHex } from '../colorShade';
 
 describe('colorShade', () => {

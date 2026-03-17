@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'bun:test';
+import { describe, expect, test } from 'vitest';
 import { generateData, toCsv, toJson } from '../dummyData';
 
 describe('dummyData', () => {

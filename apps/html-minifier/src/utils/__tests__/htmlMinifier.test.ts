@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'bun:test';
+import { describe, expect, test } from 'vitest';
 import type { MinifyOptions } from '../htmlMinifier';
 import { DEFAULT_OPTIONS, getStats, minifyHtml } from '../htmlMinifier';
 

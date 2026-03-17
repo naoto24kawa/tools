@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'bun:test';
+import { describe, expect, test } from 'vitest';
 import { DEFAULT_OPTIONS, getStats, minifyCss } from '../cssMinifier';
 
 describe('CSS Minifier Utils', () => {

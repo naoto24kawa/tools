@@ -29,9 +29,13 @@ export default function App() {
     }
   };
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(output);
-    toast({ title: 'Copied to clipboard' });
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(output);
+      toast({ title: 'Copied to clipboard' });
+    } catch {
+      toast({ title: 'Copy failed', variant: 'destructive' });
+    }
   };
 
   const clearAll = () => {

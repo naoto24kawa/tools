@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'bun:test';
+import { describe, expect, test } from 'vitest';
 import { jsonToCsv } from '../jsonToCsv';
 
 describe('jsonToCsv', () => {
@@ -36,7 +36,8 @@ describe('jsonToCsv', () => {
 
   test('handles nested objects as JSON strings', () => {
     const result = jsonToCsv('[{"a":{"b":1}}]');
-    expect(result.csv).toContain('{"b":1}');
+    // nested object is JSON-stringified then CSV-escaped: quotes are doubled
+    expect(result.csv).toContain('"{""b"":1}"');
   });
 
   test('error for non-array JSON', () => {

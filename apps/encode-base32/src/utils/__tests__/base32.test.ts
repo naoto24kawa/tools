@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'bun:test';
+import { describe, expect, test } from 'vitest';
 import { decodeBase32, encodeBase32 } from '../base32';
 
 describe('base32', () => {

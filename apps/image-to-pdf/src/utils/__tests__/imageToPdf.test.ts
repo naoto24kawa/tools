@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'bun:test';
+import { describe, expect, test } from 'vitest';
 import { DEFAULT_OPTIONS, FIT_MODES, formatFileSize, PAGE_SIZES } from '../imageToPdf';
 
 describe('imageToPdf', () => {

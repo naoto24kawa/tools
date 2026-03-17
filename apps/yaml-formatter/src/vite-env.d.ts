@@ -1,4 +1,4 @@
-/// <reference types="vite/client" />
+/// <reference types="vite-plus/client" />
 
 // CSS Modules の型定義
 declare module '*.css' {

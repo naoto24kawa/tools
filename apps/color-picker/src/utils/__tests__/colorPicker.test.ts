@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'bun:test';
+import { describe, expect, test } from 'vitest';
 import { getFormats, hexToRgb, rgbToHsl } from '../colorPicker';
 
 describe('colorPicker', () => {

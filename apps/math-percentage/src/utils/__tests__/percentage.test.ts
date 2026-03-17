@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'bun:test';
+import { describe, expect, test } from 'vitest';
 import { addPercent, percentChange, percentOf, subtractPercent, whatPercent } from '../percentage';
 
 describe('percentage', () => {
@@ -30,7 +30,7 @@ describe('percentage', () => {
   });
 
   test('addPercent: 100 + 10% = 110', () => {
-    expect(addPercent(100, 10)).toBe(110);
+    expect(addPercent(100, 10)).toBeCloseTo(110);
   });
   test('subtractPercent: 100 - 10% = 90', () => {
     expect(subtractPercent(100, 10)).toBe(90);

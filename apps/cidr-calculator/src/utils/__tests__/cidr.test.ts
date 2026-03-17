@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'bun:test';
+import { describe, expect, test } from 'vitest';
 import { cidrContainsIp, cidrsOverlap, isValidCidr, parseCidr } from '../cidr';
 
 describe('cidr', () => {

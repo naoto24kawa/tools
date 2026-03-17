@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'bun:test';
+import { describe, expect, test } from 'vitest';
 import { DEFAULT_CONFIG, generateCSS, generateFullCSS } from '../gradient';
 
 describe('gradient', () => {
@@ -28,8 +28,8 @@ describe('gradient', () => {
 
   test('generateFullCSS includes background property', () => {
     const css = generateFullCSS(DEFAULT_CONFIG);
-    expect(css).toStartWith('background:');
-    expect(css).toEndWith(';');
+    expect(css.startsWith('background:')).toBe(true);
+    expect(css.endsWith(';')).toBe(true);
   });
 
   test('custom angle', () => {

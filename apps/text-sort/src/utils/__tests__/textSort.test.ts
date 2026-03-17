@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'bun:test';
+import { describe, expect, test } from 'vitest';
 import { DEFAULT_SORT_OPTIONS, sortText } from '../textSort';
 
 describe('sortText', () => {

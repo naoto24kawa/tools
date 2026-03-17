@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'bun:test';
+import { describe, expect, test } from 'vitest';
 import { generateSHA1 } from '../sha1';
 
 describe('generateSHA1', () => {

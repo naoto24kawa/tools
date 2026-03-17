@@ -1,5 +1,5 @@
 /// <reference lib="dom" />
-import { describe, test, expect } from 'bun:test';
+import { describe, test, expect } from 'vitest';
 import { render } from '@testing-library/react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '../card';
 
