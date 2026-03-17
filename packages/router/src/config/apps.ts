@@ -92,6 +92,14 @@ export const APPS_CONFIG = [
     displayName: 'Image Trim',
     description: '透過PNGの余白を自動トリミング - アイコンやロゴの余白除去に最適',
   },
+  {
+    path: '/xml-formatter',
+    url: 'https://tools-xml-formatter.elchika.app',
+    name: 'XML整形ツール',
+    icon: '📄',
+    displayName: 'XML Formatter',
+    description: 'XMLの整形・圧縮 - XMLデータの可読性向上やファイルサイズ最適化に',
+  },
 ] as const;
 
 /**
