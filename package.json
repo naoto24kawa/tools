@@ -39,6 +39,7 @@
     "install:all": "bun install && cd apps/image-crop && bun install && cd ../image-generate && bun install && cd ../image-resize && bun install && cd ../image-grayscale && bun install && cd ../image-transparent && bun install && cd ../image-assets && bun install && cd ../image-trim && bun install && cd ../text-counter && bun install && cd ../text-diff-checker && bun install && cd ../text-deduplicate && bun install && cd ../url-encoder && bun install && cd ../../packages/router && bun install",
     "create-app": "node scripts/create-app.js",
     "delete-app": "node scripts/delete-app.js",
+    "dev:pdf-metadata": "cd apps/pdf-metadata && bun run dev",
     "dev:image-assets": "cd apps/image-assets && bun run dev",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",

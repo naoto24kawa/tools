@@ -92,6 +92,14 @@ export const APPS_CONFIG = [
     displayName: 'Image Trim',
     description: '透過PNGの余白を自動トリミング - アイコンやロゴの余白除去に最適',
   },
+  {
+    path: '/pdf-metadata',
+    url: 'https://tools-pdf-metadata.elchika.app',
+    name: 'PDFメタデータプレビュー',
+    icon: '📄',
+    displayName: 'PDF Metadata',
+    description: 'PDFファイルのメタデータを表示・編集 - タイトル、著者、作成日などの確認・変更に',
+  },
 ] as const;
 
 /**
