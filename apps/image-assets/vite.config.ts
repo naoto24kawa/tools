@@ -1,6 +1,6 @@
 import { fileURLToPath } from 'node:url';
-import react from '@vitejs/plugin-react';
-import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react-swc';
+import { defineConfig } from 'vite-plus';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
@@ -26,11 +26,5 @@ export default defineConfig({
     outDir: 'dist',
     emptyOutDir: true,
     sourcemap: false,
-    minify: 'esbuild',
-    rollupOptions: {
-      output: {
-        manualChunks: undefined,
-      },
-    },
   },
 });

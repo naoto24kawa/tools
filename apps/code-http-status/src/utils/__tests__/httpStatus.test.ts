@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'bun:test';
+import { describe, expect, test } from 'vitest';
 import { filterStatusCodes, getCategories, HTTP_STATUS_CODES } from '../httpStatus';
 
 describe('httpStatus', () => {

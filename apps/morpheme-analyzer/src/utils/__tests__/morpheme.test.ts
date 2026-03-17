@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'bun:test';
+import { describe, expect, test } from 'vitest';
 import { getStats, tokenize } from '../morpheme';
 
 describe('morpheme', () => {

@@ -1,3 +1,4 @@
+import { vi } from "vitest";
 import { render, RenderOptions } from '@testing-library/react';
 import { ReactElement } from 'react';
 
@@ -15,8 +16,8 @@ export function renderWithProviders(
 /**
  * テスト用のモック関数を作成
  */
-export function createMockFn<T extends (...args: any[]) => any>(): jest.Mock<T> {
-  return jest.fn() as jest.Mock<T>;
+export function createMockFn<T extends (...args: any[]) => any>(): Mock<T> {
+  return vi.fn() as Mock<T>;
 }
 
 /**
@@ -50,8 +51,8 @@ export const mockLocalStorage = (() => {
  * クリップボードAPIのモック
  */
 export const mockClipboard = {
-  writeText: jest.fn().mockResolvedValue(undefined),
-  readText: jest.fn().mockResolvedValue(''),
+  writeText: vi.fn().mockResolvedValue(undefined),
+  readText: vi.fn().mockResolvedValue(''),
 };
 
 // グローバルにモックを設定

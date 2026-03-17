@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'bun:test';
+import { describe, expect, test } from 'vitest';
 
 describe('asciiArt', () => {
   test('module exports imageToAscii', async () => {

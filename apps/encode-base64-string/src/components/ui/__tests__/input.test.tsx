@@ -1,5 +1,5 @@
 /// <reference lib="dom" />
-import { describe, test, expect, jest } from 'bun:test';
+import { describe, test, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Input } from '../input';
@@ -41,7 +41,7 @@ describe('Input Component', () => {
 
   describe('Interactions', () => {
     test('should call onChange when typing', async () => {
-      const handleChange = jest.fn();
+      const handleChange = vi.fn();
       const user = userEvent.setup();
       
       const { getByRole } = render(<Input onChange={handleChange} />);

@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'bun:test';
+import { describe, expect, test } from 'vitest';
 import { dateToRFC2822, dateToUTC, rfc2822ToDate } from '../rfc2822';
 
 describe('rfc2822', () => {

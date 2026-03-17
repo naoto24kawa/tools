@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'bun:test';
+import { describe, expect, test } from 'vitest';
 import { addPercent, percentChange, percentOf, subtractPercent, whatPercent } from '../percentage';
 
 describe('percentage', () => {

@@ -1,7 +1,7 @@
-import { describe, test, expect } from 'bun:test';
+import { describe, test, expect } from 'vitest';
 import { render, screen } from '../../../../test-utils';
 import userEvent from '@testing-library/user-event';
-import App from '../App';
+import { App } from '../App';
 
 describe('Text Diff Checker - App Component', () => {
   describe('Rendering', () => {

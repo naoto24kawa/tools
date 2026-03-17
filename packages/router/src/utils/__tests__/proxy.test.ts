@@ -1,10 +1,10 @@
-import { describe, expect, test, beforeEach, afterEach, jest } from 'bun:test';
+import { describe, expect, test, beforeEach, afterEach, vi } from 'vitest';
 import { createProxyHandler } from '../proxy';
 import type { Context } from 'hono';
 
 describe('createProxyHandler', () => {
   const originalFetch = global.fetch;
-  const mockFetch = jest.fn();
+  const mockFetch = vi.fn();
 
   beforeEach(() => {
     global.fetch = mockFetch;
@@ -32,8 +32,8 @@ describe('createProxyHandler', () => {
           body: null,
         },
       },
-      html: jest.fn((html) => html),
-      json: jest.fn((data, status) => ({ data, status })),
+      html: vi.fn((html) => html),
+      json: vi.fn((data, status) => ({ data, status })),
     } as unknown as Context;
   };
 

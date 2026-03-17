@@ -1,5 +1,5 @@
-import { describe, test, expect } from 'bun:test';
-import { render, screen, waitFor } from '../../../test-utils';
+import { describe, test, expect } from 'vitest';
+import { render, screen, waitFor } from '../../../../test-utils';
 import userEvent from '@testing-library/user-event';
 import App from '../App';
 

@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'bun:test';
+import { describe, expect, test } from 'vitest';
 import { ICON_SIZES } from '../appIcon';
 
 describe('appIcon', () => {

@@ -1,5 +1,5 @@
 /// <reference lib="dom" />
-import { describe, test, expect, jest } from 'bun:test';
+import { describe, test, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Button } from '../button';
@@ -38,7 +38,7 @@ describe('Button Component', () => {
 
   describe('Interactions', () => {
     test('should call onClick when clicked', async () => {
-      const handleClick = jest.fn();
+      const handleClick = vi.fn();
       const user = userEvent.setup();
       
       const { getByText } = render(<Button onClick={handleClick}>Click me</Button>);
@@ -49,7 +49,7 @@ describe('Button Component', () => {
     });
 
     test('should not call onClick when disabled', async () => {
-      const handleClick = jest.fn();
+      const handleClick = vi.fn();
       const user = userEvent.setup();
       
       const { getByText } = render(<Button onClick={handleClick} disabled>Disabled</Button>);

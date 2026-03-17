@@ -1,4 +1,4 @@
-import { describe, test, expect, beforeEach, jest } from 'bun:test';
+import { describe, test, expect, beforeEach, vi } from 'vitest';
 import { renderHook, act } from '../../../../../test-utils';
 import { mockLocalStorage } from '../../../../../test-utils';
 import { useLocalStorage } from '../useLocalStorage';
@@ -85,9 +85,9 @@ describe('useLocalStorage', () => {
   });
 
   test('should handle localStorage setItem error', () => {
-    const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
     // mockLocalStorage.setItemをスパイ
-    const setItemSpy = jest.spyOn(mockLocalStorage, 'setItem').mockImplementation(() => {
+    const setItemSpy = vi.spyOn(mockLocalStorage, 'setItem').mockImplementation(() => {
       throw new Error('QuotaExceededError');
     });
 

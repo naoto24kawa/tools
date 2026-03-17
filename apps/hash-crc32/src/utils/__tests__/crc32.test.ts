@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'bun:test';
+import { describe, expect, test } from 'vitest';
 import { crc32 } from '../crc32';
 
 describe('crc32', () => {

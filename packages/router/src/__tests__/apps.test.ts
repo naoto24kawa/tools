@@ -1,4 +1,4 @@
-import { describe, test, expect } from 'bun:test';
+import { describe, test, expect } from 'vitest';
 import { APPS_CONFIG, SYSTEM_PATHS, AVAILABLE_PATHS } from '../config/apps';
 
 describe('Router - Apps Configuration', () => {

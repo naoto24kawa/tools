@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'bun:test';
+import { describe, expect, test } from 'vitest';
 import { dateToTimestamp, formatDate, formatISO, timestampToDate } from '../unixTimestamp';
 
 describe('unixTimestamp', () => {

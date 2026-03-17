@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'bun:test';
+import { describe, expect, test } from 'vitest';
 import { reverseCharacters, reverseLines, reverseText, reverseWords } from '../textReverse';
 
 describe('textReverse', () => {

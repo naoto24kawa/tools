@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'bun:test';
+import { describe, expect, test } from 'vitest';
 
 // Canvas-based functions can't be fully tested in Node/Bun without DOM
 // These are basic type/export verification tests

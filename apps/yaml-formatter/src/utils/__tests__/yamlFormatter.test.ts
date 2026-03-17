@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'bun:test';
+import { describe, expect, test } from 'vitest';
 import { formatYaml, jsonToYaml, yamlToJson } from '../yamlFormatter';
 
 describe('yamlFormatter', () => {

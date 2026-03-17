@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'bun:test';
+import { describe, expect, test } from 'vitest';
 import { generateMnemonic, validateMnemonic, WORDLIST } from '../bip39';
 
 describe('bip39', () => {

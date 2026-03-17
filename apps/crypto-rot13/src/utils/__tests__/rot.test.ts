@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'bun:test';
+import { describe, expect, test } from 'vitest';
 import { rot13, rot18, rot47 } from '../rot';
 
 describe('rot', () => {
