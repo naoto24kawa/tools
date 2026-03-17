@@ -1,0 +1,26 @@
+import { describe, expect, test } from 'bun:test';
+import { md5 } from '../md5';
+
+describe('md5', () => {
+  test('empty string', () => {
+    expect(md5('')).toBe('d41d8cd98f00b204e9800998ecf8427e');
+  });
+  test('hello', () => {
+    expect(md5('hello')).toBe('5d41402abc4b2a76b9719d911017c592');
+  });
+  test('Hello World', () => {
+    expect(md5('Hello World')).toBe('b10a8db164e0754105b7a99be72e3fe5');
+  });
+  test('abc', () => {
+    expect(md5('abc')).toBe('900150983cd24fb0d6963f7d28e17f72');
+  });
+  test('returns 32 char hex', () => {
+    expect(md5('test')).toMatch(/^[0-9a-f]{32}$/);
+  });
+  test('same input same output', () => {
+    expect(md5('test')).toBe(md5('test'));
+  });
+  test('different input different output', () => {
+    expect(md5('a')).not.toBe(md5('b'));
+  });
+});
