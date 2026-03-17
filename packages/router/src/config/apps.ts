@@ -4,13 +4,18 @@
  * 新規ツールを追加する場合は、該当カテゴリの配列にエントリを追加するだけでOK
  */
 
+export type AppCategory =
+  | 'Text' | 'Encode' | 'Crypto' | 'Number' | 'DateTime'
+  | 'JSON' | 'Code' | 'Color / CSS' | 'Image' | 'PDF'
+  | 'Video' | 'Generator' | 'Network';
+
 export interface AppConfig {
-  path: string;
+  path: `/${string}`;
   url: string;
   icon: string;
   displayName: string;
   description: string;
-  category: string;
+  category: AppCategory;
 }
 
 export const APPS_CONFIG: readonly AppConfig[] = [
@@ -232,9 +237,9 @@ export const AVAILABLE_PATHS = [...SYSTEM_PATHS, ...APPS_CONFIG.map((app) => app
 /**
  * カテゴリ別にグループ化
  */
-export function getAppsByCategory(): Map<string, AppConfig[]> {
-  const categories = new Map<string, AppConfig[]>();
-  for (const app of APPS_CONFIG) {
+export function getAppsByCategory(apps: readonly AppConfig[]): Map<AppCategory, AppConfig[]> {
+  const categories = new Map<AppCategory, AppConfig[]>();
+  for (const app of apps) {
     const list = categories.get(app.category) ?? [];
     list.push(app);
     categories.set(app.category, list);

@@ -57,11 +57,11 @@ export function createProxyHandler(config: ProxyConfig) {
       // HTML以外はそのまま返す
       return new Response(response.body, response);
     } catch (error) {
-      console.error(`Error proxying to ${config.serviceName}:`, error);
+      console.error(`Error proxying to ${config.serviceName} (${config.basePath}):`, error);
       return c.json(
         {
           error: 'Service unavailable',
-          message: `${config.serviceName}への接続に失敗しました`,
+          message: `${config.serviceName} (${config.basePath}) への接続に失敗しました`,
         },
         503
       );

@@ -8,7 +8,7 @@ import { getAppsByCategory } from '../config/apps';
  * @returns HTML文字列
  */
 export function renderToolsPage(tools: readonly AppConfig[]): string {
-  const categories = getAppsByCategory();
+  const categories = getAppsByCategory(tools);
 
   const categorySections = Array.from(categories.entries())
     .map(
