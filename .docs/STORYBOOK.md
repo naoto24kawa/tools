@@ -10,7 +10,7 @@ Storybookは、UIコンポーネントを独立した環境で開発・テスト
 
 ```bash
 # 開発モードで起動
-bun run storybook
+pnpm storybook
 
 # ブラウザで http://localhost:6006 にアクセス
 ```
@@ -19,7 +19,7 @@ bun run storybook
 
 ```bash
 # 静的ファイルとしてビルド
-bun run build-storybook
+pnpm build-storybook
 
 # ビルドされたファイルは storybook-static/ に出力されます
 ```
@@ -139,7 +139,7 @@ touch apps/[app-name]/src/components/ui/[component-name].stories.tsx
 Storybookを起動して、新しいストーリーが表示されることを確認します。
 
 ```bash
-bun run storybook
+pnpm storybook
 ```
 
 ## ベストプラクティス
@@ -221,7 +221,7 @@ cp apps/url-encoder/src/components/ui/button.stories.tsx \
 
 1. 依存関係を再インストール
    ```bash
-   bun install
+   pnpm install
    ```
 
 2. キャッシュをクリア

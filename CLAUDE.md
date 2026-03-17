@@ -9,7 +9,7 @@ elchika-tools/
   apps/           # 各ツール(独立SPA) - 178個
   packages/
     router/       # Cloudflare Workers ルーター
-  __docs__/       # デザインシステム・テンプレートガイド
+  .docs/          # デザインシステム・テンプレートガイド
   scripts/        # 管理スクリプト(create-app, delete-app, generate-docs)
   e2e/            # Playwright E2Eテスト
   .storybook/     # Storybook設定
@@ -38,42 +38,42 @@ apps/<tool-name>/
 ## 技術スタック
 
 - **UI**: React 18 + TypeScript (strict)
-- **ビルド**: Vite 6
+- **ビルド**: Vite+ (Vite 8 + Rolldown)
 - **スタイリング**: Tailwind CSS 3.4 + shadcn/ui (Radix UI)
-- **ランタイム**: Bun
-- **Linter/Formatter**: Biome (indent: 2 spaces, single quotes, semicolons)
-- **テスト**: bun test (ユニット) + Playwright (E2E)
+- **ランタイム**: Node.js (pnpm via Vite+ CLI `vp`)
+- **Linter/Formatter**: Oxlint + Oxfmt (via `vp check`)
+- **テスト**: vp test / Vitest (ユニット) + Playwright (E2E)
 - **ホスティング**: Cloudflare Pages (各アプリ個別デプロイ)
-- **モノレポ**: Bun workspaces (`apps/*`, `packages/*`)
+- **モノレポ**: pnpm workspaces (`apps/*`, `packages/*`)
 
 ## コマンド
 
 ```bash
 # 依存関係
-bun install
+pnpm install
 
 # 開発 (各アプリごと)
-cd apps/<tool-name> && bun run dev
+cd apps/<tool-name> && vp dev
 
 # テスト
-bun test                    # ユニットテスト
-bun run test:e2e            # E2Eテスト
+vp test                     # ユニットテスト
+pnpm test:e2e               # E2Eテスト
 
-# lint
-bun run lint                # Biome check
-bun run lint:fix            # Biome auto-fix
+# lint / format
+vp check                    # Oxlint + Oxfmt check
+vp check --fix              # Oxlint + Oxfmt auto-fix
 
 # ビルド・デプロイ
-cd apps/<tool-name> && bun run build
-cd apps/<tool-name> && bun run deploy
+cd apps/<tool-name> && vp build
+cd apps/<tool-name> && pnpm run deploy
 
 # Storybook
-bun run storybook
+pnpm storybook
 
 # アプリ管理
 node scripts/create-app.js       # 新規アプリ作成
 node scripts/delete-app.js       # アプリ削除
-bun run scripts/generate-docs.ts # ドキュメント一括生成
+pnpm run scripts/generate-docs.ts # ドキュメント一括生成
 ```
 
 ## コーディング規約
@@ -84,7 +84,7 @@ bun run scripts/generate-docs.ts # ドキュメント一括生成
 - UI コンポーネントは shadcn/ui を使用(Radix UI ベース)
 - コアロジックは `src/utils/` に純粋関数として分離
 - テストは `src/utils/__tests__/` に配置
-- Biome: `indentStyle: "space"`, `indentWidth: 2`, `quoteStyle: "single"`, `lineWidth: 100`
+- Oxfmt: indent 2 spaces, single quotes, semicolons, line width 100
 
 ## 新規アプリ作成
 
@@ -95,7 +95,7 @@ bun run scripts/generate-docs.ts # ドキュメント一括生成
 5. `src/utils/` にコアロジック、`src/App.tsx` にUI実装
 6. テスト追加: `src/utils/__tests__/`
 
-参考: `__docs__/APP_TEMPLATE_GUIDE.md`, `__docs__/DESIGN_SYSTEM.md`
+参考: `.docs/APP_TEMPLATE_GUIDE.md`, `.docs/DESIGN_SYSTEM.md`
 
 ## デプロイ
 

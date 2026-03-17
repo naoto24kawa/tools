@@ -17,7 +17,7 @@ Elchika Tools is a monorepo containing a collection of web-based utility applica
 
 **Architecture:**
 
-The project is structured as a monorepo with individual applications located in the `apps/` directory. A shared design system and development guidelines are documented in the `__docs__/` directory, ensuring consistency across all tools.
+The project is structured as a monorepo with individual applications located in the `apps/` directory. A shared design system and development guidelines are documented in the `.docs/` directory, ensuring consistency across all tools.
 
 ## Building and Running
 
@@ -25,22 +25,22 @@ The project is structured as a monorepo with individual applications located in 
 
 ```bash
 # From the project root
-bun install
+pnpm install
 ```
 
 **2. Run a Specific Application:**
 
-Each application has its own development server. To run an application, use the `bun run dev:<app-name>` command from the project root.
+Each application has its own development server. To run an application, use the `vp run dev:<app-name>` command from the project root.
 
 ```bash
 # Example: Run the image-crop application
-bun run dev:image-crop
+vp run dev:image-crop
 
 # Example: Run the image-generate application
-bun run dev:image-generate
+vp run dev:image-generate
 
 # Example: Run the text-diff-checker application
-bun run dev:text-diff-checker
+vp run dev:text-diff-checker
 ```
 
 **3. Build an Application:**
@@ -49,12 +49,12 @@ To build a specific application for production, navigate to the application's di
 
 ```bash
 cd apps/image-crop
-bun run build
+vp build
 ```
 
 ## Development Conventions
 
-The project has a strong set of development conventions, documented in the `__docs__/` directory. Here is a summary of the key conventions:
+The project has a strong set of development conventions, documented in the `.docs/` directory. Here is a summary of the key conventions:
 
 **1. Creating a New Application:**
 
@@ -68,7 +68,7 @@ This will create a new directory in `apps/` with the standard project structure 
 
 **2. Design System:**
 
-All applications must adhere to the design system defined in `__docs__/DESIGN_SYSTEM.md`. This includes:
+All applications must adhere to the design system defined in `.docs/DESIGN_SYSTEM.md`. This includes:
 
 *   **Layout:** A standard page structure with a consistent header and main content area. A 2-column layout is recommended for settings and preview panels.
 *   **UI Components:** Use the provided `shadcn/ui` components.

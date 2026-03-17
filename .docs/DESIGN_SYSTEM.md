@@ -43,8 +43,8 @@
 {
   "framework": "React 18.3.1",
   "language": "TypeScript 5.7.2",
-  "bundler": "Vite 6.0.0",
-  "runtime": "Bun >= 1.0.0",
+  "bundler": "Vite+ (Vite 8 + Rolldown)",
+  "runtime": "Node.js >= 18.0.0",
   "styling": "Tailwind CSS 3.4.17",
   "ui-components": "shadcn/ui (Radix UI ベース)",
   "deployment": "Cloudflare Pages"

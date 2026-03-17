@@ -14,8 +14,8 @@
 ## 前提条件
 
 - [DESIGN_SYSTEM.md](./DESIGN_SYSTEM.md) を読んで理解している
-- Bun >= 1.0.0 がインストールされている
-- プロジェクトルートで `bun install` を実行済み
+- Node.js >= 18.0.0 がインストールされている
+- プロジェクトルートで `pnpm install` を実行済み
 
 ---
 
@@ -56,7 +56,7 @@ apps/image-resize/
 
 ```bash
 cd apps/image-resize
-bun install
+pnpm install
 ```
 
 ### 3. shadcn/ui コンポーネントの追加
@@ -65,32 +65,32 @@ bun install
 
 ```bash
 # button
-bunx shadcn@latest add button
+pnpm dlx shadcn@latest add button
 
 # card
-bunx shadcn@latest add card
+pnpm dlx shadcn@latest add card
 
 # input
-bunx shadcn@latest add input
+pnpm dlx shadcn@latest add input
 
 # label
-bunx shadcn@latest add label
+pnpm dlx shadcn@latest add label
 
 # select
-bunx shadcn@latest add select
+pnpm dlx shadcn@latest add select
 ```
 
 任意で必要なコンポーネントを追加：
 
 ```bash
 # toast（通知）
-bunx shadcn@latest add toast
+pnpm dlx shadcn@latest add toast
 
 # dialog（モーダル）
-bunx shadcn@latest add dialog
+pnpm dlx shadcn@latest add dialog
 
 # その他
-bunx shadcn@latest add <component-name>
+pnpm dlx shadcn@latest add <component-name>
 ```
 
 ### 4. ディレクトリ構造の整備
@@ -356,25 +356,25 @@ export default {
 
 ## 技術スタック
 
-- **ランタイム**: Bun
+- **ランタイム**: Node.js
 - **フロントエンド**: React + TypeScript
-- **ビルドツール**: Vite
+- **ビルドツール**: Vite+ (Vite 8 + Rolldown)
 - **デプロイ**: Cloudflare Pages
 
 ## セットアップ
 
 \```bash
 # 依存関係のインストール
-bun install
+pnpm install
 
 # 開発サーバーの起動
-bun run dev
+pnpm run dev
 
 # ビルド
-bun run build
+pnpm run build
 
 # プレビュー
-bun run preview
+pnpm run preview
 \```
 
 ## 使い方
@@ -499,7 +499,7 @@ MIT
 ls components.json
 
 # 存在しない場合は初期化
-bunx shadcn@latest init
+pnpm dlx shadcn@latest init
 ```
 
 ### Path Aliasが機能しない
