@@ -1,12 +1,10 @@
 import * as matchers from "@testing-library/jest-dom/matchers";
 import { cleanup } from "@testing-library/react";
-import { expect, afterEach } from "vitest";
+import { afterEach, expect } from "vite-plus/test";
 
 expect.extend(matchers);
 
 afterEach(() => {
   cleanup();
-  if (typeof window !== "undefined") {
-    window.localStorage.clear();
-  }
+  window.localStorage.clear();
 });

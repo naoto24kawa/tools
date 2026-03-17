@@ -3,56 +3,23 @@
   "version": "1.0.0",
   "private": true,
   "description": "Monorepo for Elchika tool applications",
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
   "scripts": {
-    "dev:router": "cd packages/router && bun run dev",
-    "dev:image-crop": "cd apps/image-crop && bun run dev",
-    "dev:image-generate": "cd apps/image-generate && bun run dev",
-    "dev:image-resize": "cd apps/image-resize && bun run dev",
-    "dev:image-grayscale": "cd apps/image-grayscale && bun run dev",
-    "dev:text-counter": "cd apps/text-counter && bun run dev",
-    "dev:text-diff-checker": "cd apps/text-diff-checker && bun run dev",
-    "dev:text-deduplicate": "cd apps/text-deduplicate && bun run dev",
-    "dev:url-encoder": "cd apps/url-encoder && bun run dev",
-    "dev:image-transparent": "cd apps/image-transparent && bun run dev",
-    "dev:image-trim": "cd apps/image-trim && bun run dev",
-    "dev:json-editor": "cd apps/json-editor && bun run dev",
     "build": "vp build",
-    "build:apps": "cd apps/image-crop && bun run build && cd ../image-generate && bun run build && cd ../image-resize && bun run build && cd ../image-grayscale && bun run build && cd ../image-transparent && bun run build && cd ../image-assets && bun run build && cd ../image-trim && bun run build && cd ../text-counter && bun run build && cd ../text-diff-checker && bun run build && cd ../text-deduplicate && bun run build && cd ../url-encoder && bun run build && cd ../json-editor && bun run build",
-    "build:router": "cd packages/router && bun run build",
-    "deploy": "bun run build && bun run deploy:all",
-    "deploy:all": "bun run deploy:apps && bun run deploy:router",
-    "deploy:apps": "cd apps/image-crop && bun run deploy && cd ../image-generate && bun run deploy && cd ../image-resize && bun run deploy && cd ../image-grayscale && bun run deploy && cd ../image-transparent && bun run deploy && cd ../image-assets && bun run deploy && cd ../image-trim && bun run deploy && cd ../text-counter && bun run deploy && cd ../text-diff-checker && bun run deploy && cd ../text-deduplicate && bun run deploy && cd ../url-encoder && bun run deploy && cd ../json-editor && bun run deploy",
-    "deploy:router": "cd packages/router && bun run deploy",
-    "type-check": "vp check",
-    "type-check:router": "cd packages/router && bun run type-check",
-    "type-check:apps": "cd apps/image-crop && bun run type-check && cd ../image-generate && bun run type-check && cd ../image-resize && bun run type-check && cd ../image-grayscale && bun run type-check && cd ../image-transparent && bun run type-check && cd ../image-assets && bun run type-check && cd ../image-trim && bun run type-check && cd ../text-counter && bun run type-check && cd ../text-diff-checker && bun run type-check && cd ../text-deduplicate && bun run type-check && cd ../url-encoder && bun run type-check && cd ../json-editor && bun run type-check",
-    "lint": "vp check",
-    "lint:fix": "vp check --fix",
-    "format": "vp check --fix",
-    "format:check": "vp check",
-    "clean": "bun run clean:deps && bun run clean:build",
-    "clean:deps": "rm -rf node_modules apps/*/node_modules packages/*/node_modules",
-    "clean:build": "rm -rf apps/*/dist packages/*/dist",
-    "install:all": "bun install && cd apps/image-crop && bun install && cd ../image-generate && bun install && cd ../image-resize && bun install && cd ../image-grayscale && bun install && cd ../image-transparent && bun install && cd ../image-assets && bun install && cd ../image-trim && bun install && cd ../text-counter && bun install && cd ../text-diff-checker && bun install && cd ../text-deduplicate && bun install && cd ../url-encoder && bun install && cd ../json-editor && bun install && cd ../../packages/router && bun install",
+    "check": "vp check",
+    "check:fix": "vp check --fix",
+    "clean": "rm -rf node_modules apps/*/node_modules packages/*/node_modules apps/*/dist packages/*/dist",
     "create-app": "node scripts/create-app.js",
     "delete-app": "node scripts/delete-app.js",
-    "dev:pdf-metadata": "cd apps/pdf-metadata && bun run dev",
-    "dev:image-assets": "cd apps/image-assets && bun run dev",
     "storybook": "storybook dev -p 6006 --config-dir .storybook",
     "build-storybook": "storybook build --config-dir .storybook",
+    "test": "vp test",
+    "test:watch": "vp test --watch",
+    "test:coverage": "vp test --coverage",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:debug": "playwright test --debug",
     "test:e2e:report": "playwright show-report",
-    "test": "vp test",
-    "test:watch": "vp test --watch",
-    "test:coverage": "vp test --coverage",
-    "test:unit": "vp test",
     "test:all": "vp test && playwright test"
   },
   "keywords": [
@@ -80,16 +47,15 @@
     "playwright": "^1.56.1",
     "storybook": "^10.2.19",
     "typescript": "^5.7.2",
-    "vite-plus": "latest",
+    "vite-plus": "^0.1.12",
     "vitest": "npm:@voidzero-dev/vite-plus-test@^0.1.12",
     "wrangler": "^4.0.0"
   },
   "overrides": {
-    "vite": "npm:@voidzero-dev/vite-plus-core@latest"
+    "vite": "npm:@voidzero-dev/vite-plus-core@^0.1.12"
   },
   "engines": {
-    "node": ">=18.0.0",
-    "bun": ">=1.0.0"
+    "node": ">=18.0.0"
   },
   "packageManager": "pnpm@10.32.1"
 }
