@@ -5,151 +5,12 @@ import { Label } from '@/components/ui/label';
 import { Upload, Download, Trash2, Image as ImageIcon } from 'lucide-react';
 import { Toaster } from '@/components/ui/toaster';
 import { useToast } from '@/hooks/useToast';
-
-interface ExifField {
-  tag: string;
-  value: string;
-}
-
-function findApp1Marker(data: Uint8Array): { start: number; length: number } | null {
-  // JPEG starts with FFD8, then look for APP1 (FFE1)
-  if (data[0] !== 0xff || data[1] !== 0xd8) return null;
-
-  let offset = 2;
-  while (offset < data.length - 4) {
-    if (data[offset] !== 0xff) break;
-    const marker = data[offset + 1];
-    const length = (data[offset + 2] << 8) | data[offset + 3];
-
-    if (marker === 0xe1) {
-      return { start: offset, length: length + 2 };
-    }
-
-    offset += length + 2;
-  }
-  return null;
-}
-
-function readString(data: Uint8Array, offset: number, length: number): string {
-  let str = '';
-  for (let i = 0; i < length; i++) {
-    const byte = data[offset + i];
-    if (byte === 0) break;
-    str += String.fromCharCode(byte);
-  }
-  return str;
-}
-
-function parseBasicExif(data: Uint8Array): ExifField[] {
-  const fields: ExifField[] = [];
-  const app1 = findApp1Marker(data);
-  if (!app1) return fields;
-
-  fields.push({ tag: 'APP1 Marker', value: `Found at offset ${app1.start}` });
-  fields.push({ tag: 'APP1 Size', value: `${app1.length} bytes` });
-
-  // Check for "Exif\0\0" header
-  const exifHeader = readString(data, app1.start + 4, 4);
-  if (exifHeader === 'Exif') {
-    fields.push({ tag: 'EXIF Header', value: 'Present' });
-
-    const tiffStart = app1.start + 10;
-    if (tiffStart + 8 < data.length) {
-      const byteOrder = readString(data, tiffStart, 2);
-      fields.push({
-        tag: 'Byte Order',
-        value: byteOrder === 'MM' ? 'Big Endian (Motorola)' : 'Little Endian (Intel)',
-      });
-
-      const isLE = byteOrder === 'II';
-
-      const readUint16 = (off: number): number => {
-        if (isLE) return data[off] | (data[off + 1] << 8);
-        return (data[off] << 8) | data[off + 1];
-      };
-
-      const readUint32 = (off: number): number => {
-        if (isLE) return data[off] | (data[off + 1] << 8) | (data[off + 2] << 16) | (data[off + 3] << 24);
-        return (data[off] << 24) | (data[off + 1] << 16) | (data[off + 2] << 8) | data[off + 3];
-      };
-
-      const ifdOffset = readUint32(tiffStart + 4);
-      const ifdStart = tiffStart + ifdOffset;
-      if (ifdStart + 2 < data.length) {
-        const entryCount = readUint16(ifdStart);
-        fields.push({ tag: 'IFD Entry Count', value: entryCount.toString() });
-
-        const TAG_NAMES: Record<number, string> = {
-          0x010e: 'ImageDescription',
-          0x010f: 'Make',
-          0x0110: 'Model',
-          0x0112: 'Orientation',
-          0x011a: 'XResolution',
-          0x011b: 'YResolution',
-          0x0131: 'Software',
-          0x0132: 'DateTime',
-          0x013b: 'Artist',
-          0x8769: 'ExifIFDPointer',
-          0xa002: 'PixelXDimension',
-          0xa003: 'PixelYDimension',
-        };
-
-        for (let i = 0; i < Math.min(entryCount, 50); i++) {
-          const entryOff = ifdStart + 2 + i * 12;
-          if (entryOff + 12 > data.length) break;
-
-          const tag = readUint16(entryOff);
-          const type = readUint16(entryOff + 2);
-          const count = readUint32(entryOff + 4);
-          const valueOff = entryOff + 8;
-
-          const tagName = TAG_NAMES[tag] || `Tag 0x${tag.toString(16).padStart(4, '0')}`;
-
-          let value = '';
-          if (type === 2) {
-            // ASCII
-            if (count <= 4) {
-              value = readString(data, valueOff, count);
-            } else {
-              const strOff = readUint32(valueOff);
-              value = readString(data, tiffStart + strOff, Math.min(count, 100));
-            }
-          } else if (type === 3) {
-            // SHORT
-            value = readUint16(valueOff).toString();
-          } else if (type === 4) {
-            // LONG
-            value = readUint32(valueOff).toString();
-          } else {
-            value = `(type ${type}, count ${count})`;
-          }
-
-          fields.push({ tag: tagName, value });
-        }
-      }
-    }
-  }
-
-  return fields;
-}
-
-function removeExif(data: Uint8Array): Uint8Array {
-  const app1 = findApp1Marker(data);
-  if (!app1) return data;
-
-  const before = data.slice(0, app1.start);
-  const after = data.slice(app1.start + app1.length);
-
-  const result = new Uint8Array(before.length + after.length);
-  result.set(before, 0);
-  result.set(after, before.length);
-  return result;
-}
+import { parseExifInfo, removeExif, isJPEG, type ExifInfo } from '@/utils/exifEditor';
 
 export default function App() {
   const [fileData, setFileData] = useState<Uint8Array | null>(null);
   const [fileName, setFileName] = useState('');
-  const [exifFields, setExifFields] = useState<ExifField[]>([]);
+  const [exifInfo, setExifInfo] = useState<ExifInfo | null>(null);
   const [previewUrl, setPreviewUrl] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
@@ -158,23 +19,28 @@ export default function App() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (!file.type.startsWith('image/jpeg') && !file.name.toLowerCase().endsWith('.jpg') && !file.name.toLowerCase().endsWith('.jpeg')) {
+    const buffer = await file.arrayBuffer();
+    const data = new Uint8Array(buffer);
+
+    if (!isJPEG(data)) {
       toast({ title: 'Please upload a JPEG file', variant: 'destructive' });
       return;
     }
 
-    const buffer = await file.arrayBuffer();
-    const data = new Uint8Array(buffer);
     setFileData(data);
     setFileName(file.name);
 
-    const fields = parseBasicExif(data);
-    setExifFields(fields);
+    const info = parseExifInfo(data);
+    setExifInfo(info);
 
     const blob = new Blob([data], { type: 'image/jpeg' });
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
     setPreviewUrl(URL.createObjectURL(blob));
 
-    toast({ title: `Loaded ${file.name}`, description: `${fields.length} EXIF fields found` });
+    toast({
+      title: `Loaded ${file.name}`,
+      description: info.hasExif ? 'EXIF data found' : 'No EXIF data',
+    });
 
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
@@ -185,8 +51,8 @@ export default function App() {
     const cleaned = removeExif(fileData);
     setFileData(cleaned);
 
-    const fields = parseBasicExif(cleaned);
-    setExifFields(fields);
+    const info = parseExifInfo(cleaned);
+    setExifInfo(info);
 
     const blob = new Blob([cleaned], { type: 'image/jpeg' });
     if (previewUrl) URL.revokeObjectURL(previewUrl);
@@ -214,10 +80,24 @@ export default function App() {
   const handleClear = () => {
     setFileData(null);
     setFileName('');
-    setExifFields([]);
+    setExifInfo(null);
     if (previewUrl) URL.revokeObjectURL(previewUrl);
     setPreviewUrl('');
   };
+
+  const infoFields: { label: string; value: string }[] = [];
+  if (exifInfo?.hasExif) {
+    infoFields.push({ label: 'APP1 Offset', value: `${exifInfo.app1Offset}` });
+    infoFields.push({ label: 'APP1 Size', value: `${exifInfo.app1Length} bytes` });
+    if (exifInfo.make) infoFields.push({ label: 'Make', value: exifInfo.make });
+    if (exifInfo.model) infoFields.push({ label: 'Model', value: exifInfo.model });
+    if (exifInfo.dateTime) infoFields.push({ label: 'Date/Time', value: exifInfo.dateTime });
+    if (exifInfo.software) infoFields.push({ label: 'Software', value: exifInfo.software });
+    if (exifInfo.orientation) infoFields.push({ label: 'Orientation', value: `${exifInfo.orientation}` });
+    if (exifInfo.imageWidth && exifInfo.imageHeight) {
+      infoFields.push({ label: 'Dimensions', value: `${exifInfo.imageWidth} x ${exifInfo.imageHeight}` });
+    }
+  }
 
   return (
     <div className="min-h-screen bg-background p-8">
@@ -263,27 +143,31 @@ export default function App() {
             <Card>
               <CardHeader>
                 <div className="flex items-center justify-between">
-                  <CardTitle>EXIF Fields ({exifFields.length})</CardTitle>
+                  <CardTitle>
+                    EXIF Info {exifInfo?.hasExif ? `(${infoFields.length} fields)` : '(None)'}
+                  </CardTitle>
                   <div className="flex gap-2">
-                    <Button
-                      type="button"
-                      variant="destructive"
-                      size="sm"
-                      onClick={handleRemoveExif}
-                    >
-                      <Trash2 className="mr-2 h-4 w-4" /> Remove EXIF
-                    </Button>
+                    {exifInfo?.hasExif && (
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="sm"
+                        onClick={handleRemoveExif}
+                      >
+                        <Trash2 className="mr-2 h-4 w-4" /> Remove EXIF
+                      </Button>
+                    )}
                   </div>
                 </div>
               </CardHeader>
               <CardContent>
-                {exifFields.length === 0 ? (
-                  <p className="text-sm text-muted-foreground">No EXIF data found.</p>
+                {!exifInfo?.hasExif ? (
+                  <p className="text-sm text-muted-foreground">No EXIF data found in this file.</p>
                 ) : (
                   <div className="space-y-1 max-h-[500px] overflow-y-auto">
-                    {exifFields.map((field, i) => (
-                      <div key={`${field.tag}-${i}`} className="flex gap-2 p-2 rounded-md bg-muted text-sm">
-                        <span className="font-medium min-w-[140px] shrink-0">{field.tag}</span>
+                    {infoFields.map((field, i) => (
+                      <div key={`${field.label}-${i}`} className="flex gap-2 p-2 rounded-md bg-muted text-sm">
+                        <span className="font-medium min-w-[120px] shrink-0">{field.label}</span>
                         <span className="text-muted-foreground font-mono break-all">{field.value}</span>
                       </div>
                     ))}

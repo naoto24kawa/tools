@@ -5,64 +5,43 @@ import { Label } from '@/components/ui/label';
 import { Upload, FileText, Image as ImageIcon, Trash2 } from 'lucide-react';
 import { Toaster } from '@/components/ui/toaster';
 import { useToast } from '@/hooks/useToast';
-
-interface FileMetadata {
-  name: string;
-  size: number;
-  type: string;
-  lastModified: number;
-  width?: number;
-  height?: number;
-}
-
-function formatSize(bytes: number): string {
-  if (bytes === 0) return '0 B';
-  const units = ['B', 'KB', 'MB', 'GB', 'TB'];
-  const k = 1024;
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return `${(bytes / Math.pow(k, i)).toFixed(2)} ${units[i]}`;
-}
-
-function formatDate(timestamp: number): string {
-  return new Date(timestamp).toLocaleString();
-}
+import {
+  extractMetadata,
+  getImageDimensions,
+  formatFileSize,
+  type FileMetadata,
+  type ImageMetadata,
+} from '@/utils/fileMetadata';
 
 export default function App() {
   const [metadata, setMetadata] = useState<FileMetadata | null>(null);
+  const [imageMeta, setImageMeta] = useState<ImageMetadata | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>('');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const meta: FileMetadata = {
-      name: file.name,
-      size: file.size,
-      type: file.type || 'unknown',
-      lastModified: file.lastModified,
-    };
+    const meta = extractMetadata(file);
+    setMetadata(meta);
+    setImageMeta(null);
 
     if (file.type.startsWith('image/')) {
       const url = URL.createObjectURL(file);
       setPreviewUrl(url);
 
-      const img = new Image();
-      img.onload = () => {
-        meta.width = img.naturalWidth;
-        meta.height = img.naturalHeight;
-        setMetadata(meta);
+      try {
+        const imgMeta = await getImageDimensions(file);
+        setImageMeta(imgMeta);
         toast({ title: 'Image metadata loaded' });
-      };
-      img.onerror = () => {
-        setMetadata(meta);
+      } catch {
         toast({ title: 'File metadata loaded' });
-      };
-      img.src = url;
+      }
     } else {
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
       setPreviewUrl('');
-      setMetadata(meta);
       toast({ title: 'File metadata loaded' });
     }
 
@@ -71,11 +50,10 @@ export default function App() {
 
   const handleClear = () => {
     setMetadata(null);
+    setImageMeta(null);
     if (previewUrl) URL.revokeObjectURL(previewUrl);
     setPreviewUrl('');
   };
-
-  const extension = metadata?.name.split('.').pop()?.toLowerCase() || '';
 
   return (
     <div className="min-h-screen bg-background p-8">
@@ -140,12 +118,12 @@ export default function App() {
                 </div>
                 <div className="space-y-1">
                   <Label className="text-xs text-muted-foreground">Extension</Label>
-                  <p className="font-mono text-sm">.{extension}</p>
+                  <p className="font-mono text-sm">{metadata.extension ? `.${metadata.extension}` : '(none)'}</p>
                 </div>
                 <div className="space-y-1">
                   <Label className="text-xs text-muted-foreground">Size</Label>
                   <p className="font-mono text-sm">
-                    {formatSize(metadata.size)} ({metadata.size.toLocaleString()} bytes)
+                    {metadata.sizeFormatted} ({metadata.size.toLocaleString()} bytes)
                   </p>
                 </div>
                 <div className="space-y-1">
@@ -154,15 +132,21 @@ export default function App() {
                 </div>
                 <div className="space-y-1">
                   <Label className="text-xs text-muted-foreground">Last Modified</Label>
-                  <p className="font-mono text-sm">{formatDate(metadata.lastModified)}</p>
+                  <p className="font-mono text-sm">{metadata.lastModified}</p>
                 </div>
-                {metadata.width !== undefined && metadata.height !== undefined && (
-                  <div className="space-y-1">
-                    <Label className="text-xs text-muted-foreground">Dimensions</Label>
-                    <p className="font-mono text-sm">
-                      {metadata.width} x {metadata.height} px
-                    </p>
-                  </div>
+                {imageMeta && (
+                  <>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Dimensions</Label>
+                      <p className="font-mono text-sm">
+                        {imageMeta.width} x {imageMeta.height} px
+                      </p>
+                    </div>
+                    <div className="space-y-1">
+                      <Label className="text-xs text-muted-foreground">Aspect Ratio</Label>
+                      <p className="font-mono text-sm">{imageMeta.aspectRatio}</p>
+                    </div>
+                  </>
                 )}
               </div>
 

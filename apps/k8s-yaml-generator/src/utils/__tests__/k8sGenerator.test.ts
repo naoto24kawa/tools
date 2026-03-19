@@ -3,9 +3,11 @@ import {
   generateDeployment,
   generateService,
   generateConfigMap,
+  generateSecret,
   defaultDeploymentConfig,
   defaultServiceConfig,
   defaultConfigMapConfig,
+  defaultSecretConfig,
 } from '../k8sGenerator';
 
 describe('generateDeployment', () => {
@@ -103,5 +105,40 @@ describe('generateConfigMap', () => {
     const config = { ...defaultConfigMapConfig, data: [] };
     const yaml = generateConfigMap(config);
     expect(yaml).not.toContain('data:');
+  });
+});
+
+describe('generateSecret', () => {
+  it('generates secret yaml with base64 encoded data', () => {
+    const yaml = generateSecret(defaultSecretConfig);
+    expect(yaml).toContain('apiVersion: v1');
+    expect(yaml).toContain('kind: Secret');
+    expect(yaml).toContain('name: my-secret');
+    expect(yaml).toContain('type: Opaque');
+    // Base64 of 'my-secret-password'
+    expect(yaml).toContain('password: ' + btoa('my-secret-password'));
+  });
+
+  it('includes namespace', () => {
+    const yaml = generateSecret({ ...defaultSecretConfig, namespace: 'production' });
+    expect(yaml).toContain('namespace: production');
+  });
+
+  it('handles TLS type', () => {
+    const yaml = generateSecret({ ...defaultSecretConfig, type: 'kubernetes.io/tls' });
+    expect(yaml).toContain('type: kubernetes.io/tls');
+  });
+
+  it('handles multiple data entries', () => {
+    const config = {
+      ...defaultSecretConfig,
+      data: [
+        { key: 'username', value: 'admin' },
+        { key: 'password', value: 'secret123' },
+      ],
+    };
+    const yaml = generateSecret(config);
+    expect(yaml).toContain('username: ' + btoa('admin'));
+    expect(yaml).toContain('password: ' + btoa('secret123'));
   });
 });

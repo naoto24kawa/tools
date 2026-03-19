@@ -1,90 +1,160 @@
 import { describe, it, expect } from 'vitest';
-import { validateYaml, parseYaml } from '../yamlValidator';
+import { parseYaml, validateYaml } from '../yamlValidator';
 
-describe('validateYaml', () => {
-  it('returns error for empty input', () => {
-    const result = validateYaml('');
-    expect(result.valid).toBe(false);
-    expect(result.error).toContain('empty');
+describe('parseYaml', () => {
+  it('parses simple key-value pairs', () => {
+    const result = parseYaml('name: Alice\nage: 30');
+    expect(result).toEqual({ name: 'Alice', age: 30 });
   });
 
-  it('validates simple key-value YAML', () => {
-    const result = validateYaml('name: test\nversion: 1');
-    expect(result.valid).toBe(true);
-    expect(result.json).toBeTruthy();
-    const parsed = JSON.parse(result.json!);
-    expect(parsed.name).toBe('test');
-    expect(parsed.version).toBe(1);
+  it('parses nested mappings', () => {
+    const result = parseYaml('server:\n  host: localhost\n  port: 8080');
+    expect(result).toEqual({
+      server: {
+        host: 'localhost',
+        port: 8080,
+      },
+    });
   });
 
-  it('validates nested YAML', () => {
-    const result = validateYaml('parent:\n  child: value\n  num: 42');
-    expect(result.valid).toBe(true);
-    const parsed = JSON.parse(result.json!);
-    expect(parsed.parent.child).toBe('value');
-    expect(parsed.parent.num).toBe(42);
+  it('parses sequences', () => {
+    const result = parseYaml('items:\n  - apple\n  - banana\n  - cherry');
+    expect(result).toEqual({
+      items: ['apple', 'banana', 'cherry'],
+    });
   });
 
-  it('validates sequences', () => {
-    const result = validateYaml('items:\n  - one\n  - two\n  - three');
-    expect(result.valid).toBe(true);
-    const parsed = JSON.parse(result.json!);
-    expect(parsed.items).toEqual(['one', 'two', 'three']);
+  it('parses boolean true values', () => {
+    const result = parseYaml('enabled: true');
+    expect(result).toEqual({ enabled: true });
   });
 
-  it('handles boolean values', () => {
-    const result = validateYaml('enabled: true\ndisabled: false');
-    expect(result.valid).toBe(true);
-    const parsed = JSON.parse(result.json!);
-    expect(parsed.enabled).toBe(true);
-    expect(parsed.disabled).toBe(false);
+  it('parses boolean false values', () => {
+    const result = parseYaml('enabled: false');
+    expect(result).toEqual({ enabled: false });
   });
 
-  it('handles null values', () => {
-    const result = validateYaml('value: null\nother: ~');
-    expect(result.valid).toBe(true);
-    const parsed = JSON.parse(result.json!);
-    expect(parsed.value).toBeNull();
-    expect(parsed.other).toBeNull();
+  it('parses null values', () => {
+    const result = parseYaml('value: null');
+    expect(result).toEqual({ value: null });
   });
 
-  it('handles quoted strings', () => {
-    const result = validateYaml('name: "hello world"\nsingle: \'test\'');
-    expect(result.valid).toBe(true);
-    const parsed = JSON.parse(result.json!);
-    expect(parsed.name).toBe('hello world');
-    expect(parsed.single).toBe('test');
+  it('parses integer values', () => {
+    const result = parseYaml('count: 42');
+    expect(result).toEqual({ count: 42 });
   });
 
-  it('handles comments', () => {
-    const result = validateYaml('# comment\nname: test # inline');
-    expect(result.valid).toBe(true);
-    const parsed = JSON.parse(result.json!);
-    expect(parsed.name).toBe('test');
+  it('parses float values', () => {
+    const result = parseYaml('pi: 3.14');
+    expect(result).toEqual({ pi: 3.14 });
   });
 
-  it('generates JSON output', () => {
-    const result = validateYaml('key: value');
-    expect(result.json).toBeTruthy();
-    expect(() => JSON.parse(result.json!)).not.toThrow();
+  it('parses quoted strings', () => {
+    const result = parseYaml('name: "Alice"');
+    expect(result).toEqual({ name: 'Alice' });
+  });
+
+  it('parses single-quoted strings', () => {
+    const result = parseYaml("name: 'Bob'");
+    expect(result).toEqual({ name: 'Bob' });
+  });
+
+  it('parses flow sequences', () => {
+    const result = parseYaml('colors: [red, green, blue]');
+    expect(result).toEqual({ colors: ['red', 'green', 'blue'] });
+  });
+
+  it('parses flow mappings', () => {
+    const result = parseYaml('point: {x: 1, y: 2}');
+    expect(result).toEqual({ point: { x: 1, y: 2 } });
+  });
+
+  it('handles document separator ---', () => {
+    const result = parseYaml('---\nkey: value');
+    expect(result).toEqual({ key: 'value' });
+  });
+
+  it('handles document end ...', () => {
+    const result = parseYaml('key: value\n...');
+    expect(result).toEqual({ key: 'value' });
+  });
+
+  it('skips comments', () => {
+    const result = parseYaml('# comment\nkey: value');
+    expect(result).toEqual({ key: 'value' });
+  });
+
+  it('parses Yes/No as booleans', () => {
+    const result = parseYaml('a: yes\nb: no');
+    expect(result).toEqual({ a: true, b: false });
+  });
+
+  it('handles empty input', () => {
+    expect(() => parseYaml('')).toThrow();
+  });
+
+  it('parses top-level sequence', () => {
+    const result = parseYaml('- item1\n- item2\n- item3');
+    expect(result).toEqual(['item1', 'item2', 'item3']);
+  });
+
+  it('parses deeply nested structures', () => {
+    const input = 'a:\n  b:\n    c: deep';
+    const result = parseYaml(input);
+    expect(result).toEqual({ a: { b: { c: 'deep' } } });
+  });
+
+  it('parses sequence of mappings', () => {
+    const input = '- name: Alice\n  age: 30\n- name: Bob\n  age: 25';
+    const result = parseYaml(input);
+    expect(result).toEqual([
+      { name: 'Alice', age: 30 },
+      { name: 'Bob', age: 25 },
+    ]);
+  });
+
+  it('parses tilde as null', () => {
+    const result = parseYaml('val: ~');
+    expect(result).toEqual({ val: null });
+  });
+
+  it('parses hex numbers', () => {
+    const result = parseYaml('color: 0xFF');
+    expect(result).toEqual({ color: 255 });
   });
 });
 
-describe('parseYaml', () => {
-  it('parses flow sequence', () => {
-    const result = parseYaml('items: [1, 2, 3]');
-    expect((result as Record<string, unknown>).items).toEqual([1, 2, 3]);
+describe('validateYaml', () => {
+  it('returns valid for correct YAML', () => {
+    const result = validateYaml('key: value');
+    expect(result.valid).toBe(true);
+    expect(result.error).toBeNull();
+    expect(result.json).toBeDefined();
   });
 
-  it('parses flow mapping', () => {
-    const result = parseYaml('data: {a: 1, b: 2}');
-    expect((result as Record<string, unknown>).data).toEqual({ a: 1, b: 2 });
+  it('returns invalid for empty input', () => {
+    const result = validateYaml('');
+    expect(result.valid).toBe(false);
+    expect(result.error).toBeDefined();
   });
 
-  it('parses numeric values', () => {
-    const result = parseYaml('int: 42\nfloat: 3.14');
-    const obj = result as Record<string, unknown>;
-    expect(obj.int).toBe(42);
-    expect(obj.float).toBe(3.14);
+  it('returns JSON for valid YAML', () => {
+    const result = validateYaml('port: 8080');
+    expect(result.valid).toBe(true);
+    expect(JSON.parse(result.json!)).toEqual({ port: 8080 });
+  });
+
+  it('returns error line for invalid YAML', () => {
+    const result = validateYaml('good: ok\n  bad indent: value');
+    expect(result.valid).toBe(false);
+    expect(result.errorLine).toBeDefined();
+  });
+
+  it('handles complex valid YAML', () => {
+    const input = 'services:\n  web:\n    image: nginx\n    ports:\n      - "80:80"';
+    const result = validateYaml(input);
+    expect(result.valid).toBe(true);
+    const parsed = JSON.parse(result.json!);
+    expect(parsed.services.web.image).toBe('nginx');
   });
 });

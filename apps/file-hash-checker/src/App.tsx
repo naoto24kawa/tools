@@ -10,27 +10,50 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Upload, Check, X, Copy, Trash2 } from 'lucide-react';
+import { Upload, Check, X, Copy } from 'lucide-react';
 import { Toaster } from '@/components/ui/toaster';
 import { useToast } from '@/hooks/useToast';
+import {
+  calculateHash,
+  compareHashes,
+  type HashAlgorithm,
+} from '@/utils/fileHash';
 
-type Algorithm = 'SHA-256' | 'SHA-512' | 'SHA-1';
-
-function bufferToHex(buffer: ArrayBuffer): string {
-  return Array.from(new Uint8Array(buffer))
-    .map((b) => b.toString(16).padStart(2, '0'))
-    .join('');
+function formatSize(bytes: number): string {
+  if (bytes === 0) return '0 B';
+  const units = ['B', 'KB', 'MB', 'GB'];
+  const k = 1024;
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return `${(bytes / Math.pow(k, i)).toFixed(1)} ${units[i]}`;
 }
 
 export default function App() {
   const [fileName, setFileName] = useState('');
   const [fileSize, setFileSize] = useState(0);
-  const [algorithm, setAlgorithm] = useState<Algorithm>('SHA-256');
+  const [algorithm, setAlgorithm] = useState<HashAlgorithm>('SHA-256');
   const [hash, setHash] = useState('');
   const [compareHash, setCompareHash] = useState('');
   const [computing, setComputing] = useState(false);
+  const [progress, setProgress] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const currentFileRef = useRef<File | null>(null);
   const { toast } = useToast();
+
+  const computeHash = async (file: File, algo: HashAlgorithm) => {
+    setComputing(true);
+    setProgress(0);
+    setHash('');
+
+    try {
+      const result = await calculateHash(file, algo, (p) => setProgress(p));
+      setHash(result);
+      toast({ title: `${algo} hash computed` });
+    } catch {
+      toast({ title: 'Failed to compute hash', variant: 'destructive' });
+    } finally {
+      setComputing(false);
+    }
+  };
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -38,26 +61,18 @@ export default function App() {
 
     setFileName(file.name);
     setFileSize(file.size);
-    setHash('');
-    setComputing(true);
+    currentFileRef.current = file;
 
-    try {
-      const buffer = await file.arrayBuffer();
-      const hashBuffer = await crypto.subtle.digest(algorithm, buffer);
-      setHash(bufferToHex(hashBuffer));
-      toast({ title: `${algorithm} hash computed` });
-    } catch {
-      toast({ title: 'Failed to compute hash', variant: 'destructive' });
-    } finally {
-      setComputing(false);
-    }
+    await computeHash(file, algorithm);
 
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
-  const recompute = async () => {
-    if (!fileName) return;
-    toast({ title: 'Please re-upload the file to recompute with a different algorithm' });
+  const handleAlgorithmChange = async (algo: HashAlgorithm) => {
+    setAlgorithm(algo);
+    if (currentFileRef.current) {
+      await computeHash(currentFileRef.current, algo);
+    }
   };
 
   const copyHash = async () => {
@@ -71,16 +86,8 @@ export default function App() {
 
   const hashMatch =
     hash && compareHash.trim()
-      ? hash.toLowerCase() === compareHash.trim().toLowerCase()
+      ? compareHashes(hash, compareHash)
       : null;
-
-  const formatSize = (bytes: number): string => {
-    if (bytes === 0) return '0 B';
-    const units = ['B', 'KB', 'MB', 'GB'];
-    const k = 1024;
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return `${(bytes / Math.pow(k, i)).toFixed(1)} ${units[i]}`;
-  };
 
   return (
     <div className="min-h-screen bg-background p-8">
@@ -100,7 +107,7 @@ export default function App() {
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label>Algorithm</Label>
-              <Select value={algorithm} onValueChange={(v) => setAlgorithm(v as Algorithm)}>
+              <Select value={algorithm} onValueChange={(v) => handleAlgorithmChange(v as HashAlgorithm)}>
                 <SelectTrigger className="w-[200px]">
                   <SelectValue />
                 </SelectTrigger>
@@ -129,7 +136,7 @@ export default function App() {
                 onClick={() => fileInputRef.current?.click()}
                 disabled={computing}
               >
-                {computing ? 'Computing...' : 'Choose File'}
+                {computing ? `Computing... ${Math.round(progress)}%` : 'Choose File'}
               </Button>
             </div>
           </CardContent>

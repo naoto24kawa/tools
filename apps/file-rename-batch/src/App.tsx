@@ -13,40 +13,11 @@ import {
 import { Upload, Download, Trash2, ArrowRight } from 'lucide-react';
 import { Toaster } from '@/components/ui/toaster';
 import { useToast } from '@/hooks/useToast';
-
-type RuleType = 'prefix' | 'suffix' | 'replace' | 'numbering';
+import { applyRename, type RuleType } from '@/utils/rename';
 
 interface FileEntry {
   file: File;
   originalName: string;
-}
-
-function applyRename(
-  name: string,
-  index: number,
-  rule: RuleType,
-  ruleValue: string,
-  replaceFrom: string,
-  startNumber: number
-): string {
-  const dotIndex = name.lastIndexOf('.');
-  const baseName = dotIndex > 0 ? name.substring(0, dotIndex) : name;
-  const extension = dotIndex > 0 ? name.substring(dotIndex) : '';
-
-  switch (rule) {
-    case 'prefix':
-      return `${ruleValue}${baseName}${extension}`;
-    case 'suffix':
-      return `${baseName}${ruleValue}${extension}`;
-    case 'replace':
-      return `${baseName.replaceAll(replaceFrom, ruleValue)}${extension}`;
-    case 'numbering': {
-      const num = (startNumber + index).toString().padStart(ruleValue.length || 3, '0');
-      return `${ruleValue ? ruleValue : ''}${num}${extension}`;
-    }
-    default:
-      return name;
-  }
 }
 
 export default function App() {
@@ -81,7 +52,7 @@ export default function App() {
         rule,
         ruleValue,
         replaceFrom,
-        startNumber
+        startNumber,
       ),
     }));
   }, [files, rule, ruleValue, replaceFrom, startNumber]);
@@ -186,11 +157,7 @@ export default function App() {
                   <Input
                     value={ruleValue}
                     onChange={(e) => setRuleValue(e.target.value)}
-                    placeholder={
-                      rule === 'numbering'
-                        ? 'e.g. photo_'
-                        : 'Enter value'
-                    }
+                    placeholder={rule === 'numbering' ? 'e.g. photo_' : 'Enter value'}
                   />
                 </div>
 
