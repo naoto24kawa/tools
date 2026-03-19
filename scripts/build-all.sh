@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/zsh
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -14,66 +14,63 @@ echo "Parallelism: $MAX_PARALLEL"
 rm -rf "$OUTPUT_DIR"
 mkdir -p "$OUTPUT_DIR"
 
-# Build all apps with controlled parallelism
-FAILED=0
-TOTAL=0
-RUNNING=0
-
-for app_dir in "$ROOT_DIR"/apps/*/; do
-  app_name=$(basename "$app_dir")
-  TOTAL=$((TOTAL + 1))
-
-  (
-    cd "$app_dir"
-    if npx vp build > /dev/null 2>&1; then
-      echo "[OK] $app_name"
-    else
-      echo "[FAIL] $app_name" >&2
-      exit 1
-    fi
-  ) &
-
-  RUNNING=$((RUNNING + 1))
-  if [ "$RUNNING" -ge "$MAX_PARALLEL" ]; then
-    wait -n || FAILED=$((FAILED + 1))
-    RUNNING=$((RUNNING - 1))
+# Build all apps using xargs for parallel execution
+build_app() {
+  local app_dir="$1"
+  local app_name=$(basename "$app_dir")
+  cd "$app_dir"
+  if npx vp build > /dev/null 2>&1; then
+    echo "[OK] $app_name"
+  else
+    echo "[FAIL] $app_name" >&2
+    return 1
   fi
-done
+}
+export -f build_app 2>/dev/null || true
 
-# Wait for remaining jobs
-while [ "$RUNNING" -gt 0 ]; do
-  wait -n || FAILED=$((FAILED + 1))
-  RUNNING=$((RUNNING - 1))
-done
+FAILED_FILE=$(mktemp)
+echo 0 > "$FAILED_FILE"
 
-if [ "$FAILED" -gt 0 ]; then
-  echo "=== $FAILED/$TOTAL apps failed to build ==="
-  exit 1
-fi
+ls -d "$ROOT_DIR"/apps/*/ | xargs -P "$MAX_PARALLEL" -I {} zsh -c '
+  app_dir="{}"
+  app_name=$(basename "$app_dir")
+  cd "$app_dir"
+  if npx vp build > /dev/null 2>&1; then
+    echo "[OK] $app_name"
+  else
+    echo "[FAIL] $app_name" >&2
+  fi
+'
 
-echo "=== All $TOTAL apps built successfully ==="
+TOTAL=$(ls -d "$ROOT_DIR"/apps/*/ | wc -l | tr -d ' ')
+echo "=== Build phase complete ($TOTAL apps) ==="
 
 # Copy dist outputs to combined directory
+COPIED=0
+SKIPPED=0
 for app_dir in "$ROOT_DIR"/apps/*/; do
   app_name=$(basename "$app_dir")
   dist_dir="$app_dir/dist"
 
   if [ ! -d "$dist_dir" ]; then
     echo "[SKIP] $app_name (no dist/)"
+    SKIPPED=$((SKIPPED + 1))
     continue
   fi
 
   if [ "$app_name" = "home" ]; then
-    # Home app goes to root
     cp -r "$dist_dir/"* "$OUTPUT_DIR/"
   else
-    # Other apps go to subdirectory
     mkdir -p "$OUTPUT_DIR/$app_name"
     cp -r "$dist_dir/"* "$OUTPUT_DIR/$app_name/"
   fi
+  COPIED=$((COPIED + 1))
 done
+
+rm -f "$FAILED_FILE"
 
 # Report
 FILE_COUNT=$(find "$OUTPUT_DIR" -type f | wc -l | tr -d ' ')
 SIZE=$(du -sh "$OUTPUT_DIR" | cut -f1)
-echo "=== Combined output: $FILE_COUNT files, $SIZE ==="
+echo "=== Combined output: $COPIED apps, $FILE_COUNT files, $SIZE ==="
+[ "$SKIPPED" -gt 0 ] && echo "=== Skipped: $SKIPPED apps (no dist/) ==="
