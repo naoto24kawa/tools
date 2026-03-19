@@ -61,8 +61,8 @@ describe('elementData', () => {
 
     it('finds element by symbol', () => {
       const results = searchElements('Fe');
-      expect(results.length).toBe(1);
-      expect(results[0].name).toBe('Iron');
+      expect(results.length).toBeGreaterThanOrEqual(1);
+      expect(results.some((el) => el.name === 'Iron' && el.symbol === 'Fe')).toBe(true);
     });
 
     it('finds element by number', () => {

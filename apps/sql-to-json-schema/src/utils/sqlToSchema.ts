@@ -89,7 +89,7 @@ function parseColumnDefinition(definition: string): Column | null {
 
   // Match column: name type [constraints...]
   const match = trimmed.match(
-    /^[`"']?(\w+)[`"']?\s+(\w+(?:\s+\w+)?(?:\([^)]*\))?)\s*(.*?)$/i
+    /^[`"']?(\w+)[`"']?\s+(\w+(?:\s+\w+)?(?:\([^)]*\))?)\s*(.*)$/i
   );
 
   if (!match) return null;

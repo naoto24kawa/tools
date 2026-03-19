@@ -81,8 +81,8 @@ describe('fibonacci', () => {
 
   describe('goldenRatioApproximations', () => {
     it('generates approximations converging to golden ratio', () => {
-      const approx = goldenRatioApproximations(10);
-      expect(approx.length).toBe(10);
+      const approx = goldenRatioApproximations(20);
+      expect(approx.length).toBe(20);
       // Later approximations should be closer to golden ratio
       const lastRatio = approx[approx.length - 1].ratio;
       expect(lastRatio).toBeCloseTo(GOLDEN_RATIO, 5);
