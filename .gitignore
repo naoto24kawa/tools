@@ -9,6 +9,7 @@ build/
 apps/*/.wrangler/
 apps/*/dist/
 apps/*/build/
+packages/router/public/
 
 # Environment variables
 .env
