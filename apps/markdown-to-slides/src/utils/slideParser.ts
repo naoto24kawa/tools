@@ -4,12 +4,13 @@ export interface Slide {
 }
 
 export function renderMarkdown(md: string): string {
-  let html = md;
+  // First escape all HTML in the source to prevent XSS
+  let html = escapeHtml(md);
 
   // Code blocks (must be before inline code)
   html = html.replace(/```(\w*)\n([\s\S]*?)```/g, (_match, lang, code) => {
     const langAttr = lang ? ` class="language-${lang}"` : '';
-    return `<pre><code${langAttr}>${escapeHtml(code.trim())}</code></pre>`;
+    return `<pre><code${langAttr}>${code.trim()}</code></pre>`;
   });
 
   // Headings
