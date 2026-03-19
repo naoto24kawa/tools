@@ -1,5 +1,6 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { registerEncodeTools } from './tools/encode';
+import { registerHashTools } from './tools/hash';
 
 export function createMcpServer(): McpServer {
   const server = new McpServer({
@@ -8,6 +9,7 @@ export function createMcpServer(): McpServer {
   });
 
   registerEncodeTools(server);
+  registerHashTools(server);
 
   return server;
 }
