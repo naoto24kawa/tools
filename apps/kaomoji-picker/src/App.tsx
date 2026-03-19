@@ -1,33 +1,52 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Search, Copy } from 'lucide-react';
+import { Search, Clock } from 'lucide-react';
 import { Toaster } from '@/components/ui/toaster';
 import { useToast } from '@/hooks/useToast';
-import { KAOMOJI_DATA, CATEGORIES, filterKaomoji, type KaomojiCategory } from '@/utils/kaomojiData';
+import {
+  CATEGORIES,
+  CATEGORY_LABELS,
+  searchKaomojis,
+  filterByCategory,
+  getRecentKaomojis,
+  addRecentKaomoji,
+  type KaomojiCategory,
+} from '@/utils/kaomojiData';
 
 export default function App() {
-  const [search, setSearch] = useState('');
-  const [category, setCategory] = useState<KaomojiCategory | 'All'>('All');
-  const [recentlyCopied, setRecentlyCopied] = useState<string[]>([]);
+  const [query, setQuery] = useState('');
+  const [activeCategory, setActiveCategory] = useState<KaomojiCategory | 'All' | 'Recent'>('All');
+  const [recentKaomojis, setRecentKaomojis] = useState<string[]>(getRecentKaomojis());
   const { toast } = useToast();
 
-  const filtered = useMemo(
-    () => filterKaomoji(KAOMOJI_DATA, search, category),
-    [search, category]
-  );
-
-  const copyKaomoji = async (text: string) => {
-    try {
-      await navigator.clipboard.writeText(text);
-      setRecentlyCopied((prev) => [text, ...prev.filter((t) => t !== text)].slice(0, 10));
-      toast({ title: 'Copied!' });
-    } catch {
-      toast({ title: 'Copy failed', variant: 'destructive' });
+  const filteredKaomojis = useMemo(() => {
+    if (query.trim()) {
+      return searchKaomojis(query);
     }
-  };
+    if (activeCategory === 'All') {
+      return searchKaomojis('');
+    }
+    if (activeCategory === 'Recent') {
+      return [];
+    }
+    return filterByCategory(activeCategory);
+  }, [query, activeCategory]);
+
+  const handleKaomojiClick = useCallback(
+    async (text: string) => {
+      try {
+        await navigator.clipboard.writeText(text);
+        addRecentKaomoji(text);
+        setRecentKaomojis(getRecentKaomojis());
+        toast({ title: 'Copied!' });
+      } catch {
+        toast({ title: 'Copy failed', variant: 'destructive' });
+      }
+    },
+    [toast]
+  );
 
   return (
     <div className="min-h-screen bg-background p-8">
@@ -35,95 +54,129 @@ export default function App() {
         <header className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">Kaomoji Picker</h1>
           <p className="text-muted-foreground">
-            Browse and copy Japanese emoticons (kaomoji). Click to copy.
+            Browse and search Japanese emoticons (kaomoji). Click to copy.
           </p>
         </header>
 
         <Card>
-          <CardContent className="pt-6">
-            <div className="flex gap-2">
-              <div className="flex-1 relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search kaomoji..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="pl-9"
-                />
-              </div>
+          <CardHeader>
+            <CardTitle>Search</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search by keyword (happy, cat, music...)"
+                value={query}
+                onChange={(e) => {
+                  setQuery(e.target.value);
+                  if (e.target.value) setActiveCategory('All');
+                }}
+                className="pl-10"
+              />
+            </div>
+
+            <div className="flex flex-wrap gap-1">
+              <Button
+                type="button"
+                variant={activeCategory === 'All' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => {
+                  setActiveCategory('All');
+                  setQuery('');
+                }}
+              >
+                All
+              </Button>
+              <Button
+                type="button"
+                variant={activeCategory === 'Recent' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => {
+                  setActiveCategory('Recent');
+                  setQuery('');
+                }}
+              >
+                <Clock className="mr-1 h-3 w-3" /> Recent
+              </Button>
+              {CATEGORIES.map((cat) => (
+                <Button
+                  type="button"
+                  key={cat}
+                  variant={activeCategory === cat ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => {
+                    setActiveCategory(cat);
+                    setQuery('');
+                  }}
+                >
+                  {CATEGORY_LABELS[cat]}
+                </Button>
+              ))}
             </div>
           </CardContent>
         </Card>
 
-        <div className="flex flex-wrap gap-2">
-          <Button
-            type="button"
-            variant={category === 'All' ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => setCategory('All')}
-          >
-            All
-          </Button>
-          {CATEGORIES.map((cat) => (
-            <Button
-              type="button"
-              key={cat}
-              variant={category === cat ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setCategory(cat)}
-            >
-              {cat}
-            </Button>
-          ))}
-        </div>
-
-        <p className="text-sm text-muted-foreground">
-          {filtered.length} kaomoji found
-        </p>
-
-        {recentlyCopied.length > 0 && (
+        {activeCategory === 'Recent' && (
           <Card>
             <CardHeader>
-              <CardTitle className="text-sm">Recently Copied</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <Clock className="h-5 w-5" /> Recently Used
+              </CardTitle>
+              <CardDescription>Click to copy again.</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="flex flex-wrap gap-2">
-                {recentlyCopied.map((text, i) => (
-                  <Button
-                    type="button"
-                    key={`${text}-${i}`}
-                    variant="secondary"
-                    size="sm"
-                    onClick={() => copyKaomoji(text)}
-                    className="font-mono"
-                  >
-                    {text}
-                  </Button>
-                ))}
-              </div>
+              {recentKaomojis.length === 0 ? (
+                <p className="text-sm text-muted-foreground">No recently used kaomojis yet.</p>
+              ) : (
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                  {recentKaomojis.map((text, i) => (
+                    <button
+                      key={`${text}-${i}`}
+                      type="button"
+                      onClick={() => handleKaomojiClick(text)}
+                      className="p-3 text-sm rounded-md border hover:bg-accent transition-colors cursor-pointer text-center break-all"
+                      title="Click to copy"
+                    >
+                      {text}
+                    </button>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         )}
 
-        <div className="grid gap-2 grid-cols-2 sm:grid-cols-3 md:grid-cols-4">
-          {filtered.map((k, i) => (
-            <button
-              type="button"
-              key={`${k.text}-${i}`}
-              onClick={() => copyKaomoji(k.text)}
-              className="flex flex-col items-center gap-1 p-3 rounded-lg border border-transparent hover:border-primary hover:bg-accent transition-colors text-center"
-              title={`${k.keywords.join(', ')} - Click to copy`}
-            >
-              <span className="text-lg font-mono whitespace-nowrap">{k.text}</span>
-              <span className="text-[10px] text-muted-foreground">{k.category}</span>
-            </button>
-          ))}
-        </div>
-
-        {filtered.length === 0 && (
+        {activeCategory !== 'Recent' && (
           <Card>
-            <CardContent className="py-12 text-center">
-              <p className="text-muted-foreground">No kaomoji found for your search.</p>
+            <CardHeader>
+              <CardTitle>
+                {query
+                  ? `Results for "${query}"`
+                  : activeCategory === 'All'
+                    ? 'All Kaomojis'
+                    : CATEGORY_LABELS[activeCategory]}
+              </CardTitle>
+              <CardDescription>{filteredKaomojis.length} kaomojis found</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {filteredKaomojis.length === 0 ? (
+                <p className="text-sm text-muted-foreground">No kaomojis found.</p>
+              ) : (
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+                  {filteredKaomojis.map((item, i) => (
+                    <button
+                      key={`${item.text}-${i}`}
+                      type="button"
+                      onClick={() => handleKaomojiClick(item.text)}
+                      className="p-3 text-sm rounded-md border hover:bg-accent transition-colors cursor-pointer text-center break-all"
+                      title={item.keywords.join(', ')}
+                    >
+                      {item.text}
+                    </button>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         )}

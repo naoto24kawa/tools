@@ -1,23 +1,312 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Copy, Trash2, Check, AlertCircle } from 'lucide-react';
 import { Toaster } from '@/components/ui/toaster';
+import { useToast } from '@/hooks/useToast';
+
+interface ParseResult {
+  valid: boolean;
+  error?: string;
+  json?: string;
+}
+
+function parseToml(input: string): ParseResult {
+  try {
+    const result: Record<string, unknown> = {};
+    let currentSection = result;
+    let currentSectionPath: string[] = [];
+
+    const lines = input.split(/\r?\n/);
+
+    for (let i = 0; i < lines.length; i++) {
+      const lineNum = i + 1;
+      let line = lines[i].trim();
+
+      // Skip empty lines and comments
+      if (!line || line.startsWith('#')) continue;
+
+      // Section header [section] or [section.sub]
+      const sectionMatch = line.match(/^\[([^\]]+)\]$/);
+      if (sectionMatch) {
+        const path = sectionMatch[1].trim().split('.').map((s) => s.trim());
+        currentSectionPath = path;
+        let target: Record<string, unknown> = result;
+        for (const key of path) {
+          if (!key) throw new Error(`Line ${lineNum}: empty section key`);
+          if (!(key in target) || typeof target[key] !== 'object' || target[key] === null) {
+            target[key] = {};
+          }
+          target = target[key] as Record<string, unknown>;
+        }
+        currentSection = target;
+        continue;
+      }
+
+      // Array of tables [[section]]
+      const arrayMatch = line.match(/^\[\[([^\]]+)\]\]$/);
+      if (arrayMatch) {
+        const path = arrayMatch[1].trim().split('.').map((s) => s.trim());
+        currentSectionPath = path;
+        let target: Record<string, unknown> = result;
+        for (let j = 0; j < path.length - 1; j++) {
+          if (!(path[j] in target)) target[path[j]] = {};
+          target = target[path[j]] as Record<string, unknown>;
+        }
+        const lastKey = path[path.length - 1];
+        if (!(lastKey in target)) target[lastKey] = [];
+        const arr = target[lastKey] as unknown[];
+        const newObj: Record<string, unknown> = {};
+        arr.push(newObj);
+        currentSection = newObj;
+        continue;
+      }
+
+      // Key-value pair
+      const eqIndex = line.indexOf('=');
+      if (eqIndex === -1) {
+        throw new Error(`Line ${lineNum}: expected '=' in key-value pair`);
+      }
+
+      const key = line.substring(0, eqIndex).trim();
+      let value = line.substring(eqIndex + 1).trim();
+
+      if (!key) throw new Error(`Line ${lineNum}: empty key`);
+
+      // Parse value
+      currentSection[key] = parseTomlValue(value, lineNum);
+    }
+
+    return {
+      valid: true,
+      json: JSON.stringify(result, null, 2),
+    };
+  } catch (e) {
+    return {
+      valid: false,
+      error: e instanceof Error ? e.message : 'Unknown parse error',
+    };
+  }
+}
+
+function parseTomlValue(value: string, lineNum: number): unknown {
+  // Strip inline comment (not inside strings)
+  if (!value.startsWith('"') && !value.startsWith("'")) {
+    const commentIdx = value.indexOf('#');
+    if (commentIdx > 0) {
+      value = value.substring(0, commentIdx).trim();
+    }
+  }
+
+  if (!value) throw new Error(`Line ${lineNum}: empty value`);
+
+  // Boolean
+  if (value === 'true') return true;
+  if (value === 'false') return false;
+
+  // String (double-quoted)
+  if (value.startsWith('"') && value.endsWith('"')) {
+    return value
+      .slice(1, -1)
+      .replace(/\\n/g, '\n')
+      .replace(/\\t/g, '\t')
+      .replace(/\\"/g, '"')
+      .replace(/\\\\/g, '\\');
+  }
+
+  // String (single-quoted - literal)
+  if (value.startsWith("'") && value.endsWith("'")) {
+    return value.slice(1, -1);
+  }
+
+  // Array (basic inline)
+  if (value.startsWith('[') && value.endsWith(']')) {
+    const inner = value.slice(1, -1).trim();
+    if (!inner) return [];
+    const items = splitArray(inner);
+    return items.map((item) => parseTomlValue(item.trim(), lineNum));
+  }
+
+  // Integer
+  if (/^-?\d+$/.test(value)) return parseInt(value, 10);
+
+  // Float
+  if (/^-?\d+\.\d+$/.test(value)) return parseFloat(value);
+
+  // Datetime (basic)
+  if (/^\d{4}-\d{2}-\d{2}/.test(value)) return value;
+
+  throw new Error(`Line ${lineNum}: could not parse value: ${value}`);
+}
+
+function splitArray(str: string): string[] {
+  const items: string[] = [];
+  let depth = 0;
+  let inString = false;
+  let stringChar = '';
+  let current = '';
+
+  for (let i = 0; i < str.length; i++) {
+    const ch = str[i];
+
+    if (inString) {
+      current += ch;
+      if (ch === stringChar && str[i - 1] !== '\\') inString = false;
+      continue;
+    }
+
+    if (ch === '"' || ch === "'") {
+      inString = true;
+      stringChar = ch;
+      current += ch;
+    } else if (ch === '[') {
+      depth++;
+      current += ch;
+    } else if (ch === ']') {
+      depth--;
+      current += ch;
+    } else if (ch === ',' && depth === 0) {
+      items.push(current);
+      current = '';
+    } else {
+      current += ch;
+    }
+  }
+
+  if (current.trim()) items.push(current);
+  return items;
+}
+
+const SAMPLE = `# Sample TOML configuration
+title = "TOML Example"
+
+[owner]
+name = "Tom Preston-Werner"
+enabled = true
+
+[database]
+server = "192.168.1.1"
+ports = [8001, 8001, 8002]
+connection_max = 5000
+enabled = true
+
+[servers.alpha]
+ip = "10.0.0.1"
+dc = "eqdc10"
+
+[servers.beta]
+ip = "10.0.0.2"
+dc = "eqdc10"`;
 
 export default function App() {
+  const [input, setInput] = useState('');
+  const { toast } = useToast();
+
+  const result = useMemo<ParseResult | null>(() => {
+    if (!input.trim()) return null;
+    return parseToml(input);
+  }, [input]);
+
+  const copyJson = async () => {
+    if (!result?.json) return;
+    try {
+      await navigator.clipboard.writeText(result.json);
+      toast({ title: 'JSON copied to clipboard' });
+    } catch {
+      toast({ title: 'Copy failed', variant: 'destructive' });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background p-8">
-      <div className="max-w-4xl mx-auto space-y-6">
+      <div className="max-w-6xl mx-auto space-y-6">
         <header className="space-y-2">
-          <h1 className="text-3xl font-bold tracking-tight">toml-validator</h1>
-          <p className="text-muted-foreground">Tool placeholder</p>
+          <h1 className="text-3xl font-bold tracking-tight">TOML Validator</h1>
+          <p className="text-muted-foreground">
+            Validate TOML syntax and convert to JSON.
+          </p>
         </header>
-        <Card>
-          <CardHeader>
-            <CardTitle>toml-validator</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p>Implementation pending</p>
-          </CardContent>
-        </Card>
+
+        <div className="grid gap-6 lg:grid-cols-2">
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle>TOML Input</CardTitle>
+                  <CardDescription>Paste your TOML content.</CardDescription>
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setInput(SAMPLE)}
+                  >
+                    Sample
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setInput('')}
+                    disabled={!input}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <textarea
+                className="flex min-h-[400px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-mono ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none"
+                placeholder="Paste TOML here..."
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+              />
+              {result && (
+                <div
+                  className={`flex items-center gap-2 mt-3 p-3 rounded-md text-sm ${
+                    result.valid
+                      ? 'bg-green-50 text-green-700 border border-green-200'
+                      : 'bg-red-50 text-red-700 border border-red-200'
+                  }`}
+                >
+                  {result.valid ? (
+                    <>
+                      <Check className="h-4 w-4" /> Valid TOML
+                    </>
+                  ) : (
+                    <>
+                      <AlertCircle className="h-4 w-4" /> {result.error}
+                    </>
+                  )}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle>JSON Output</CardTitle>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={copyJson}
+                  disabled={!result?.json}
+                >
+                  <Copy className="mr-2 h-4 w-4" /> Copy
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <pre className="min-h-[400px] rounded-md bg-muted p-4 text-sm font-mono overflow-auto whitespace-pre-wrap">
+                {result?.json || '// Parse TOML to see JSON output'}
+              </pre>
+            </CardContent>
+          </Card>
+        </div>
       </div>
       <Toaster />
     </div>

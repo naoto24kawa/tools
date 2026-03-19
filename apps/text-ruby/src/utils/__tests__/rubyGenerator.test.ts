@@ -12,11 +12,12 @@ describe('parse', () => {
 
   it('parses mixed text and ruby', () => {
     const result = parse('この{漢字|かんじ}は{難|むずか}しい');
-    expect(result).toHaveLength(4);
+    expect(result).toHaveLength(5);
     expect(result[0]).toEqual({ type: 'text', text: 'この' });
     expect(result[1]).toEqual({ type: 'ruby', text: '漢字', reading: 'かんじ' });
     expect(result[2]).toEqual({ type: 'text', text: 'は' });
     expect(result[3]).toEqual({ type: 'ruby', text: '難', reading: 'むずか' });
+    expect(result[4]).toEqual({ type: 'text', text: 'しい' });
   });
 
   it('handles plain text without ruby', () => {

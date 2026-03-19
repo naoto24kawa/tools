@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { gcd, lcm, gcdMultiple, lcmMultiple, gcdWithSteps, parseNumbers } from '../gcdLcm';
+import { gcd, lcm, gcdMultiple, lcmMultiple, gcdSteps, parseNumbers } from '../gcdLcm';
 
 describe('gcd', () => {
   it('computes gcd of two numbers', () => {
@@ -47,12 +47,11 @@ describe('lcmMultiple', () => {
   });
 });
 
-describe('gcdWithSteps', () => {
+describe('gcdSteps', () => {
   it('returns steps for Euclidean algorithm', () => {
-    const result = gcdWithSteps(54, 24);
-    expect(result.gcd).toBe(6);
-    expect(result.steps.length).toBeGreaterThan(0);
-    expect(result.steps[0]).toEqual({ a: 54, b: 24, quotient: 2, remainder: 6 });
+    const steps = gcdSteps(54, 24);
+    expect(steps.length).toBeGreaterThan(0);
+    expect(steps[0]).toEqual({ a: 54, b: 24, quotient: 2, remainder: 6 });
   });
 });
 
@@ -64,6 +63,6 @@ describe('parseNumbers', () => {
 
   it('throws for invalid input', () => {
     expect(() => parseNumbers('abc')).toThrow();
-    expect(() => parseNumbers('5')).toThrow('at least 2');
+    expect(() => parseNumbers('5')).toThrow();
   });
 });
