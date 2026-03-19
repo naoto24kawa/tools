@@ -4,6 +4,7 @@ export interface ZipFileEntry {
   uncompressedSize: number;
   offset: number;
   data: Uint8Array;
+  compressionMethod: number;
 }
 
 /**
@@ -49,23 +50,15 @@ export function extractZip(data: ArrayBuffer): ZipFileEntry[] {
     const localExtraLen = view.getUint16(localHeaderOffset + 28, true);
     const dataOffset = localHeaderOffset + 30 + localNameLen + localExtraLen;
 
-    let fileData: Uint8Array;
-    if (compressionMethod === 0) {
-      // Stored (no compression)
-      fileData = bytes.slice(dataOffset, dataOffset + compressedSize);
-    } else if (compressionMethod === 8) {
-      // Deflate - try using DecompressionStream if available
-      fileData = bytes.slice(dataOffset, dataOffset + compressedSize);
-    } else {
-      fileData = new Uint8Array(0);
-    }
+    const rawData = bytes.slice(dataOffset, dataOffset + compressedSize);
 
     entries.push({
       name,
       compressedSize,
       uncompressedSize,
       offset: dataOffset,
-      data: fileData,
+      data: rawData,
+      compressionMethod,
     });
 
     pos += 46 + nameLen + extraLen + commentLen;
@@ -75,10 +68,52 @@ export function extractZip(data: ArrayBuffer): ZipFileEntry[] {
 }
 
 /**
+ * Decompress a Deflate-compressed entry using DecompressionStream.
+ */
+async function decompressDeflateRaw(data: Uint8Array): Promise<Uint8Array> {
+  const ds = new DecompressionStream('deflate-raw');
+  const writer = ds.writable.getWriter();
+  writer.write(data);
+  writer.close();
+  const reader = ds.readable.getReader();
+  const chunks: Uint8Array[] = [];
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    chunks.push(value);
+  }
+  const totalLength = chunks.reduce((sum, c) => sum + c.length, 0);
+  const result = new Uint8Array(totalLength);
+  let offset = 0;
+  for (const chunk of chunks) {
+    result.set(chunk, offset);
+    offset += chunk.length;
+  }
+  return result;
+}
+
+/**
+ * Get the decompressed data for an entry.
+ */
+export async function getEntryData(entry: ZipFileEntry): Promise<Uint8Array> {
+  if (entry.compressionMethod === 0) {
+    return entry.data;
+  }
+  if (entry.compressionMethod === 8) {
+    if (typeof DecompressionStream === 'undefined') {
+      throw new Error('DecompressionStream API is not available in this browser. Cannot decompress Deflate data.');
+    }
+    return decompressDeflateRaw(entry.data);
+  }
+  throw new Error(`Unsupported compression method: ${entry.compressionMethod}`);
+}
+
+/**
  * Download a single file entry.
  */
-export function downloadEntry(entry: ZipFileEntry): void {
-  const blob = new Blob([entry.data]);
+export async function downloadEntry(entry: ZipFileEntry): Promise<void> {
+  const data = await getEntryData(entry);
+  const blob = new Blob([data]);
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
@@ -92,10 +127,10 @@ export function downloadEntry(entry: ZipFileEntry): void {
 /**
  * Download all entries as individual files.
  */
-export function downloadAllEntries(entries: ZipFileEntry[]): void {
+export async function downloadAllEntries(entries: ZipFileEntry[]): Promise<void> {
   for (const entry of entries) {
     if (entry.data.length > 0 && !entry.name.endsWith('/')) {
-      downloadEntry(entry);
+      await downloadEntry(entry);
     }
   }
 }

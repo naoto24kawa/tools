@@ -12,7 +12,8 @@ function escapeHtml(text: string): string {
 }
 
 export function renderMarkdown(md: string): string {
-  let html = md;
+  // Escape all HTML first to prevent XSS, then apply Markdown transformations
+  let html = escapeHtml(md);
 
   // Code blocks (must be before inline code) - escape HTML inside code blocks
   html = html.replace(/```(\w*)\n([\s\S]*?)```/g, (_match, lang, code) => {
