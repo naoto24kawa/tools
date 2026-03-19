@@ -1,0 +1,12 @@
+name = "tools-mcp-server"
+main = "src/index.ts"
+compatibility_date = "2025-04-22"
+compatibility_flags = ["nodejs_compat"]
+
+[alias]
+"raw-body" = "./src/empty.ts"
+"content-type" = "./src/empty.ts"
+
+[[routes]]
+pattern = "mcp.tools.elchika.app"
+custom_domain = true
