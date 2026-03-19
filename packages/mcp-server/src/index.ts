@@ -23,6 +23,7 @@ app.post('/mcp', async (c) => {
   try {
     // Stateless mode: create fresh server per request (no session state)
     const server = createMcpServer();
+    // @ts-expect-error -- stateless mode requires undefined per MCP SDK docs, but exactOptionalPropertyTypes rejects it
     const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined });
     await server.connect(transport);
 
