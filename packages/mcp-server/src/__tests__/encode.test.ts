@@ -109,4 +109,9 @@ describe('encode tools', () => {
     const result = await callTool('decode_base64', { text: '!!!invalid!!!' });
     expect(result.isError).toBe(true);
   });
+
+  test('decode_url error on malformed percent encoding', async () => {
+    const result = await callTool('decode_url', { text: '%GG' });
+    expect(result.isError).toBe(true);
+  });
 });

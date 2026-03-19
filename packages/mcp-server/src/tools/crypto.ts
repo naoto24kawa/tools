@@ -80,7 +80,7 @@ export function registerCryptoTools(server: McpServer) {
     },
     async (args) => {
       try {
-        return textResult(JSON.stringify(bruteForce(args.text)));
+        return textResult(JSON.stringify(bruteForce(args.text), null, 2));
       } catch (e) {
         return errorResult(e);
       }

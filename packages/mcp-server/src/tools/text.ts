@@ -38,7 +38,7 @@ function countParagraphs(text: string): number {
 }
 
 function calculateBytes(text: string): number {
-  return new Blob([text]).size;
+  return new TextEncoder().encode(text).byteLength;
 }
 
 function analyzeTextLocal(text: string, language: 'ja' | 'en' | 'auto' = 'auto'): TextStats {
