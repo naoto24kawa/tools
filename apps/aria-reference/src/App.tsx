@@ -3,46 +3,32 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Copy, Search } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { Toaster } from '@/components/ui/toaster';
-import { useToast } from '@/hooks/useToast';
-import { filterAriaData, getCategories } from '@/utils/ariaData';
-import type { AriaCategory, AriaEntry } from '@/utils/ariaData';
+import {
+  searchAriaEntries,
+  getCategories,
+  getCategoryLabel,
+  type AriaCategory,
+  type AriaEntry,
+} from '@/utils/ariaReference';
 
 const TYPE_BADGE_COLORS: Record<string, string> = {
   role: 'bg-blue-100 text-blue-800',
-  state: 'bg-yellow-100 text-yellow-800',
+  state: 'bg-purple-100 text-purple-800',
   property: 'bg-green-100 text-green-800',
-};
-
-const CATEGORY_LABELS: Record<AriaCategory, string> = {
-  landmark: 'Landmark',
-  widget: 'Widget',
-  document: 'Document Structure',
-  abstract: 'Abstract',
-  'live-region': 'Live Region',
 };
 
 export default function App() {
   const [query, setQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<AriaCategory | undefined>(undefined);
   const [selectedType, setSelectedType] = useState<AriaEntry['type'] | undefined>(undefined);
-  const { toast } = useToast();
 
   const categories = useMemo(() => getCategories(), []);
   const results = useMemo(
-    () => filterAriaData(query, selectedCategory, selectedType),
+    () => searchAriaEntries(query, selectedCategory, selectedType),
     [query, selectedCategory, selectedType],
   );
-
-  const copyExample = async (example: string) => {
-    try {
-      await navigator.clipboard.writeText(example);
-      toast({ title: 'Example copied to clipboard' });
-    } catch {
-      toast({ title: 'Copy failed', variant: 'destructive' });
-    }
-  };
 
   return (
     <div className="min-h-screen bg-background p-8">
@@ -50,7 +36,7 @@ export default function App() {
         <header className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">ARIA Reference</h1>
           <p className="text-muted-foreground">
-            Searchable reference for WAI-ARIA roles, states, and properties with HTML code examples.
+            Searchable reference for WAI-ARIA roles, states, and properties.
           </p>
         </header>
 
@@ -83,9 +69,11 @@ export default function App() {
                     type="button"
                     variant={selectedCategory === cat ? 'default' : 'outline'}
                     size="sm"
-                    onClick={() => setSelectedCategory(selectedCategory === cat ? undefined : cat)}
+                    onClick={() =>
+                      setSelectedCategory(selectedCategory === cat ? undefined : cat)
+                    }
                   >
-                    {CATEGORY_LABELS[cat] || cat}
+                    {getCategoryLabel(cat)}
                   </Button>
                 ))}
               </div>
@@ -117,7 +105,7 @@ export default function App() {
             </div>
 
             <p className="text-sm text-muted-foreground">
-              {results.length} result(s) found
+              {results.length} result{results.length !== 1 ? 's' : ''}
             </p>
           </CardContent>
         </Card>
@@ -128,47 +116,47 @@ export default function App() {
               <CardHeader className="pb-2">
                 <div className="flex items-center gap-3">
                   <CardTitle className="font-mono text-lg">{entry.name}</CardTitle>
-                  <span className={`text-xs px-2 py-0.5 rounded-full ${TYPE_BADGE_COLORS[entry.type]}`}>
+                  <span
+                    className={`text-xs px-2 py-0.5 rounded-full ${TYPE_BADGE_COLORS[entry.type]}`}
+                  >
                     {entry.type}
                   </span>
                   <span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-700">
-                    {CATEGORY_LABELS[entry.category] || entry.category}
+                    {getCategoryLabel(entry.category)}
                   </span>
                 </div>
               </CardHeader>
-              <CardContent className="space-y-3">
+              <CardContent className="space-y-2">
                 <p className="text-sm">{entry.description}</p>
 
                 {entry.allowedValues && (
                   <div>
-                    <span className="text-xs font-semibold text-muted-foreground uppercase">Allowed Values</span>
+                    <span className="text-xs font-semibold text-muted-foreground uppercase">
+                      Allowed Values
+                    </span>
                     <p className="text-sm font-mono mt-1">{entry.allowedValues}</p>
                   </div>
                 )}
 
-                {entry.relatedElements && (
+                {entry.htmlEquivalent && (
                   <div>
-                    <span className="text-xs font-semibold text-muted-foreground uppercase">Related HTML</span>
-                    <p className="text-sm font-mono mt-1">{entry.relatedElements}</p>
-                  </div>
-                )}
-
-                {entry.example && (
-                  <div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-semibold text-muted-foreground uppercase">Example</span>
-                      <Button type="button" variant="ghost" size="sm" onClick={() => copyExample(entry.example!)}>
-                        <Copy className="h-3 w-3 mr-1" /> Copy
-                      </Button>
-                    </div>
-                    <pre className="mt-1 p-3 rounded-md bg-muted text-sm font-mono overflow-x-auto whitespace-pre-wrap">
-                      {entry.example}
-                    </pre>
+                    <span className="text-xs font-semibold text-muted-foreground uppercase">
+                      HTML Equivalent
+                    </span>
+                    <p className="text-sm font-mono mt-1">{entry.htmlEquivalent}</p>
                   </div>
                 )}
               </CardContent>
             </Card>
           ))}
+
+          {results.length === 0 && (
+            <Card>
+              <CardContent className="py-8 text-center text-muted-foreground">
+                No matching entries found.
+              </CardContent>
+            </Card>
+          )}
         </div>
       </div>
       <Toaster />

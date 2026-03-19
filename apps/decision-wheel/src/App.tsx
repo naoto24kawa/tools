@@ -1,74 +1,113 @@
-import { useState, useRef, useCallback, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Toaster } from '@/components/ui/toaster';
 import { useToast } from '@/hooks/useToast';
-import { drawWheel, pickWinner, easeOut } from '@/utils/wheel';
+import { RotateCw, Sparkles } from 'lucide-react';
+import {
+  parseChoices,
+  drawWheel,
+  getWinningSegment,
+  playClickSound,
+  generateSpinAnimation,
+  type WheelSegment,
+} from '@/utils/wheelRenderer';
 
-const WHEEL_SIZE = 400;
+const CANVAS_SIZE = 400;
 
 export default function App() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [choices, setChoices] = useState<string[]>(['Option A', 'Option B', 'Option C']);
-  const [newChoice, setNewChoice] = useState('');
-  const [spinning, setSpinning] = useState(false);
-  const [rotation, setRotation] = useState(0);
-  const [winner, setWinner] = useState<string | null>(null);
-  const animRef = useRef<number>(0);
   const { toast } = useToast();
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [choicesInput, setChoicesInput] = useState('Option A\nOption B\nOption C');
+  const [segments, setSegments] = useState<WheelSegment[]>(() =>
+    parseChoices('Option A\nOption B\nOption C')
+  );
+  const [rotation, setRotation] = useState(0);
+  const [isSpinning, setIsSpinning] = useState(false);
+  const [result, setResult] = useState<string | null>(null);
+  const [customColors, setCustomColors] = useState<Record<number, string>>({});
+  const animationRef = useRef<number | null>(null);
+  const lastClickAngleRef = useRef(0);
 
+  const handleChoicesChange = (value: string) => {
+    setChoicesInput(value);
+    const parsed = parseChoices(value).map((seg, i) => ({
+      ...seg,
+      color: customColors[i] || seg.color,
+    }));
+    setSegments(parsed);
+    setResult(null);
+  };
+
+  const handleColorChange = (index: number, color: string) => {
+    const newColors = { ...customColors, [index]: color };
+    setCustomColors(newColors);
+    setSegments((prev) => prev.map((seg, i) => (i === index ? { ...seg, color } : seg)));
+  };
+
+  // Draw wheel
   useEffect(() => {
-    const ctx = canvasRef.current?.getContext('2d');
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
     if (!ctx) return;
-    drawWheel(ctx, choices, rotation, WHEEL_SIZE);
-  }, [choices, rotation]);
+    drawWheel(ctx, segments, rotation, CANVAS_SIZE);
+  }, [segments, rotation]);
 
-  const handleAddChoice = useCallback(() => {
-    const trimmed = newChoice.trim();
-    if (!trimmed) return;
-    setChoices((prev) => [...prev, trimmed]);
-    setNewChoice('');
-  }, [newChoice]);
+  const spin = useCallback(() => {
+    if (isSpinning || segments.length < 2) {
+      if (segments.length < 2) {
+        toast({ title: 'Add at least 2 choices', variant: 'destructive' });
+      }
+      return;
+    }
 
-  const handleRemoveChoice = useCallback((index: number) => {
-    setChoices((prev) => prev.filter((_, i) => i !== index));
-  }, []);
-
-  const handleSpin = useCallback(() => {
-    if (choices.length < 2 || spinning) return;
-    setSpinning(true);
-    setWinner(null);
-
-    const totalRotation = Math.PI * 2 * (5 + Math.random() * 5);
-    const duration = 4000;
-    const startTime = performance.now();
+    setIsSpinning(true);
+    setResult(null);
+    const { totalRotation, easing } = generateSpinAnimation(4000);
     const startRotation = rotation;
+    const startTime = performance.now();
+    const duration = 4000;
 
     const animate = (now: number) => {
       const elapsed = now - startTime;
       const progress = Math.min(elapsed / duration, 1);
-      const easedProgress = easeOut(progress);
+      const easedProgress = easing(progress);
       const currentRotation = startRotation + totalRotation * easedProgress;
+
       setRotation(currentRotation);
 
+      // Play click sound at segment boundaries
+      const sliceAngle = (Math.PI * 2) / segments.length;
+      const currentAngle = currentRotation % (Math.PI * 2);
+      const currentSlice = Math.floor(currentAngle / sliceAngle);
+      const lastSlice = Math.floor(lastClickAngleRef.current / sliceAngle);
+      if (currentSlice !== lastSlice && progress < 0.95) {
+        playClickSound();
+      }
+      lastClickAngleRef.current = currentAngle;
+
       if (progress < 1) {
-        animRef.current = requestAnimationFrame(animate);
+        animationRef.current = requestAnimationFrame(animate);
       } else {
-        setSpinning(false);
-        const result = pickWinner(choices, currentRotation);
-        setWinner(result);
-        toast({ title: `Result: ${result}` });
+        setIsSpinning(false);
+        const winner = getWinningSegment(segments, currentRotation);
+        if (winner) {
+          setResult(winner.text);
+          toast({ title: `Result: ${winner.text}` });
+        }
       }
     };
 
-    animRef.current = requestAnimationFrame(animate);
-  }, [choices, spinning, rotation, toast]);
+    animationRef.current = requestAnimationFrame(animate);
+  }, [isSpinning, segments, rotation, toast]);
 
   useEffect(() => {
     return () => {
-      if (animRef.current) cancelAnimationFrame(animRef.current);
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
     };
   }, []);
 
@@ -78,73 +117,83 @@ export default function App() {
         <header className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">Decision Wheel</h1>
           <p className="text-muted-foreground">
-            Add choices, spin the wheel, get a random result
+            Add your choices and spin the wheel to decide!
           </p>
         </header>
 
-        <div className="flex flex-col lg:flex-row gap-6">
-          <Card className="flex-shrink-0 w-full lg:w-64">
-            <CardHeader>
-              <CardTitle>Choices</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex gap-2">
-                <Input
-                  value={newChoice}
-                  onChange={(e) => setNewChoice(e.target.value)}
-                  placeholder="Add a choice..."
-                  onKeyDown={(e) => e.key === 'Enter' && handleAddChoice()}
-                />
-                <Button type="button" size="sm" onClick={handleAddChoice}>
-                  Add
-                </Button>
-              </div>
-
-              <div className="space-y-1 max-h-60 overflow-y-auto">
-                {choices.map((choice, i) => (
-                  <div key={i} className="flex items-center justify-between gap-2 text-sm p-1 rounded hover:bg-muted">
-                    <span className="truncate">{choice}</span>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleRemoveChoice(i)}
-                      className="h-6 w-6 p-0 flex-shrink-0"
-                    >
-                      x
-                    </Button>
-                  </div>
-                ))}
-              </div>
-
-              <Button
-                type="button"
-                onClick={handleSpin}
-                disabled={spinning || choices.length < 2}
-                className="w-full"
-              >
-                {spinning ? 'Spinning...' : 'Spin!'}
-              </Button>
-
-              {winner && (
-                <div className="p-3 bg-primary/10 rounded-md text-center">
-                  <Label>Winner</Label>
-                  <p className="text-lg font-bold mt-1">{winner}</p>
+        <div className="grid grid-cols-1 md:grid-cols-[1fr,auto] gap-6">
+          <div className="space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Choices</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="choices">Enter one choice per line</Label>
+                  <textarea
+                    id="choices"
+                    className="flex w-full min-h-[150px] rounded-md border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring resize-none"
+                    placeholder={'Pizza\nSushi\nBurger\nSalad'}
+                    value={choicesInput}
+                    onChange={(e) => handleChoicesChange(e.target.value)}
+                  />
                 </div>
-              )}
-            </CardContent>
-          </Card>
 
-          <Card className="flex-1">
-            <CardContent className="p-4 flex justify-center items-center">
-              <canvas
-                ref={canvasRef}
-                width={WHEEL_SIZE}
-                height={WHEEL_SIZE}
-                className="max-w-full"
-              />
-            </CardContent>
-          </Card>
+                {segments.length > 0 && (
+                  <div className="space-y-2">
+                    <Label>Colors</Label>
+                    <div className="flex flex-wrap gap-2">
+                      {segments.map((seg, i) => (
+                        <div key={i} className="flex items-center gap-1">
+                          <input
+                            type="color"
+                            value={seg.color}
+                            onChange={(e) => handleColorChange(i, e.target.value)}
+                            className="w-6 h-6 rounded cursor-pointer border-0"
+                          />
+                          <span className="text-xs text-muted-foreground truncate max-w-[80px]">
+                            {seg.text}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <Button
+                  type="button"
+                  size="lg"
+                  onClick={spin}
+                  disabled={isSpinning || segments.length < 2}
+                  className="w-full"
+                >
+                  <RotateCw
+                    className={`mr-2 h-5 w-5 ${isSpinning ? 'animate-spin' : ''}`}
+                  />
+                  {isSpinning ? 'Spinning...' : 'Spin!'}
+                </Button>
+              </CardContent>
+            </Card>
+
+            {result && (
+              <Card className="border-primary">
+                <CardContent className="pt-6 text-center">
+                  <Sparkles className="h-8 w-8 mx-auto mb-2 text-yellow-500" />
+                  <p className="text-sm text-muted-foreground">The wheel has chosen:</p>
+                  <p className="text-3xl font-bold mt-2">{result}</p>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+
+          <div className="flex justify-center">
+            <canvas
+              ref={canvasRef}
+              width={CANVAS_SIZE}
+              height={CANVAS_SIZE}
+              className="max-w-full h-auto"
+            />
+          </div>
         </div>
       </div>
       <Toaster />

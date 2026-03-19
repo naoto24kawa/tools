@@ -56,6 +56,15 @@ export function goldenRatioApproximations(count: number): { n: number; ratio: nu
 
 export const GOLDEN_RATIO = (1 + Math.sqrt(5)) / 2;
 
+// Aliases for backward compatibility
+export const generateSequence = generate;
+export const nthFibonacci = nthFib;
+
+export function goldenRatioApprox(n: number): number {
+  if (n <= 1) return NaN;
+  return nthFib(n) / nthFib(n - 1);
+}
+
 export function fibonacciIndex(n: number): number | null {
   if (!isFibonacci(n)) return null;
   if (n === 0) return 0;

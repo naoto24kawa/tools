@@ -1,48 +1,54 @@
 import { describe, it, expect } from 'vitest';
-import { getSliceColor, pickWinner, easeOut, WHEEL_COLORS } from '../wheel';
+import { parseChoices, getWinningSegment, generateSpinAnimation, DEFAULT_COLORS } from '../wheelRenderer';
 
-describe('getSliceColor', () => {
-  it('returns correct color for index', () => {
-    expect(getSliceColor(0)).toBe(WHEEL_COLORS[0]);
-    expect(getSliceColor(3)).toBe(WHEEL_COLORS[3]);
+describe('parseChoices', () => {
+  it('parses multiline input into segments', () => {
+    const result = parseChoices('A\nB\nC');
+    expect(result).toHaveLength(3);
+    expect(result[0].text).toBe('A');
+    expect(result[1].text).toBe('B');
   });
 
-  it('wraps around for large index', () => {
-    expect(getSliceColor(WHEEL_COLORS.length)).toBe(WHEEL_COLORS[0]);
-  });
-});
-
-describe('pickWinner', () => {
-  it('returns empty string for no choices', () => {
-    expect(pickWinner([], 0)).toBe('');
+  it('filters empty lines', () => {
+    const result = parseChoices('A\n\n\nB');
+    expect(result).toHaveLength(2);
   });
 
-  it('returns the only choice for single item', () => {
-    expect(pickWinner(['A'], 0)).toBe('A');
+  it('trims whitespace', () => {
+    const result = parseChoices('  A  \n  B  ');
+    expect(result[0].text).toBe('A');
   });
 
-  it('returns a valid choice', () => {
-    const choices = ['A', 'B', 'C', 'D'];
-    const result = pickWinner(choices, 1.5);
-    expect(choices).toContain(result);
+  it('assigns colors cyclically', () => {
+    const result = parseChoices('A\nB');
+    expect(result[0].color).toBe(DEFAULT_COLORS[0]);
+    expect(result[1].color).toBe(DEFAULT_COLORS[1]);
   });
 });
 
-describe('easeOut', () => {
-  it('returns 0 at start', () => {
-    expect(easeOut(0)).toBe(0);
+describe('getWinningSegment', () => {
+  it('returns null for empty segments', () => {
+    expect(getWinningSegment([], 0)).toBeNull();
   });
 
-  it('returns 1 at end', () => {
-    expect(easeOut(1)).toBe(1);
+  it('returns a valid segment', () => {
+    const segments = parseChoices('A\nB\nC\nD');
+    const result = getWinningSegment(segments, 1.5);
+    expect(result).not.toBeNull();
+    expect(['A', 'B', 'C', 'D']).toContain(result!.text);
+  });
+});
+
+describe('generateSpinAnimation', () => {
+  it('returns totalRotation and easing function', () => {
+    const anim = generateSpinAnimation(4000);
+    expect(anim.totalRotation).toBeGreaterThan(0);
+    expect(typeof anim.easing).toBe('function');
   });
 
-  it('is monotonically increasing', () => {
-    let prev = 0;
-    for (let t = 0.1; t <= 1; t += 0.1) {
-      const val = easeOut(t);
-      expect(val).toBeGreaterThan(prev);
-      prev = val;
-    }
+  it('easing returns 0 at start and 1 at end', () => {
+    const anim = generateSpinAnimation(4000);
+    expect(anim.easing(0)).toBe(0);
+    expect(anim.easing(1)).toBe(1);
   });
 });

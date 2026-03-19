@@ -1,50 +1,67 @@
 import { describe, it, expect } from 'vitest';
-import { calculateStats, getCharStatuses, getRandomText, SAMPLE_TEXTS } from '../typing';
+import {
+  calculateWPM,
+  calculateCPM,
+  calculateAccuracy,
+  getCharStatuses,
+  getRandomText,
+  SAMPLE_TEXTS_EN,
+} from '../typingTest';
 
-describe('calculateStats', () => {
-  it('returns zero stats for empty input', () => {
-    const stats = calculateStats('hello', '', 1000);
-    expect(stats.wpm).toBe(0);
-    expect(stats.accuracy).toBe(0);
-    expect(stats.totalChars).toBe(0);
+describe('calculateWPM', () => {
+  it('returns 0 for zero duration', () => {
+    expect(calculateWPM(50, 0)).toBe(0);
   });
 
-  it('calculates perfect accuracy', () => {
-    const stats = calculateStats('hello', 'hello', 60000);
-    expect(stats.accuracy).toBe(100);
-    expect(stats.correctChars).toBe(5);
-    expect(stats.incorrectChars).toBe(0);
-    expect(stats.wpm).toBe(1);
+  it('calculates correctly for 1 minute', () => {
+    // 50 correct chars / 5 = 10 words / 1 min = 10 WPM
+    expect(calculateWPM(50, 60000)).toBe(10);
+  });
+});
+
+describe('calculateCPM', () => {
+  it('returns 0 for zero duration', () => {
+    expect(calculateCPM(50, 0)).toBe(0);
+  });
+
+  it('calculates correctly for 1 minute', () => {
+    expect(calculateCPM(120, 60000)).toBe(120);
+  });
+});
+
+describe('calculateAccuracy', () => {
+  it('returns 100 for no typed chars', () => {
+    expect(calculateAccuracy(0, 0)).toBe(100);
+  });
+
+  it('calculates 100% for perfect typing', () => {
+    expect(calculateAccuracy(10, 10)).toBe(100);
   });
 
   it('calculates partial accuracy', () => {
-    const stats = calculateStats('hello', 'hxllo', 60000);
-    expect(stats.correctChars).toBe(4);
-    expect(stats.incorrectChars).toBe(1);
-    expect(stats.accuracy).toBe(80);
+    expect(calculateAccuracy(8, 10)).toBe(80);
   });
 });
 
 describe('getCharStatuses', () => {
   it('returns all pending for empty typed', () => {
-    const statuses = getCharStatuses('abc', '');
-    expect(statuses).toEqual(['pending', 'pending', 'pending']);
+    const statuses = getCharStatuses('abc', '', 0);
+    expect(statuses[0].status).toBe('current');
+    expect(statuses[1].status).toBe('pending');
+    expect(statuses[2].status).toBe('pending');
   });
 
   it('marks correct and incorrect chars', () => {
-    const statuses = getCharStatuses('abc', 'axc');
-    expect(statuses).toEqual(['correct', 'incorrect', 'correct']);
-  });
-
-  it('marks remaining as pending', () => {
-    const statuses = getCharStatuses('abcd', 'ab');
-    expect(statuses).toEqual(['correct', 'correct', 'pending', 'pending']);
+    const statuses = getCharStatuses('abc', 'axc', 3);
+    expect(statuses[0].status).toBe('correct');
+    expect(statuses[1].status).toBe('incorrect');
+    expect(statuses[2].status).toBe('correct');
   });
 });
 
 describe('getRandomText', () => {
   it('returns a text from the sample list', () => {
-    const text = getRandomText();
-    expect(SAMPLE_TEXTS).toContain(text);
+    const text = getRandomText('en');
+    expect(SAMPLE_TEXTS_EN).toContain(text);
   });
 });

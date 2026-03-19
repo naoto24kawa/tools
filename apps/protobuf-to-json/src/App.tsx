@@ -1,21 +1,133 @@
 import { useState } from 'react';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Copy, Trash2, ArrowRight } from 'lucide-react';
 import { Toaster } from '@/components/ui/toaster';
+import { useToast } from '@/hooks/useToast';
+import { parse, toJson } from '@/utils/protobufParser';
 
 export default function App() {
+  const [input, setInput] = useState('');
+  const [output, setOutput] = useState('');
+  const [prettyPrint, setPrettyPrint] = useState(true);
+  const { toast } = useToast();
+
+  const handleConvert = () => {
+    try {
+      const messages = parse(input);
+      const json = toJson(messages, prettyPrint);
+      setOutput(json);
+      toast({ title: `${messages.length} message(s) converted` });
+    } catch (e) {
+      toast({
+        title: 'Conversion failed',
+        description: e instanceof Error ? e.message : 'Unknown error',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(output);
+      toast({ title: 'Copied to clipboard' });
+    } catch {
+      toast({ title: 'Copy failed', variant: 'destructive' });
+    }
+  };
+
+  const clearAll = () => {
+    setInput('');
+    setOutput('');
+  };
+
   return (
     <div className="min-h-screen bg-background p-8">
-      <div className="max-w-4xl mx-auto space-y-6">
+      <div className="max-w-6xl mx-auto space-y-6">
         <header className="space-y-2">
-          <h1 className="text-3xl font-bold tracking-tight">protobuf-to-json</h1>
-          <p className="text-muted-foreground">Tool placeholder</p>
+          <h1 className="text-3xl font-bold tracking-tight">Protocol Buffers to JSON</h1>
+          <p className="text-muted-foreground">
+            Parse .proto message definitions and generate example JSON structures. Supports nested messages, repeated fields, oneof, enums, and map types.
+          </p>
         </header>
+
         <Card>
           <CardHeader>
-            <CardTitle>protobuf-to-json</CardTitle>
+            <CardTitle>Options</CardTitle>
           </CardHeader>
           <CardContent>
-            <p>Implementation pending</p>
+            <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-4">
+              <div className="space-y-2">
+                <Label>Format</Label>
+                <Select
+                  value={prettyPrint ? 'pretty' : 'compact'}
+                  onValueChange={(v) => setPrettyPrint(v === 'pretty')}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="pretty">Pretty Print</SelectItem>
+                    <SelectItem value="compact">Compact</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Converter</CardTitle>
+            <CardDescription>Paste .proto message definitions to generate JSON.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="grid gap-6 md:grid-cols-[1fr,auto,1fr] items-start">
+              <div className="space-y-2">
+                <Label htmlFor="input">Protobuf Input</Label>
+                <textarea
+                  id="input"
+                  className="flex min-h-[400px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-mono ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none"
+                  placeholder={'syntax = "proto3";\n\nmessage User {\n  string name = 1;\n  int32 age = 2;\n  repeated string tags = 3;\n  bool active = 4;\n}'}
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                />
+              </div>
+
+              <div className="flex flex-col gap-4 justify-center pt-10">
+                <Button type="button" onClick={handleConvert} disabled={!input}>
+                  Convert <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="output">JSON Output</Label>
+                <textarea
+                  id="output"
+                  readOnly
+                  className="flex min-h-[400px] w-full rounded-md border border-input bg-muted px-3 py-2 text-sm font-mono ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none"
+                  placeholder="JSON output will appear here..."
+                  value={output}
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-2 pt-4 border-t">
+              <Button type="button" variant="outline" onClick={clearAll}>
+                <Trash2 className="mr-2 h-4 w-4" /> Clear
+              </Button>
+              <Button type="button" onClick={copyToClipboard} disabled={!output}>
+                <Copy className="mr-2 h-4 w-4" /> Copy Result
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </div>
