@@ -1,6 +1,5 @@
 import { describe, test, expect } from 'vitest';
 import { detectLanguage, analyzeText } from '../textAnalysis';
-import { DEFAULT_STATS } from '../../config/constants';
 
 describe('textAnalysis', () => {
   describe('detectLanguage', () => {

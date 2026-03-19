@@ -102,10 +102,10 @@ export default function App() {
               </div>
 
               <div className="flex justify-end gap-2 pt-4 border-t">
-                <Button variant="outline" onClick={clearAll}>
+                <Button type="button" variant="outline" onClick={clearAll}>
                   <Trash2 className="mr-2 h-4 w-4" /> Clear
                 </Button>
-                <Button onClick={copyToClipboard} disabled={!output}>
+                <Button type="button" onClick={copyToClipboard} disabled={!output}>
                   <Copy className="mr-2 h-4 w-4" /> Copy Result
                 </Button>
               </div>

@@ -1,4 +1,4 @@
-import { DEFAULT_STATS, READING_SPEED } from '../config/constants';
+import { READING_SPEED } from '../config/constants';
 import type { CountSettings, Language, TextStats } from '@types';
 
 /**

@@ -1,0 +1,43 @@
+{
+  "name": "docker-run-to-compose",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vp dev",
+    "build": "vp build",
+    "preview": "vp preview",
+    "type-check": "vp check",
+    "test": "vp test",
+    "test:watch": "vp test --watch",
+    "test:coverage": "vp test --coverage",
+    "lint": "vp check",
+    "lint:fix": "vp check --fix",
+    "format": "vp check --fix",
+    "format:check": "vp check",
+    "deploy": "vp build && wrangler pages deploy dist --project-name=tools-docker-run-to-compose"
+  },
+  "dependencies": {
+    "@radix-ui/react-label": "^2.1.7",
+    "@radix-ui/react-select": "^2.2.6",
+    "@radix-ui/react-slot": "^1.2.3",
+    "@radix-ui/react-toast": "^1.2.15",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.546.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "tailwind-merge": "^3.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react-swc": "^4.3.0",
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.0",
+    "tailwindcss-animate": "^1.0.7",
+    "typescript": "^5.9.3",
+    "vite": "^8.0.0"
+  }
+}
