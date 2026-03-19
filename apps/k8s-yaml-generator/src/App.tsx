@@ -17,13 +17,16 @@ import {
   generateDeployment,
   generateService,
   generateConfigMap,
+  generateSecret,
   defaultDeploymentConfig,
   defaultServiceConfig,
   defaultConfigMapConfig,
+  defaultSecretConfig,
   type ResourceType,
   type DeploymentConfig,
   type ServiceConfig,
   type ConfigMapConfig,
+  type SecretConfig,
 } from '@/utils/k8sGenerator';
 
 export default function App() {
@@ -31,6 +34,7 @@ export default function App() {
   const [depConfig, setDepConfig] = useState<DeploymentConfig>({ ...defaultDeploymentConfig });
   const [svcConfig, setSvcConfig] = useState<ServiceConfig>({ ...defaultServiceConfig });
   const [cmConfig, setCmConfig] = useState<ConfigMapConfig>({ ...defaultConfigMapConfig });
+  const [secretConfig, setSecretConfig] = useState<SecretConfig>({ ...defaultSecretConfig });
   const { toast } = useToast();
 
   const output = useMemo(() => {
@@ -41,8 +45,10 @@ export default function App() {
         return generateService(svcConfig);
       case 'ConfigMap':
         return generateConfigMap(cmConfig);
+      case 'Secret':
+        return generateSecret(secretConfig);
     }
-  }, [resourceType, depConfig, svcConfig, cmConfig]);
+  }, [resourceType, depConfig, svcConfig, cmConfig, secretConfig]);
 
   const copyToClipboard = async () => {
     try {
@@ -59,7 +65,7 @@ export default function App() {
         <header className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">K8s YAML Generator</h1>
           <p className="text-muted-foreground">
-            Generate Kubernetes Deployment, Service, and ConfigMap YAML templates.
+            Generate Kubernetes Deployment, Service, ConfigMap, and Secret YAML templates.
           </p>
         </header>
 
@@ -75,6 +81,7 @@ export default function App() {
                   <SelectItem value="Deployment">Deployment</SelectItem>
                   <SelectItem value="Service">Service</SelectItem>
                   <SelectItem value="ConfigMap">ConfigMap</SelectItem>
+                  <SelectItem value="Secret">Secret</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -220,6 +227,54 @@ export default function App() {
                         <Input placeholder="key" value={entry.key} onChange={(e) => { const data = [...cmConfig.data]; data[i] = { ...data[i], key: e.target.value }; setCmConfig({ ...cmConfig, data }); }} />
                         <Input placeholder="value" value={entry.value} onChange={(e) => { const data = [...cmConfig.data]; data[i] = { ...data[i], value: e.target.value }; setCmConfig({ ...cmConfig, data }); }} />
                         <Button type="button" variant="ghost" size="sm" onClick={() => setCmConfig({ ...cmConfig, data: cmConfig.data.filter((_, j) => j !== i) })}>
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {resourceType === 'Secret' && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Secret Config</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Name</Label>
+                      <Input value={secretConfig.name} onChange={(e) => setSecretConfig({ ...secretConfig, name: e.target.value })} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Namespace</Label>
+                      <Input value={secretConfig.namespace} onChange={(e) => setSecretConfig({ ...secretConfig, namespace: e.target.value })} />
+                    </div>
+                    <div className="space-y-2 col-span-2">
+                      <Label>Type</Label>
+                      <Select value={secretConfig.type} onValueChange={(v) => setSecretConfig({ ...secretConfig, type: v as SecretConfig['type'] })}>
+                        <SelectTrigger><SelectValue /></SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="Opaque">Opaque</SelectItem>
+                          <SelectItem value="kubernetes.io/tls">kubernetes.io/tls</SelectItem>
+                          <SelectItem value="kubernetes.io/dockerconfigjson">kubernetes.io/dockerconfigjson</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <Label>Data (values will be base64 encoded)</Label>
+                      <Button type="button" variant="outline" size="sm" onClick={() => setSecretConfig({ ...secretConfig, data: [...secretConfig.data, { key: '', value: '' }] })}>
+                        <Plus className="mr-1 h-4 w-4" /> Add
+                      </Button>
+                    </div>
+                    {secretConfig.data.map((entry, i) => (
+                      <div key={i} className="flex gap-2">
+                        <Input placeholder="key" value={entry.key} onChange={(e) => { const data = [...secretConfig.data]; data[i] = { ...data[i], key: e.target.value }; setSecretConfig({ ...secretConfig, data }); }} />
+                        <Input placeholder="value (plain text)" value={entry.value} onChange={(e) => { const data = [...secretConfig.data]; data[i] = { ...data[i], value: e.target.value }; setSecretConfig({ ...secretConfig, data }); }} />
+                        <Button type="button" variant="ghost" size="sm" onClick={() => setSecretConfig({ ...secretConfig, data: secretConfig.data.filter((_, j) => j !== i) })}>
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>

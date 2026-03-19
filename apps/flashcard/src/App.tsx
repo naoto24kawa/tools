@@ -1,117 +1,166 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Toaster } from '@/components/ui/toaster';
 import { useToast } from '@/hooks/useToast';
-import { type Deck, loadDecks, saveDecks, createDeck, createCard, getDeckStats } from '@/utils/flashcard';
+import {
+  Plus,
+  Trash2,
+  Download,
+  Upload,
+  ChevronLeft,
+  ChevronRight,
+  RotateCcw,
+  Check,
+  X,
+  BookOpen,
+  ArrowLeft,
+} from 'lucide-react';
+import {
+  type FlashcardData,
+  type FlashCard,
+  loadData,
+  createDeck,
+  deleteDeck,
+  addCard,
+  updateCard,
+  deleteCard,
+  shuffleCards,
+  getDeckProgress,
+  resetDeckProgress,
+  exportData,
+  importData,
+} from '@/utils/flashcardStorage';
 
-type View = 'list' | 'edit' | 'study';
+type View = 'decks' | 'cards' | 'study';
 
 export default function App() {
-  const [decks, setDecks] = useState<Deck[]>(() => loadDecks());
-  const [view, setView] = useState<View>('list');
-  const [activeDeckId, setActiveDeckId] = useState<string | null>(null);
+  const { toast } = useToast();
+  const [data, setData] = useState<FlashcardData>(loadData);
+  const [view, setView] = useState<View>('decks');
+  const [selectedDeckId, setSelectedDeckId] = useState<string | null>(null);
   const [newDeckName, setNewDeckName] = useState('');
   const [newFront, setNewFront] = useState('');
   const [newBack, setNewBack] = useState('');
+
+  const [studyCards, setStudyCards] = useState<FlashCard[]>([]);
   const [studyIndex, setStudyIndex] = useState(0);
-  const [flipped, setFlipped] = useState(false);
-  const { toast } = useToast();
+  const [showBack, setShowBack] = useState(false);
 
-  const activeDeck = decks.find((d) => d.id === activeDeckId) || null;
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    saveDecks(decks);
-  }, [decks]);
+  const selectedDeck = data.decks.find((d) => d.id === selectedDeckId) || null;
 
-  const handleCreateDeck = useCallback(() => {
-    const name = newDeckName.trim();
-    if (!name) return;
-    const deck = createDeck(name);
-    setDecks((prev) => [...prev, deck]);
+  const handleCreateDeck = () => {
+    if (!newDeckName.trim()) {
+      toast({ title: 'Please enter a deck name', variant: 'destructive' });
+      return;
+    }
+    const updated = createDeck(data, newDeckName.trim());
+    setData(updated);
     setNewDeckName('');
     toast({ title: 'Deck created' });
-  }, [newDeckName, toast]);
+  };
 
-  const handleDeleteDeck = useCallback((id: string) => {
-    setDecks((prev) => prev.filter((d) => d.id !== id));
-    if (activeDeckId === id) {
-      setActiveDeckId(null);
-      setView('list');
+  const handleDeleteDeck = (deckId: string) => {
+    setData(deleteDeck(data, deckId));
+    if (selectedDeckId === deckId) {
+      setSelectedDeckId(null);
+      setView('decks');
     }
     toast({ title: 'Deck deleted' });
-  }, [activeDeckId, toast]);
+  };
 
-  const handleAddCard = useCallback(() => {
-    const front = newFront.trim();
-    const back = newBack.trim();
-    if (!front || !back || !activeDeckId) return;
-    const card = createCard(front, back);
-    setDecks((prev) =>
-      prev.map((d) => (d.id === activeDeckId ? { ...d, cards: [...d.cards, card] } : d))
-    );
+  const handleAddCard = () => {
+    if (!selectedDeckId || !newFront.trim() || !newBack.trim()) {
+      toast({ title: 'Front and back are required', variant: 'destructive' });
+      return;
+    }
+    const updated = addCard(data, selectedDeckId, newFront.trim(), newBack.trim());
+    setData(updated);
     setNewFront('');
     setNewBack('');
     toast({ title: 'Card added' });
-  }, [newFront, newBack, activeDeckId, toast]);
+  };
 
-  const handleDeleteCard = useCallback((cardId: string) => {
-    if (!activeDeckId) return;
-    setDecks((prev) =>
-      prev.map((d) =>
-        d.id === activeDeckId
-          ? { ...d, cards: d.cards.filter((c) => c.id !== cardId) }
-          : d
-      )
-    );
-  }, [activeDeckId]);
+  const handleDeleteCard = (cardId: string) => {
+    if (!selectedDeckId) return;
+    setData(deleteCard(data, selectedDeckId, cardId));
+    toast({ title: 'Card deleted' });
+  };
 
-  const handleMarkKnown = useCallback((known: boolean) => {
-    if (!activeDeck) return;
-    const card = activeDeck.cards[studyIndex];
-    if (!card) return;
-    setDecks((prev) =>
-      prev.map((d) =>
-        d.id === activeDeckId
-          ? {
-              ...d,
-              cards: d.cards.map((c) => (c.id === card.id ? { ...c, known } : c)),
-            }
-          : d
-      )
-    );
-    setFlipped(false);
-    if (studyIndex < activeDeck.cards.length - 1) {
-      setStudyIndex((i) => i + 1);
+  const handleMarkKnown = (known: boolean) => {
+    if (!selectedDeckId || studyCards.length === 0) return;
+    const card = studyCards[studyIndex];
+    const updated = updateCard(data, selectedDeckId, card.id, { known });
+    setData(updated);
+
+    if (studyIndex < studyCards.length - 1) {
+      setStudyIndex(studyIndex + 1);
+      setShowBack(false);
     } else {
       toast({ title: 'Study session complete!' });
-      setView('list');
+      setView('cards');
     }
-  }, [activeDeck, activeDeckId, studyIndex, toast]);
+  };
 
-  const startStudy = useCallback((deckId: string) => {
-    setActiveDeckId(deckId);
+  const startStudy = () => {
+    if (!selectedDeck || selectedDeck.cards.length === 0) {
+      toast({ title: 'No cards to study', variant: 'destructive' });
+      return;
+    }
+    setStudyCards(shuffleCards(selectedDeck.cards));
     setStudyIndex(0);
-    setFlipped(false);
+    setShowBack(false);
     setView('study');
-  }, []);
+  };
 
-  const startEdit = useCallback((deckId: string) => {
-    setActiveDeckId(deckId);
-    setView('edit');
-  }, []);
+  const handleResetProgress = () => {
+    if (!selectedDeckId) return;
+    setData(resetDeckProgress(data, selectedDeckId));
+    toast({ title: 'Progress reset' });
+  };
 
-  // List view
-  if (view === 'list') {
+  const handleExport = () => {
+    const json = exportData(data);
+    const blob = new Blob([json], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'flashcards.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    toast({ title: 'Data exported' });
+  };
+
+  const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      try {
+        const imported = importData(ev.target?.result as string);
+        setData(imported);
+        toast({ title: 'Data imported' });
+      } catch {
+        toast({ title: 'Import failed', variant: 'destructive' });
+      }
+    };
+    reader.readAsText(file);
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  // Decks view
+  if (view === 'decks') {
     return (
       <div className="min-h-screen bg-background p-8">
-        <div className="max-w-4xl mx-auto space-y-6">
+        <div className="max-w-3xl mx-auto space-y-6">
           <header className="space-y-2">
             <h1 className="text-3xl font-bold tracking-tight">Flashcard</h1>
             <p className="text-muted-foreground">
-              Create decks, add cards, study with flip and mark known/unknown
+              Create decks, add cards, and study with spaced repetition.
             </p>
           </header>
 
@@ -120,47 +169,53 @@ export default function App() {
               <CardTitle>Create Deck</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex gap-2">
+              <div className="flex gap-3">
                 <Input
+                  placeholder="Deck name..."
                   value={newDeckName}
                   onChange={(e) => setNewDeckName(e.target.value)}
-                  placeholder="Deck name..."
                   onKeyDown={(e) => e.key === 'Enter' && handleCreateDeck()}
                 />
                 <Button type="button" onClick={handleCreateDeck}>
-                  Create
+                  <Plus className="mr-2 h-4 w-4" /> Create
                 </Button>
               </div>
             </CardContent>
           </Card>
 
-          <div className="grid gap-4 md:grid-cols-2">
-            {decks.map((deck) => {
-              const stats = getDeckStats(deck);
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {data.decks.map((deck) => {
+              const progress = getDeckProgress(deck);
               return (
-                <Card key={deck.id}>
-                  <CardHeader>
-                    <CardTitle className="text-lg">{deck.name}</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    <p className="text-sm text-muted-foreground">
-                      {stats.total} cards | {stats.known} known | {stats.unknown} unknown
-                    </p>
-                    <div className="flex gap-2">
+                <Card key={deck.id} className="hover:border-primary transition-colors">
+                  <CardContent className="pt-4 pb-4">
+                    <div className="flex items-center justify-between">
+                      <h3
+                        className="text-lg font-semibold cursor-pointer"
+                        onClick={() => {
+                          setSelectedDeckId(deck.id);
+                          setView('cards');
+                        }}
+                      >
+                        {deck.name}
+                      </h3>
                       <Button
                         type="button"
-                        size="sm"
-                        onClick={() => startStudy(deck.id)}
-                        disabled={stats.total === 0}
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleDeleteDeck(deck.id)}
                       >
-                        Study
+                        <Trash2 className="h-4 w-4 text-destructive" />
                       </Button>
-                      <Button type="button" size="sm" variant="outline" onClick={() => startEdit(deck.id)}>
-                        Edit
-                      </Button>
-                      <Button type="button" size="sm" variant="destructive" onClick={() => handleDeleteDeck(deck.id)}>
-                        Delete
-                      </Button>
+                    </div>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      {deck.cards.length} cards | {progress.percent}% known
+                    </p>
+                    <div className="w-full bg-muted rounded-full h-2 mt-2">
+                      <div
+                        className="bg-green-500 h-2 rounded-full transition-all"
+                        style={{ width: `${progress.percent}%` }}
+                      />
                     </div>
                   </CardContent>
                 </Card>
@@ -168,28 +223,61 @@ export default function App() {
             })}
           </div>
 
-          {decks.length === 0 && (
+          {data.decks.length === 0 && (
             <p className="text-center text-muted-foreground py-8">
-              No decks yet. Create one to get started.
+              No decks yet. Create one to get started!
             </p>
           )}
+
+          <div className="flex gap-3">
+            <Button type="button" variant="outline" onClick={handleExport}>
+              <Download className="mr-2 h-4 w-4" /> Export
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => fileInputRef.current?.click()}
+            >
+              <Upload className="mr-2 h-4 w-4" /> Import
+            </Button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".json"
+              className="hidden"
+              onChange={handleImport}
+            />
+          </div>
         </div>
         <Toaster />
       </div>
     );
   }
 
-  // Edit view
-  if (view === 'edit' && activeDeck) {
+  // Cards view
+  if (view === 'cards' && selectedDeck) {
     return (
       <div className="min-h-screen bg-background p-8">
-        <div className="max-w-4xl mx-auto space-y-6">
-          <header className="flex items-center gap-4">
-            <Button type="button" variant="outline" size="sm" onClick={() => setView('list')}>
-              Back
+        <div className="max-w-3xl mx-auto space-y-6">
+          <div className="flex items-center gap-3">
+            <Button type="button" variant="ghost" onClick={() => setView('decks')}>
+              <ArrowLeft className="mr-2 h-4 w-4" /> Back
             </Button>
-            <h1 className="text-2xl font-bold">{activeDeck.name}</h1>
-          </header>
+            <h2 className="text-xl font-semibold">{selectedDeck.name}</h2>
+          </div>
+
+          <div className="flex gap-3">
+            <Button
+              type="button"
+              onClick={startStudy}
+              disabled={selectedDeck.cards.length === 0}
+            >
+              <BookOpen className="mr-2 h-4 w-4" /> Study
+            </Button>
+            <Button type="button" variant="outline" onClick={handleResetProgress}>
+              <RotateCcw className="mr-2 h-4 w-4" /> Reset Progress
+            </Button>
+          </div>
 
           <Card>
             <CardHeader>
@@ -197,42 +285,61 @@ export default function App() {
             </CardHeader>
             <CardContent className="space-y-3">
               <div className="space-y-2">
-                <Label>Front</Label>
+                <Label htmlFor="front">Front</Label>
                 <Input
+                  id="front"
+                  placeholder="Question or term..."
                   value={newFront}
                   onChange={(e) => setNewFront(e.target.value)}
-                  placeholder="Question..."
                 />
               </div>
               <div className="space-y-2">
-                <Label>Back</Label>
+                <Label htmlFor="back">Back</Label>
                 <Input
+                  id="back"
+                  placeholder="Answer or definition..."
                   value={newBack}
                   onChange={(e) => setNewBack(e.target.value)}
-                  placeholder="Answer..."
                   onKeyDown={(e) => e.key === 'Enter' && handleAddCard()}
                 />
               </div>
               <Button type="button" onClick={handleAddCard}>
-                Add Card
+                <Plus className="mr-2 h-4 w-4" /> Add Card
               </Button>
             </CardContent>
           </Card>
 
           <div className="space-y-2">
-            {activeDeck.cards.map((card) => (
+            {selectedDeck.cards.map((card) => (
               <Card key={card.id}>
-                <CardContent className="pt-4 pb-4 flex items-center justify-between">
-                  <div>
-                    <p className="font-medium">{card.front}</p>
-                    <p className="text-sm text-muted-foreground">{card.back}</p>
+                <CardContent className="pt-3 pb-3 flex items-center justify-between">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      {card.known && (
+                        <span className="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded">
+                          Known
+                        </span>
+                      )}
+                      <p className="text-sm font-medium truncate">{card.front}</p>
+                    </div>
+                    <p className="text-xs text-muted-foreground truncate">{card.back}</p>
                   </div>
-                  <Button type="button" variant="ghost" size="sm" onClick={() => handleDeleteCard(card.id)}>
-                    Delete
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => handleDeleteCard(card.id)}
+                  >
+                    <Trash2 className="h-4 w-4 text-destructive" />
                   </Button>
                 </CardContent>
               </Card>
             ))}
+            {selectedDeck.cards.length === 0 && (
+              <p className="text-center text-muted-foreground py-8">
+                No cards yet. Add some above.
+              </p>
+            )}
           </div>
         </div>
         <Toaster />
@@ -241,51 +348,80 @@ export default function App() {
   }
 
   // Study view
-  if (view === 'study' && activeDeck) {
-    const currentCard = activeDeck.cards[studyIndex];
-    const progress = `${studyIndex + 1} / ${activeDeck.cards.length}`;
-
+  if (view === 'study' && studyCards.length > 0) {
     return (
       <div className="min-h-screen bg-background p-8">
         <div className="max-w-2xl mx-auto space-y-6">
-          <header className="flex items-center gap-4">
-            <Button type="button" variant="outline" size="sm" onClick={() => setView('list')}>
-              Back
+          <div className="flex items-center gap-3">
+            <Button type="button" variant="ghost" onClick={() => setView('cards')}>
+              <ArrowLeft className="mr-2 h-4 w-4" /> Back
             </Button>
-            <h1 className="text-2xl font-bold">{activeDeck.name}</h1>
-            <span className="text-sm text-muted-foreground ml-auto">{progress}</span>
-          </header>
+            <span className="text-sm text-muted-foreground">
+              Card {studyIndex + 1} of {studyCards.length}
+            </span>
+          </div>
 
-          {currentCard ? (
-            <>
-              <Card
-                className="min-h-[200px] flex items-center justify-center cursor-pointer"
-                onClick={() => setFlipped((f) => !f)}
-              >
-                <CardContent className="pt-6 text-center">
-                  <p className="text-xs text-muted-foreground mb-2">
-                    {flipped ? 'Back' : 'Front'} (click to flip)
-                  </p>
-                  <p className="text-2xl font-medium">
-                    {flipped ? currentCard.back : currentCard.front}
-                  </p>
-                </CardContent>
-              </Card>
+          <Card
+            className="cursor-pointer min-h-[250px] flex items-center justify-center"
+            onClick={() => setShowBack(!showBack)}
+          >
+            <CardContent className="pt-6 text-center w-full">
+              <p className="text-xs text-muted-foreground mb-4">
+                {showBack ? 'BACK' : 'FRONT'} (click to flip)
+              </p>
+              <p className="text-2xl font-semibold">
+                {showBack ? studyCards[studyIndex].back : studyCards[studyIndex].front}
+              </p>
+            </CardContent>
+          </Card>
 
-              {flipped && (
-                <div className="flex gap-4 justify-center">
-                  <Button type="button" variant="outline" onClick={() => handleMarkKnown(false)} className="flex-1">
-                    Unknown
-                  </Button>
-                  <Button type="button" onClick={() => handleMarkKnown(true)} className="flex-1">
-                    Known
-                  </Button>
-                </div>
-              )}
-            </>
-          ) : (
-            <p className="text-center text-muted-foreground py-12">No cards to study.</p>
-          )}
+          <div className="flex justify-center gap-4">
+            <Button
+              type="button"
+              variant="outline"
+              size="lg"
+              className="text-red-500 border-red-200 hover:bg-red-50"
+              onClick={() => handleMarkKnown(false)}
+            >
+              <X className="mr-2 h-5 w-5" /> Don't Know
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="lg"
+              className="text-green-500 border-green-200 hover:bg-green-50"
+              onClick={() => handleMarkKnown(true)}
+            >
+              <Check className="mr-2 h-5 w-5" /> Know It
+            </Button>
+          </div>
+
+          <div className="flex justify-center gap-3">
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              disabled={studyIndex === 0}
+              onClick={() => {
+                setStudyIndex(studyIndex - 1);
+                setShowBack(false);
+              }}
+            >
+              <ChevronLeft className="mr-1 h-4 w-4" /> Previous
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              disabled={studyIndex >= studyCards.length - 1}
+              onClick={() => {
+                setStudyIndex(studyIndex + 1);
+                setShowBack(false);
+              }}
+            >
+              Next <ChevronRight className="ml-1 h-4 w-4" />
+            </Button>
+          </div>
         </div>
         <Toaster />
       </div>
