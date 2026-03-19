@@ -1,4 +1,4 @@
-export type ResourceType = 'Deployment' | 'Service' | 'ConfigMap';
+export type ResourceType = 'Deployment' | 'Service' | 'ConfigMap' | 'Secret';
 
 export interface DeploymentConfig {
   name: string;
@@ -207,4 +207,46 @@ export const defaultConfigMapConfig: ConfigMapConfig = {
   name: 'my-config',
   namespace: 'default',
   data: [{ key: 'APP_ENV', value: 'production' }],
+};
+
+export interface SecretConfig {
+  name: string;
+  namespace: string;
+  type: 'Opaque' | 'kubernetes.io/tls' | 'kubernetes.io/dockerconfigjson';
+  data: { key: string; value: string }[];
+}
+
+export function generateSecret(config: SecretConfig): string {
+  const lines: string[] = [
+    'apiVersion: v1',
+    'kind: Secret',
+    'metadata:',
+    `  name: ${config.name}`,
+  ];
+
+  if (config.namespace) {
+    lines.push(`  namespace: ${config.namespace}`);
+  }
+
+  lines.push(`type: ${config.type}`);
+
+  if (config.data.length > 0) {
+    lines.push('data:');
+    for (const entry of config.data) {
+      if (entry.key) {
+        // Base64 encode the value
+        const encoded = btoa(entry.value);
+        lines.push(`  ${entry.key}: ${encoded}`);
+      }
+    }
+  }
+
+  return lines.join('\n') + '\n';
+}
+
+export const defaultSecretConfig: SecretConfig = {
+  name: 'my-secret',
+  namespace: 'default',
+  type: 'Opaque',
+  data: [{ key: 'password', value: 'my-secret-password' }],
 };
