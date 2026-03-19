@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { textResult, errorResult } from './helpers';
 import { md5 } from '../../../../apps/hash-md5/src/utils/md5';
 import { crc32 } from '../../../../apps/hash-crc32/src/utils/crc32';
 import { generateSHA1 } from '../../../../apps/hash-sha1/src/utils/sha1';
@@ -16,14 +17,9 @@ export function registerHashTools(server: McpServer) {
     { text: z.string().describe('Text to hash') },
     async (args) => {
       try {
-        return { content: [{ type: 'text' as const, text: md5(args.text) }] };
+        return textResult(md5(args.text));
       } catch (e) {
-        return {
-          isError: true,
-          content: [
-            { type: 'text' as const, text: `Error: ${e instanceof Error ? e.message : String(e)}` },
-          ],
-        };
+        return errorResult('hash_md5', e);
       }
     },
   );
@@ -35,14 +31,9 @@ export function registerHashTools(server: McpServer) {
     { text: z.string().describe('Text to hash') },
     async (args) => {
       try {
-        return { content: [{ type: 'text' as const, text: crc32(args.text) }] };
+        return textResult(crc32(args.text));
       } catch (e) {
-        return {
-          isError: true,
-          content: [
-            { type: 'text' as const, text: `Error: ${e instanceof Error ? e.message : String(e)}` },
-          ],
-        };
+        return errorResult('hash_crc32', e);
       }
     },
   );
@@ -55,14 +46,9 @@ export function registerHashTools(server: McpServer) {
     async (args) => {
       try {
         const hash = await generateSHA1(args.text);
-        return { content: [{ type: 'text' as const, text: hash }] };
+        return textResult(hash);
       } catch (e) {
-        return {
-          isError: true,
-          content: [
-            { type: 'text' as const, text: `Error: ${e instanceof Error ? e.message : String(e)}` },
-          ],
-        };
+        return errorResult('hash_sha1', e);
       }
     },
   );
@@ -80,14 +66,9 @@ export function registerHashTools(server: McpServer) {
     async (args) => {
       try {
         const hash = await generateSHA(args.text, args.algorithm as HashAlgorithm);
-        return { content: [{ type: 'text' as const, text: hash }] };
+        return textResult(hash);
       } catch (e) {
-        return {
-          isError: true,
-          content: [
-            { type: 'text' as const, text: `Error: ${e instanceof Error ? e.message : String(e)}` },
-          ],
-        };
+        return errorResult('hash_sha', e);
       }
     },
   );
@@ -110,14 +91,9 @@ export function registerHashTools(server: McpServer) {
           args.secret,
           args.algorithm as HmacAlgorithm,
         );
-        return { content: [{ type: 'text' as const, text: hmac }] };
+        return textResult(hmac);
       } catch (e) {
-        return {
-          isError: true,
-          content: [
-            { type: 'text' as const, text: `Error: ${e instanceof Error ? e.message : String(e)}` },
-          ],
-        };
+        return errorResult('hash_hmac', e);
       }
     },
   );

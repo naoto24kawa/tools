@@ -13,14 +13,26 @@ app.post('/mcp', async (c) => {
     return c.json({ error: 'Request body too large' }, 413);
   }
 
-  const server = createMcpServer();
-  const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined });
-  await server.connect(transport);
+  let body: unknown;
+  try {
+    body = await c.req.json();
+  } catch {
+    return c.json({ error: 'Invalid JSON in request body' }, 400);
+  }
 
-  const body = await c.req.json();
-  const { req, res } = toReqRes(c.req.raw);
-  await transport.handleRequest(req, res, body);
-  return toFetchResponse(res);
+  try {
+    // Stateless mode: create fresh server per request (no session state)
+    const server = createMcpServer();
+    const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined });
+    await server.connect(transport);
+
+    const { req, res } = toReqRes(c.req.raw);
+    await transport.handleRequest(req, res, body);
+    return toFetchResponse(res);
+  } catch (e) {
+    console.error('[mcp-server] MCP request handling failed:', e);
+    return c.json({ error: 'Internal server error' }, 500);
+  }
 });
 
 app.get('/mcp', async (c) => {
@@ -29,7 +41,9 @@ app.get('/mcp', async (c) => {
 });
 
 app.delete('/mcp', async (c) => {
-  return c.json({ ok: true }, 200);
+  // Stateless mode: no sessions to terminate
+  c.header('Allow', 'POST');
+  return c.text('Session termination not supported in stateless mode', 405);
 });
 
 app.get('/health', (c) => c.json({ status: 'ok' }));

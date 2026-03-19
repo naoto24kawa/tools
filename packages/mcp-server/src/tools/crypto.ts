@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { textResult, errorResult } from './helpers';
 import {
   caesarEncrypt,
   caesarDecrypt,
@@ -23,19 +24,6 @@ import {
 import { enigmaEncrypt, DEFAULT_CONFIG } from '../../../../apps/enigma-cipher/src/utils/enigma';
 import type { EnigmaConfig, RotorName } from '../../../../apps/enigma-cipher/src/utils/enigma';
 
-function textResult(text: string) {
-  return { content: [{ type: 'text' as const, text }] };
-}
-
-function errorResult(e: unknown) {
-  return {
-    isError: true,
-    content: [
-      { type: 'text' as const, text: `Error: ${e instanceof Error ? e.message : String(e)}` },
-    ],
-  };
-}
-
 export function registerCryptoTools(server: McpServer) {
   // Caesar encrypt
   server.tool(
@@ -49,7 +37,7 @@ export function registerCryptoTools(server: McpServer) {
       try {
         return textResult(caesarEncrypt(args.text, args.shift));
       } catch (e) {
-        return errorResult(e);
+        return errorResult('cipher_caesar_encrypt', e);
       }
     },
   );
@@ -66,7 +54,7 @@ export function registerCryptoTools(server: McpServer) {
       try {
         return textResult(caesarDecrypt(args.text, args.shift));
       } catch (e) {
-        return errorResult(e);
+        return errorResult('cipher_caesar_decrypt', e);
       }
     },
   );
@@ -82,7 +70,7 @@ export function registerCryptoTools(server: McpServer) {
       try {
         return textResult(JSON.stringify(bruteForce(args.text), null, 2));
       } catch (e) {
-        return errorResult(e);
+        return errorResult('cipher_caesar_bruteforce', e);
       }
     },
   );
@@ -100,7 +88,7 @@ export function registerCryptoTools(server: McpServer) {
         const fns = { rot13, rot18, rot47 };
         return textResult(fns[args.variant](args.text));
       } catch (e) {
-        return errorResult(e);
+        return errorResult('cipher_rot', e);
       }
     },
   );
@@ -117,7 +105,7 @@ export function registerCryptoTools(server: McpServer) {
       try {
         return textResult(vigenereEncrypt(args.text, args.key));
       } catch (e) {
-        return errorResult(e);
+        return errorResult('cipher_vigenere_encrypt', e);
       }
     },
   );
@@ -134,7 +122,7 @@ export function registerCryptoTools(server: McpServer) {
       try {
         return textResult(vigenereDecrypt(args.text, args.key));
       } catch (e) {
-        return errorResult(e);
+        return errorResult('cipher_vigenere_decrypt', e);
       }
     },
   );
@@ -150,7 +138,7 @@ export function registerCryptoTools(server: McpServer) {
       try {
         return textResult(atbash(args.text));
       } catch (e) {
-        return errorResult(e);
+        return errorResult('cipher_atbash', e);
       }
     },
   );
@@ -179,7 +167,7 @@ export function registerCryptoTools(server: McpServer) {
         }
         return textResult(affineEncrypt(args.text, args.a, args.b));
       } catch (e) {
-        return errorResult(e);
+        return errorResult('cipher_affine_encrypt', e);
       }
     },
   );
@@ -208,7 +196,7 @@ export function registerCryptoTools(server: McpServer) {
         }
         return textResult(affineDecrypt(args.text, args.a, args.b));
       } catch (e) {
-        return errorResult(e);
+        return errorResult('cipher_affine_decrypt', e);
       }
     },
   );
@@ -225,7 +213,7 @@ export function registerCryptoTools(server: McpServer) {
       try {
         return textResult(railFenceEncrypt(args.text, args.rails));
       } catch (e) {
-        return errorResult(e);
+        return errorResult('cipher_rail_fence_encrypt', e);
       }
     },
   );
@@ -242,7 +230,7 @@ export function registerCryptoTools(server: McpServer) {
       try {
         return textResult(railFenceDecrypt(args.text, args.rails));
       } catch (e) {
-        return errorResult(e);
+        return errorResult('cipher_rail_fence_decrypt', e);
       }
     },
   );
@@ -270,7 +258,7 @@ export function registerCryptoTools(server: McpServer) {
         };
         return textResult(enigmaEncrypt(args.text, config));
       } catch (e) {
-        return errorResult(e);
+        return errorResult('cipher_enigma', e);
       }
     },
   );

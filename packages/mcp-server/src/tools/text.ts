@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { textResult, errorResult } from './helpers';
 
 // --- Types (inlined from apps/text-counter/src/types/index.ts) ---
 type Language = 'ja' | 'en' | 'unknown';
@@ -111,12 +112,9 @@ export function registerTextTools(server: McpServer) {
     async ({ text, language }) => {
       try {
         const stats = analyzeTextLocal(text, language ?? 'auto');
-        return { content: [{ type: 'text', text: JSON.stringify(stats, null, 2) }] };
+        return textResult(JSON.stringify(stats, null, 2));
       } catch (e) {
-        return {
-          isError: true,
-          content: [{ type: 'text', text: `Error: ${e instanceof Error ? e.message : String(e)}` }],
-        };
+        return errorResult('text_analyze', e);
       }
     },
   );
@@ -137,12 +135,9 @@ export function registerTextTools(server: McpServer) {
           trimWhitespace: trimWhitespace ?? false,
           keepEmptyLines: keepEmptyLines ?? true,
         });
-        return { content: [{ type: 'text', text: result }] };
+        return textResult(result);
       } catch (e) {
-        return {
-          isError: true,
-          content: [{ type: 'text', text: `Error: ${e instanceof Error ? e.message : String(e)}` }],
-        };
+        return errorResult('text_deduplicate', e);
       }
     },
   );

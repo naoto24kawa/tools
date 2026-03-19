@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { textResult, errorResult } from './helpers';
 import { encodeBase64, decodeBase64 } from '../../../../apps/encode-base64-string/src/utils/base64';
 import { encodeBase32, decodeBase32 } from '../../../../apps/encode-base32/src/utils/base32';
 import {
@@ -34,14 +35,9 @@ function textTool(
 ) {
   server.tool(name, description, { [inputName]: z.string().describe(inputDesc) }, async (args) => {
     try {
-      return { content: [{ type: 'text' as const, text: fn(args[inputName] as string) }] };
+      return textResult(fn(args[inputName] as string));
     } catch (e) {
-      return {
-        isError: true,
-        content: [
-          { type: 'text' as const, text: `Error: ${e instanceof Error ? e.message : String(e)}` },
-        ],
-      };
+      return errorResult(name, e);
     }
   });
 }
