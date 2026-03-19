@@ -1,174 +1,303 @@
-import { useState, useRef, useCallback, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
 import { Toaster } from '@/components/ui/toaster';
 import { useToast } from '@/hooks/useToast';
-import { type ShapeTool, type DrawAction, type Point, redrawAll, drawAction } from '@/utils/whiteboard';
+import {
+  Pen,
+  Eraser,
+  Minus,
+  Square,
+  Circle,
+  Undo2,
+  Redo2,
+  Trash2,
+  Download,
+} from 'lucide-react';
+import {
+  type Tool,
+  type Point,
+  type Stroke,
+  type WhiteboardState,
+  createInitialState,
+  addStroke,
+  undo,
+  redo,
+  clearAll,
+  redrawCanvas,
+  drawStroke,
+  getCanvasPoint,
+  saveAsPng,
+} from '@/utils/whiteboardEngine';
 
-const CANVAS_WIDTH = 800;
-const CANVAS_HEIGHT = 600;
+const CANVAS_WIDTH = 1200;
+const CANVAS_HEIGHT = 800;
+
+const TOOLS: { id: Tool; icon: React.ReactNode; label: string }[] = [
+  { id: 'pen', icon: <Pen className="h-4 w-4" />, label: 'Pen' },
+  { id: 'eraser', icon: <Eraser className="h-4 w-4" />, label: 'Eraser' },
+  { id: 'line', icon: <Minus className="h-4 w-4" />, label: 'Line' },
+  { id: 'rectangle', icon: <Square className="h-4 w-4" />, label: 'Rectangle' },
+  { id: 'circle', icon: <Circle className="h-4 w-4" />, label: 'Circle' },
+];
+
+const COLORS = [
+  '#000000', '#ef4444', '#f97316', '#eab308',
+  '#22c55e', '#3b82f6', '#8b5cf6', '#ec4899',
+  '#ffffff',
+];
+
+const STROKE_WIDTHS = [1, 2, 4, 6, 10];
 
 export default function App() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [tool, setTool] = useState<ShapeTool>('pen');
-  const [color, setColor] = useState('#000000');
-  const [lineWidth, setLineWidth] = useState(3);
-  const [actions, setActions] = useState<DrawAction[]>([]);
-  const [currentAction, setCurrentAction] = useState<DrawAction | null>(null);
-  const [isDrawing, setIsDrawing] = useState(false);
   const { toast } = useToast();
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [wbState, setWbState] = useState<WhiteboardState>(createInitialState);
+  const [currentTool, setCurrentTool] = useState<Tool>('pen');
+  const [currentColor, setCurrentColor] = useState('#000000');
+  const [currentWidth, setCurrentWidth] = useState(2);
+  const [isDrawing, setIsDrawing] = useState(false);
+  const currentStrokeRef = useRef<Stroke | null>(null);
 
   useEffect(() => {
-    const ctx = canvasRef.current?.getContext('2d');
-    if (!ctx) return;
-    redrawAll(ctx, actions, CANVAS_WIDTH, CANVAS_HEIGHT);
-    if (currentAction) {
-      drawAction(ctx, currentAction);
-    }
-  }, [actions, currentAction]);
-
-  const getPoint = useCallback((e: React.MouseEvent<HTMLCanvasElement>): Point => {
-    const rect = canvasRef.current!.getBoundingClientRect();
-    return {
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
-    };
-  }, []);
-
-  const handleMouseDown = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
-    const point = getPoint(e);
-    setIsDrawing(true);
-    setCurrentAction({
-      tool,
-      color,
-      width: lineWidth,
-      points: [point],
-    });
-  }, [tool, color, lineWidth, getPoint]);
-
-  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!isDrawing || !currentAction) return;
-    const point = getPoint(e);
-    setCurrentAction((prev) => {
-      if (!prev) return prev;
-      return { ...prev, points: [...prev.points, point] };
-    });
-  }, [isDrawing, currentAction, getPoint]);
-
-  const handleMouseUp = useCallback(() => {
-    if (!isDrawing || !currentAction) return;
-    setIsDrawing(false);
-    setActions((prev) => [...prev, currentAction]);
-    setCurrentAction(null);
-  }, [isDrawing, currentAction]);
-
-  const handleUndo = useCallback(() => {
-    setActions((prev) => prev.slice(0, -1));
-  }, []);
-
-  const handleClear = useCallback(() => {
-    setActions([]);
-    toast({ title: 'Canvas cleared' });
-  }, [toast]);
-
-  const handleSavePng = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const link = document.createElement('a');
-    link.download = 'whiteboard.png';
-    link.href = canvas.toDataURL('image/png');
-    link.click();
-    toast({ title: 'PNG saved' });
-  }, [toast]);
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    redrawCanvas(ctx, wbState, CANVAS_WIDTH, CANVAS_HEIGHT);
+  }, [wbState]);
 
-  const tools: { key: ShapeTool; label: string }[] = [
-    { key: 'pen', label: 'Pen' },
-    { key: 'eraser', label: 'Eraser' },
-    { key: 'line', label: 'Line' },
-    { key: 'rect', label: 'Rect' },
-    { key: 'circle', label: 'Circle' },
-  ];
+  const startDrawing = useCallback(
+    (point: Point) => {
+      setIsDrawing(true);
+      currentStrokeRef.current = {
+        tool: currentTool,
+        points: [point],
+        color: currentColor,
+        width: currentWidth,
+      };
+    },
+    [currentTool, currentColor, currentWidth]
+  );
+
+  const continueDrawing = useCallback(
+    (point: Point) => {
+      if (!isDrawing || !currentStrokeRef.current) return;
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      currentStrokeRef.current.points.push(point);
+      redrawCanvas(ctx, wbState, CANVAS_WIDTH, CANVAS_HEIGHT);
+      drawStroke(ctx, currentStrokeRef.current);
+    },
+    [isDrawing, wbState]
+  );
+
+  const stopDrawing = useCallback(() => {
+    if (!isDrawing || !currentStrokeRef.current) return;
+    if (currentStrokeRef.current.points.length >= 2) {
+      setWbState((prev) => addStroke(prev, currentStrokeRef.current!));
+    }
+    currentStrokeRef.current = null;
+    setIsDrawing(false);
+  }, [isDrawing]);
+
+  const handleMouseDown = useCallback(
+    (e: React.MouseEvent<HTMLCanvasElement>) => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      startDrawing(getCanvasPoint(canvas, e.clientX, e.clientY));
+    },
+    [startDrawing]
+  );
+
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent<HTMLCanvasElement>) => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      continueDrawing(getCanvasPoint(canvas, e.clientX, e.clientY));
+    },
+    [continueDrawing]
+  );
+
+  const handleMouseUp = useCallback(() => stopDrawing(), [stopDrawing]);
+
+  const handleTouchStart = useCallback(
+    (e: React.TouchEvent<HTMLCanvasElement>) => {
+      e.preventDefault();
+      const canvas = canvasRef.current;
+      if (!canvas || e.touches.length === 0) return;
+      const touch = e.touches[0];
+      startDrawing(getCanvasPoint(canvas, touch.clientX, touch.clientY));
+    },
+    [startDrawing]
+  );
+
+  const handleTouchMove = useCallback(
+    (e: React.TouchEvent<HTMLCanvasElement>) => {
+      e.preventDefault();
+      const canvas = canvasRef.current;
+      if (!canvas || e.touches.length === 0) return;
+      const touch = e.touches[0];
+      continueDrawing(getCanvasPoint(canvas, touch.clientX, touch.clientY));
+    },
+    [continueDrawing]
+  );
+
+  const handleTouchEnd = useCallback(
+    (e: React.TouchEvent<HTMLCanvasElement>) => {
+      e.preventDefault();
+      stopDrawing();
+    },
+    [stopDrawing]
+  );
+
+  const handleUndo = () => setWbState((prev) => undo(prev));
+  const handleRedo = () => setWbState((prev) => redo(prev));
+
+  const handleClear = () => {
+    setWbState(clearAll());
+    toast({ title: 'Canvas cleared' });
+  };
+
+  const handleSave = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    saveAsPng(canvas);
+    toast({ title: 'Saved as PNG' });
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'z') {
+        e.preventDefault();
+        if (e.shiftKey) {
+          handleRedo();
+        } else {
+          handleUndo();
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   return (
-    <div className="min-h-screen bg-background p-8">
-      <div className="max-w-5xl mx-auto space-y-6">
-        <header className="space-y-2">
-          <h1 className="text-3xl font-bold tracking-tight">Whiteboard</h1>
-          <p className="text-muted-foreground">
-            Freehand drawing, shapes, undo, PNG export
+    <div className="min-h-screen bg-background p-4">
+      <div className="max-w-7xl mx-auto space-y-4">
+        <header className="space-y-1">
+          <h1 className="text-2xl font-bold tracking-tight">Whiteboard</h1>
+          <p className="text-sm text-muted-foreground">
+            Draw, sketch, and save your ideas. Touch supported.
           </p>
         </header>
 
-        <div className="flex flex-col lg:flex-row gap-6">
-          <Card className="flex-shrink-0 w-full lg:w-48">
-            <CardHeader>
-              <CardTitle>Tools</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex flex-col gap-1">
-                {tools.map((t) => (
+        <Card>
+          <CardContent className="pt-3 pb-3">
+            <div className="flex flex-wrap items-center gap-4">
+              <div className="flex gap-1">
+                {TOOLS.map((tool) => (
                   <Button
-                    key={t.key}
+                    key={tool.id}
                     type="button"
-                    variant={tool === t.key ? 'default' : 'outline'}
+                    variant={currentTool === tool.id ? 'default' : 'outline'}
                     size="sm"
-                    onClick={() => setTool(t.key)}
+                    onClick={() => setCurrentTool(tool.id)}
+                    title={tool.label}
                   >
-                    {t.label}
+                    {tool.icon}
                   </Button>
                 ))}
               </div>
 
-              <div className="space-y-2">
-                <Label>Color</Label>
-                <input
-                  type="color"
-                  value={color}
-                  onChange={(e) => setColor(e.target.value)}
-                  className="w-full h-8 cursor-pointer"
-                />
+              <div className="w-px h-8 bg-border" />
+
+              <div className="flex gap-1">
+                {COLORS.map((c) => (
+                  <button
+                    key={c}
+                    type="button"
+                    className={`w-7 h-7 rounded-md border-2 ${
+                      currentColor === c ? 'border-foreground' : 'border-border'
+                    }`}
+                    style={{ backgroundColor: c }}
+                    onClick={() => setCurrentColor(c)}
+                    title={c}
+                  />
+                ))}
               </div>
 
-              <div className="space-y-2">
-                <Label>Width: {lineWidth}</Label>
-                <Input
-                  type="range"
-                  min={1}
-                  max={20}
-                  value={lineWidth}
-                  onChange={(e) => setLineWidth(Number(e.target.value))}
-                />
+              <div className="w-px h-8 bg-border" />
+
+              <div className="flex items-center gap-2">
+                <Label className="text-xs">Width:</Label>
+                <div className="flex gap-1">
+                  {STROKE_WIDTHS.map((w) => (
+                    <Button
+                      key={w}
+                      type="button"
+                      variant={currentWidth === w ? 'default' : 'outline'}
+                      size="sm"
+                      className="w-8 h-8 p-0"
+                      onClick={() => setCurrentWidth(w)}
+                    >
+                      {w}
+                    </Button>
+                  ))}
+                </div>
               </div>
 
-              <Button type="button" variant="outline" onClick={handleUndo} className="w-full" disabled={actions.length === 0}>
-                Undo
-              </Button>
-              <Button type="button" variant="outline" onClick={handleClear} className="w-full">
-                Clear
-              </Button>
-              <Button type="button" onClick={handleSavePng} className="w-full">
-                Save PNG
-              </Button>
-            </CardContent>
-          </Card>
+              <div className="w-px h-8 bg-border" />
 
-          <Card className="flex-1">
-            <CardContent className="p-4">
-              <canvas
-                ref={canvasRef}
-                width={CANVAS_WIDTH}
-                height={CANVAS_HEIGHT}
-                className="border border-border rounded cursor-crosshair bg-white w-full"
-                style={{ maxWidth: CANVAS_WIDTH }}
-                onMouseDown={handleMouseDown}
-                onMouseMove={handleMouseMove}
-                onMouseUp={handleMouseUp}
-                onMouseLeave={handleMouseUp}
-              />
-            </CardContent>
-          </Card>
+              <div className="flex gap-1">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={handleUndo}
+                  disabled={wbState.strokes.length === 0}
+                  title="Undo (Ctrl+Z)"
+                >
+                  <Undo2 className="h-4 w-4" />
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={handleRedo}
+                  disabled={wbState.undoneStrokes.length === 0}
+                  title="Redo (Ctrl+Shift+Z)"
+                >
+                  <Redo2 className="h-4 w-4" />
+                </Button>
+                <Button type="button" variant="outline" size="sm" onClick={handleClear}>
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+                <Button type="button" variant="outline" size="sm" onClick={handleSave}>
+                  <Download className="h-4 w-4 mr-1" /> PNG
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <div className="border rounded-lg overflow-hidden bg-white">
+          <canvas
+            ref={canvasRef}
+            width={CANVAS_WIDTH}
+            height={CANVAS_HEIGHT}
+            className="w-full cursor-crosshair touch-none"
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          />
         </div>
       </div>
       <Toaster />

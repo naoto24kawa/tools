@@ -1,55 +1,94 @@
-import { describe, it, expect } from 'vitest';
-import { KAOMOJI_DATA, CATEGORIES, filterKaomoji } from '../kaomojiData';
+import { describe, expect, it, beforeEach } from 'vitest';
+import {
+  KAOMOJI_DATABASE,
+  CATEGORIES,
+  searchKaomojis,
+  filterByCategory,
+  getRecentKaomojis,
+  addRecentKaomoji,
+} from '../kaomojiData';
 
-describe('kaomojiData', () => {
-  describe('data', () => {
-    it('should have kaomoji entries', () => {
-      expect(KAOMOJI_DATA.length).toBeGreaterThan(100);
-    });
-
-    it('should have categories', () => {
-      expect(CATEGORIES.length).toBeGreaterThan(0);
-    });
-
-    it('every kaomoji should have a valid category', () => {
-      for (const k of KAOMOJI_DATA) {
-        expect(CATEGORIES).toContain(k.category);
-      }
-    });
-
-    it('every kaomoji should have keywords', () => {
-      for (const k of KAOMOJI_DATA) {
-        expect(k.keywords.length).toBeGreaterThan(0);
-      }
-    });
+describe('KAOMOJI_DATABASE', () => {
+  it('has at least 150 kaomojis', () => {
+    expect(KAOMOJI_DATABASE.length).toBeGreaterThanOrEqual(150);
   });
 
-  describe('filterKaomoji', () => {
-    it('returns all when no filter', () => {
-      const result = filterKaomoji(KAOMOJI_DATA, '', 'All');
-      expect(result.length).toBe(KAOMOJI_DATA.length);
-    });
+  it('covers all categories', () => {
+    for (const cat of CATEGORIES) {
+      const count = KAOMOJI_DATABASE.filter((k) => k.category === cat).length;
+      expect(count).toBeGreaterThan(0);
+    }
+  });
 
-    it('filters by category', () => {
-      const result = filterKaomoji(KAOMOJI_DATA, '', 'Happy');
-      expect(result.length).toBeGreaterThan(0);
-      expect(result.every((k) => k.category === 'Happy')).toBe(true);
-    });
+  it('each kaomoji has required fields', () => {
+    for (const kaomoji of KAOMOJI_DATABASE) {
+      expect(kaomoji.text).toBeTruthy();
+      expect(kaomoji.keywords.length).toBeGreaterThan(0);
+      expect(CATEGORIES).toContain(kaomoji.category);
+    }
+  });
+});
 
-    it('filters by search term in keywords', () => {
-      const result = filterKaomoji(KAOMOJI_DATA, 'crying', 'All');
-      expect(result.length).toBeGreaterThan(0);
-    });
+describe('searchKaomojis', () => {
+  it('returns all kaomojis for empty query', () => {
+    expect(searchKaomojis('')).toHaveLength(KAOMOJI_DATABASE.length);
+  });
 
-    it('returns empty array for no matches', () => {
-      const result = filterKaomoji(KAOMOJI_DATA, 'xyznonexistent', 'All');
-      expect(result.length).toBe(0);
-    });
+  it('finds kaomojis by keyword', () => {
+    const results = searchKaomojis('happy');
+    expect(results.length).toBeGreaterThan(0);
+  });
 
-    it('combines category and search filters', () => {
-      const result = filterKaomoji(KAOMOJI_DATA, 'smile', 'Happy');
-      expect(result.length).toBeGreaterThan(0);
-      expect(result.every((k) => k.category === 'Happy')).toBe(true);
-    });
+  it('is case insensitive', () => {
+    const upper = searchKaomojis('CAT');
+    const lower = searchKaomojis('cat');
+    expect(upper).toEqual(lower);
+  });
+
+  it('returns empty for no matches', () => {
+    const results = searchKaomojis('xyznonexistent');
+    expect(results).toHaveLength(0);
+  });
+});
+
+describe('filterByCategory', () => {
+  it('filters by happy category', () => {
+    const results = filterByCategory('happy');
+    expect(results.length).toBeGreaterThan(0);
+    expect(results.every((k) => k.category === 'happy')).toBe(true);
+  });
+
+  it('filters by table-flip category', () => {
+    const results = filterByCategory('table-flip');
+    expect(results.length).toBeGreaterThan(0);
+    expect(results.every((k) => k.category === 'table-flip')).toBe(true);
+  });
+});
+
+describe('recent kaomojis', () => {
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
+  it('returns empty array when no recent kaomojis', () => {
+    expect(getRecentKaomojis()).toEqual([]);
+  });
+
+  it('adds and retrieves recent kaomojis', () => {
+    addRecentKaomoji('(^_^)');
+    addRecentKaomoji('(T_T)');
+    const recent = getRecentKaomojis();
+    expect(recent).toHaveLength(2);
+    expect(recent[0]).toBe('(T_T)');
+    expect(recent[1]).toBe('(^_^)');
+  });
+
+  it('deduplicates recent kaomojis', () => {
+    addRecentKaomoji('(^_^)');
+    addRecentKaomoji('(T_T)');
+    addRecentKaomoji('(^_^)');
+    const recent = getRecentKaomojis();
+    expect(recent).toHaveLength(2);
+    expect(recent[0]).toBe('(^_^)');
   });
 });

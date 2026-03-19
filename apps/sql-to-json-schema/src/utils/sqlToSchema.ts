@@ -87,16 +87,39 @@ function parseColumnDefinition(definition: string): Column | null {
     return null;
   }
 
-  // Match column: name type [constraints...]
-  const match = trimmed.match(
-    /^[`"']?(\w+)[`"']?\s+(\w+(?:\s+\w+)?(?:\([^)]*\))?)\s*(.*)$/i
-  );
+  // Match column: name type(args)? constraints...
+  // First extract name and the rest
+  const nameMatch = trimmed.match(/^[`"']?(\w+)[`"']?\s+(.+)$/i);
+  if (!nameMatch) return null;
 
-  if (!match) return null;
+  const name = nameMatch[1];
+  const rest = nameMatch[2];
 
-  const name = match[1];
-  const type = match[2];
-  const constraintStr = match[3] || '';
+  // Extract type (possibly with parenthesized args like VARCHAR(255))
+  // and two-word types like DOUBLE PRECISION, CHARACTER VARYING
+  const twoWordTypes = /^(DOUBLE\s+PRECISION|CHARACTER\s+VARYING)\b/i;
+  const typeWithParens = /^(\w+\s*\([^)]*\))/i;
+  const simpleType = /^(\w+)/i;
+
+  let type: string;
+  let constraintStr: string;
+
+  const twoWordMatch = rest.match(twoWordTypes);
+  if (twoWordMatch) {
+    type = twoWordMatch[1];
+    constraintStr = rest.slice(twoWordMatch[0].length).trim();
+  } else {
+    const parensMatch = rest.match(typeWithParens);
+    if (parensMatch) {
+      type = parensMatch[1];
+      constraintStr = rest.slice(parensMatch[0].length).trim();
+    } else {
+      const simpleMatch = rest.match(simpleType);
+      if (!simpleMatch) return null;
+      type = simpleMatch[1];
+      constraintStr = rest.slice(simpleMatch[0].length).trim();
+    }
+  }
 
   const upperConstraints = constraintStr.toUpperCase();
   const notNull = upperConstraints.includes('NOT NULL');
