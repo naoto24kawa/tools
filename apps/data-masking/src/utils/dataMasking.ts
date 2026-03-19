@@ -17,8 +17,18 @@ export function maskEmail(email: string): string {
 export function maskPhone(phone: string): string {
   const digits = phone.replace(/\D/g, '');
   if (digits.length < 4) return '*'.repeat(phone.length);
-  const lastFour = digits.slice(-4);
-  return phone.replace(/\d(?=\d{4})/g, '*').replace(/\d{4}$/, lastFour);
+  const maskedDigits = '*'.repeat(digits.length - 4) + digits.slice(-4);
+  let result = '';
+  let digitIndex = 0;
+  for (const char of phone) {
+    if (/\d/.test(char)) {
+      result += maskedDigits[digitIndex];
+      digitIndex++;
+    } else {
+      result += char;
+    }
+  }
+  return result;
 }
 
 export function maskCreditCard(cc: string): string {

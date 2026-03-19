@@ -1,4 +1,4 @@
-import { describe, expect, it, beforeEach } from 'vitest';
+import { describe, expect, it, beforeEach, vi } from 'vitest';
 import {
   EMOJI_DATABASE,
   CATEGORIES,
@@ -7,6 +7,19 @@ import {
   getRecentEmojis,
   addRecentEmoji,
 } from '../emojiData';
+
+// Mock localStorage for Node test environment
+const localStorageMock = (() => {
+  let store: Record<string, string> = {};
+  return {
+    getItem: (key: string) => store[key] ?? null,
+    setItem: (key: string, value: string) => { store[key] = value; },
+    removeItem: (key: string) => { delete store[key]; },
+    clear: () => { store = {}; },
+  };
+})();
+
+vi.stubGlobal('localStorage', localStorageMock);
 
 describe('EMOJI_DATABASE', () => {
   it('has at least 400 emojis', () => {

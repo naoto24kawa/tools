@@ -152,13 +152,25 @@ export function parse(sql: string): Table[] {
 
   const tables: Table[] = [];
 
-  // Match CREATE TABLE statements
-  const tableRegex = /CREATE\s+TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?[`"']?(\w+)[`"']?\s*\(([\s\S]*?)\)\s*;?/gi;
+  // Find CREATE TABLE statements and extract their contents using
+  // parenthesis matching (not regex) to handle nested parens like VARCHAR(255)
+  const headerRegex = /CREATE\s+TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?[`"']?(\w+)[`"']?\s*\(/gi;
 
   let match;
-  while ((match = tableRegex.exec(sql)) !== null) {
+  while ((match = headerRegex.exec(sql)) !== null) {
     const tableName = match[1];
-    const columnsStr = match[2];
+    const bodyStart = match.index + match[0].length;
+
+    // Find matching closing paren
+    let depth = 1;
+    let i = bodyStart;
+    while (i < sql.length && depth > 0) {
+      if (sql[i] === '(') depth++;
+      if (sql[i] === ')') depth--;
+      if (depth > 0) i++;
+    }
+
+    const columnsStr = sql.slice(bodyStart, i);
 
     // Split by commas, but be careful with parentheses
     const columnDefs = splitColumnDefinitions(columnsStr);
