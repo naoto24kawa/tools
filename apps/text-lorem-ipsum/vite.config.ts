@@ -4,7 +4,7 @@ import { defineConfig } from 'vite-plus';
 
 export default defineConfig({
   plugins: [react()],
-  base: '/',
+  base: './',
   server: {
     port: 5182,
   },
