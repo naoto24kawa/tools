@@ -23,7 +23,6 @@ export function parseTOML(input: string): Record<string, unknown> {
   const lines = trimmed.split('\n');
   const result: Record<string, unknown> = {};
   let currentSection: Record<string, unknown> = result;
-  let currentPath: string[] = [];
 
   for (let i = 0; i < lines.length; i++) {
     const lineNum = i + 1;
@@ -44,7 +43,6 @@ export function parseTOML(input: string): Record<string, unknown> {
           throw new TomlError('Invalid array of tables syntax', lineNum);
         }
         const path = match[1].trim().split('.').map((p) => p.trim());
-        currentPath = path;
 
         // Navigate to the correct nested location
         let target = result;
@@ -79,7 +77,6 @@ export function parseTOML(input: string): Record<string, unknown> {
           throw new TomlError('Invalid section syntax', lineNum);
         }
         const path = match[1].trim().split('.').map((p) => p.trim());
-        currentPath = path;
 
         // Navigate/create nested sections
         let target = result;
@@ -398,8 +395,6 @@ function splitInlineTable(input: string): string[] {
 
   return parts;
 }
-
-export const validateToml = validateTOML;
 
 export function validateTOML(input: string): TomlValidationResult {
   if (!input.trim()) {

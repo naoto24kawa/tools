@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Copy, Trash2, Check, AlertCircle } from 'lucide-react';
 import { Toaster } from '@/components/ui/toaster';
 import { useToast } from '@/hooks/useToast';
-import { validateToml } from '@/utils/tomlValidator';
+import { validateTOML } from '@/utils/tomlValidator';
 
 const SAMPLE = `# Sample TOML configuration
 title = "TOML Example"
@@ -33,7 +33,7 @@ export default function App() {
 
   const result = useMemo(() => {
     if (!input.trim()) return null;
-    return validateToml(input);
+    return validateTOML(input);
   }, [input]);
 
   const copyJson = async () => {

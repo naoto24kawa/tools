@@ -20,6 +20,19 @@ interface FileEntry {
   originalName: string;
 }
 
+function ruleValueLabel(rule: RuleType): string {
+  switch (rule) {
+    case 'prefix':
+      return 'Prefix';
+    case 'suffix':
+      return 'Suffix';
+    case 'replace':
+      return 'Replace With';
+    case 'numbering':
+      return 'Name Prefix';
+  }
+}
+
 export default function App() {
   const [files, setFiles] = useState<FileEntry[]>([]);
   const [rule, setRule] = useState<RuleType>('prefix');
@@ -146,13 +159,7 @@ export default function App() {
 
                 <div className="space-y-2">
                   <Label>
-                    {rule === 'prefix'
-                      ? 'Prefix'
-                      : rule === 'suffix'
-                        ? 'Suffix'
-                        : rule === 'replace'
-                          ? 'Replace With'
-                          : 'Name Prefix'}
+                    {ruleValueLabel(rule)}
                   </Label>
                   <Input
                     value={ruleValue}
