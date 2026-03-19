@@ -3,14 +3,21 @@ export interface Slide {
   html: string;
 }
 
-export function renderMarkdown(md: string): string {
-  // First escape all HTML in the source to prevent XSS
-  let html = escapeHtml(md);
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
 
-  // Code blocks (must be before inline code)
+export function renderMarkdown(md: string): string {
+  let html = md;
+
+  // Code blocks (must be before inline code) - escape HTML inside code blocks
   html = html.replace(/```(\w*)\n([\s\S]*?)```/g, (_match, lang, code) => {
     const langAttr = lang ? ` class="language-${lang}"` : '';
-    return `<pre><code${langAttr}>${code.trim()}</code></pre>`;
+    return `<pre><code${langAttr}>${escapeHtml(code.trim())}</code></pre>`;
   });
 
   // Headings
@@ -30,10 +37,16 @@ export function renderMarkdown(md: string): string {
   html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
 
   // Images
-  html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" style="max-width:100%;max-height:60vh;">');
+  html = html.replace(
+    /!\[([^\]]*)\]\(([^)]+)\)/g,
+    '<img src="$2" alt="$1" style="max-width:100%;max-height:60vh;">',
+  );
 
   // Links
-  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+  html = html.replace(
+    /\[([^\]]+)\]\(([^)]+)\)/g,
+    '<a href="$2" target="_blank" rel="noopener">$1</a>',
+  );
 
   // Horizontal rule
   html = html.replace(/^---$/gm, '<hr>');
@@ -79,14 +92,6 @@ export function renderMarkdown(md: string): string {
   }
 
   return processed.join('\n');
-}
-
-function escapeHtml(text: string): string {
-  return text
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
 }
 
 export function parseSlides(markdown: string): Slide[] {

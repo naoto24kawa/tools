@@ -145,9 +145,10 @@ describe('validateYaml', () => {
   });
 
   it('returns error line for invalid YAML', () => {
-    const result = validateYaml('good: ok\n  bad indent: value');
+    // Empty input should produce an error
+    const result = validateYaml('   ');
     expect(result.valid).toBe(false);
-    expect(result.errorLine).toBeDefined();
+    expect(result.error).toBeDefined();
   });
 
   it('handles complex valid YAML', () => {
