@@ -1,7 +1,6 @@
 import { describe, test, expect } from 'vitest';
 import { renderHook, act } from '../../../../../test-utils';
 import { useTextCounter } from '../useTextCounter';
-import { DEFAULT_STATS } from '../../config/constants';
 
 describe('useTextCounter', () => {
   test('should initialize with empty text', () => {
