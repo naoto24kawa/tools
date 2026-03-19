@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Toaster } from '@/components/ui/toaster';
 import { useToast } from '@/hooks/useToast';
-import { gcdMultiple, lcmMultiple, gcdWithSteps, parseNumbers, type GcdStep } from '@/utils/gcdLcm';
+import { gcdMultiple, lcmMultiple, gcdSteps, parseNumbers, type GcdStep } from '@/utils/gcdLcm';
 
 export default function App() {
   const [input, setInput] = useState('');
@@ -29,22 +29,28 @@ export default function App() {
       setLcmResult(l);
 
       if (numbers.length === 2) {
-        const { steps: s } = gcdWithSteps(numbers[0], numbers[1]);
-        setSteps(s);
+        setSteps(gcdSteps(numbers[0], numbers[1]));
       }
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Invalid input');
     }
   }, [input]);
 
-  const copyToClipboard = useCallback(async (text: string) => {
-    try {
-      await navigator.clipboard.writeText(text);
-      toast({ title: 'Copied!', description: 'Result copied to clipboard' });
-    } catch {
-      toast({ title: 'Copy failed', description: 'Could not copy to clipboard', variant: 'destructive' });
-    }
-  }, [toast]);
+  const copyToClipboard = useCallback(
+    async (text: string) => {
+      try {
+        await navigator.clipboard.writeText(text);
+        toast({ title: 'Copied!', description: 'Result copied to clipboard' });
+      } catch {
+        toast({
+          title: 'Copy failed',
+          description: 'Could not copy to clipboard',
+          variant: 'destructive',
+        });
+      }
+    },
+    [toast],
+  );
 
   return (
     <div className="min-h-screen bg-background p-8">
@@ -59,7 +65,9 @@ export default function App() {
         <Card>
           <CardHeader>
             <CardTitle>Input</CardTitle>
-            <CardDescription>Enter two or more integers separated by commas or spaces</CardDescription>
+            <CardDescription>
+              Enter two or more positive integers separated by commas or spaces
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
@@ -72,7 +80,9 @@ export default function App() {
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleCalculate()}
                 />
-                <Button type="button" onClick={handleCalculate}>Calculate</Button>
+                <Button type="button" onClick={handleCalculate}>
+                  Calculate
+                </Button>
               </div>
               {error && <p className="text-sm text-destructive">{error}</p>}
             </div>

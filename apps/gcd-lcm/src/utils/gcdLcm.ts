@@ -80,6 +80,11 @@ export function primeFactorize(n: number): PrimeFactorEntry[] {
   return factors;
 }
 
+export function gcdWithSteps(a: number, b: number): { gcd: number; steps: GcdStep[] } {
+  const steps = gcdSteps(a, b);
+  return { gcd: gcd(a, b), steps };
+}
+
 export function parseNumbers(input: string): number[] {
   const parts = input
     .split(/[,\s]+/)

@@ -5,7 +5,14 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Toaster } from '@/components/ui/toaster';
 import { useToast } from '@/hooks/useToast';
-import { isPrime, factorize, formatFactors, sieve, nthPrime, type Factor } from '@/utils/prime';
+import {
+  isPrime,
+  factorize,
+  formatFactorization,
+  sieve,
+  nthPrime,
+  type PrimeFactor,
+} from '@/utils/primeUtils';
 
 type Tab = 'check' | 'sieve' | 'nth';
 
@@ -14,7 +21,7 @@ export default function App() {
   const [checkInput, setCheckInput] = useState('');
   const [checkResult, setCheckResult] = useState<{
     isPrime: boolean;
-    factors: Factor[];
+    factors: PrimeFactor[];
     formatted: string;
   } | null>(null);
   const [checkError, setCheckError] = useState('');
@@ -38,9 +45,13 @@ export default function App() {
       return;
     }
     const prime = isPrime(n);
-    const factors = prime ? [] : factorize(n);
-    const formatted = prime ? '' : formatFactors(factors);
-    setCheckResult({ isPrime: prime, factors, formatted });
+    if (prime) {
+      setCheckResult({ isPrime: true, factors: [], formatted: '' });
+    } else {
+      const factors = factorize(n);
+      const formatted = formatFactorization(factors);
+      setCheckResult({ isPrime: false, factors, formatted });
+    }
   }, [checkInput]);
 
   const handleSieve = useCallback(() => {
@@ -65,14 +76,21 @@ export default function App() {
     setNthResult(nthPrime(n));
   }, [nthInput]);
 
-  const copyToClipboard = useCallback(async (text: string) => {
-    try {
-      await navigator.clipboard.writeText(text);
-      toast({ title: 'Copied!', description: 'Result copied to clipboard' });
-    } catch {
-      toast({ title: 'Copy failed', description: 'Could not copy to clipboard', variant: 'destructive' });
-    }
-  }, [toast]);
+  const copyToClipboard = useCallback(
+    async (text: string) => {
+      try {
+        await navigator.clipboard.writeText(text);
+        toast({ title: 'Copied!', description: 'Result copied to clipboard' });
+      } catch {
+        toast({
+          title: 'Copy failed',
+          description: 'Could not copy to clipboard',
+          variant: 'destructive',
+        });
+      }
+    },
+    [toast],
+  );
 
   return (
     <div className="min-h-screen bg-background p-8">
@@ -101,7 +119,9 @@ export default function App() {
           <Card>
             <CardHeader>
               <CardTitle>Prime Check & Factorization</CardTitle>
-              <CardDescription>Enter a number to check if it is prime and get its factorization</CardDescription>
+              <CardDescription>
+                Enter a number to check if it is prime and get its factorization
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -115,7 +135,9 @@ export default function App() {
                     onChange={(e) => setCheckInput(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleCheck()}
                   />
-                  <Button type="button" onClick={handleCheck}>Check</Button>
+                  <Button type="button" onClick={handleCheck}>
+                    Check
+                  </Button>
                 </div>
                 {checkError && <p className="text-sm text-destructive">{checkError}</p>}
               </div>
@@ -123,7 +145,9 @@ export default function App() {
                 <div className="space-y-2 rounded-md border p-4">
                   <p className="text-lg font-semibold">
                     {checkInput} is{' '}
-                    <span className={checkResult.isPrime ? 'text-green-600' : 'text-orange-600'}>
+                    <span
+                      className={checkResult.isPrime ? 'text-green-600' : 'text-orange-600'}
+                    >
                       {checkResult.isPrime ? 'Prime' : 'Not Prime'}
                     </span>
                   </p>
@@ -138,7 +162,9 @@ export default function App() {
                           type="button"
                           variant="outline"
                           size="sm"
-                          onClick={() => copyToClipboard(`${checkInput} = ${checkResult.formatted}`)}
+                          onClick={() =>
+                            copyToClipboard(`${checkInput} = ${checkResult.formatted}`)
+                          }
                         >
                           Copy
                         </Button>
@@ -169,7 +195,9 @@ export default function App() {
                     onChange={(e) => setSieveInput(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleSieve()}
                   />
-                  <Button type="button" onClick={handleSieve}>Generate</Button>
+                  <Button type="button" onClick={handleSieve}>
+                    Generate
+                  </Button>
                 </div>
                 {sieveError && <p className="text-sm text-destructive">{sieveError}</p>}
               </div>
@@ -219,7 +247,9 @@ export default function App() {
                     onChange={(e) => setNthInput(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleNth()}
                   />
-                  <Button type="button" onClick={handleNth}>Find</Button>
+                  <Button type="button" onClick={handleNth}>
+                    Find
+                  </Button>
                 </div>
                 {nthError && <p className="text-sm text-destructive">{nthError}</p>}
               </div>
