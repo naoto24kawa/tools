@@ -1,0 +1,7 @@
+name = "tools-semver-calculator"
+compatibility_date = "2024-10-19"
+
+# Cloudflare Pages Configuration
+# Deploy: wrangler pages deploy dist --project-name=tools-semver-calculator
+# Build output directory: dist
+# Framework: React + Vite
