@@ -15,6 +15,7 @@ interface FileEntry {
 export default function App() {
   const [files, setFiles] = useState<FileEntry[]>([]);
   const [creating, setCreating] = useState(false);
+  const [compress, setCompress] = useState(true);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
@@ -38,7 +39,7 @@ export default function App() {
 
     setCreating(true);
     try {
-      const blob = await createZip(files.map((f) => f.file));
+      const blob = await createZip(files.map((f) => f.file), compress);
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
@@ -109,7 +110,16 @@ export default function App() {
                   <CardTitle>Files ({files.length})</CardTitle>
                   <CardDescription>Total: {formatSize(totalSize)}</CardDescription>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex items-center gap-3">
+                  <label className="flex items-center gap-2 text-sm cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={compress}
+                      onChange={(e) => setCompress(e.target.checked)}
+                      className="rounded border-gray-300"
+                    />
+                    Compress
+                  </label>
                   <Button type="button" variant="outline" size="sm" onClick={() => setFiles([])}>
                     <Trash2 className="mr-2 h-4 w-4" /> Clear All
                   </Button>
