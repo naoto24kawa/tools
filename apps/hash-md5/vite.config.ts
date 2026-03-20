@@ -5,7 +5,6 @@ import { defineConfig } from 'vite-plus';
 
 export default defineConfig({
   plugins: [react(), wasm()],
-  // Pages直接アクセス用にルートパスを使用
   base: './',
   server: {
     port: 5232,

@@ -19,7 +19,10 @@ export default function App() {
       return;
     }
     md5(input)
-      .then(setHash)
+      .then((h) => {
+        setHash(h);
+        setError('');
+      })
       .catch((e) => setError(String(e)));
   }, [input]);
 
