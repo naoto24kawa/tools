@@ -1,74 +1,73 @@
-export type CharType = 'hiragana' | 'katakana' | 'kanji' | 'latin' | 'number' | 'symbol' | 'space';
+import kuromoji from 'kuromoji';
 
-export interface Token {
+export interface MorphemeToken {
   surface: string;
-  type: CharType;
+  pos: string;
+  pos_detail: string;
+  reading: string;
+  baseForm: string;
 }
 
-function getCharType(char: string): CharType {
-  const code = char.charCodeAt(0);
-  if (/\s/.test(char)) return 'space';
-  if (code >= 0x3040 && code <= 0x309f) return 'hiragana';
-  if (code >= 0x30a0 && code <= 0x30ff) return 'katakana';
-  if ((code >= 0x4e00 && code <= 0x9fff) || (code >= 0x3400 && code <= 0x4dbf)) return 'kanji';
-  if (/[a-zA-Z]/.test(char)) return 'latin';
-  if (/[0-9]/.test(char)) return 'number';
-  return 'symbol';
+let tokenizer: kuromoji.Tokenizer<kuromoji.IpadicFeatures> | null = null;
+
+export async function initTokenizer(
+  onProgress?: (message: string) => void,
+  dictPath: string = '/dict/',
+): Promise<void> {
+  return new Promise((resolve, reject) => {
+    onProgress?.('辞書データを読み込み中...');
+    kuromoji.builder({ dicPath: dictPath }).build((err, t) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      tokenizer = t;
+      resolve();
+    });
+  });
 }
 
-export function tokenize(text: string): Token[] {
+export function isTokenizerReady(): boolean {
+  return tokenizer !== null;
+}
+
+export function analyze(text: string): MorphemeToken[] {
+  if (!tokenizer) throw new Error('Tokenizer not initialized');
   if (!text) return [];
-
-  const tokens: Token[] = [];
-  let currentSurface = '';
-  let currentType: CharType | null = null;
-
-  for (const char of text) {
-    const charType = getCharType(char);
-
-    if (currentType === null) {
-      currentType = charType;
-      currentSurface = char;
-    } else if (charType === currentType) {
-      currentSurface += char;
-    } else {
-      tokens.push({ surface: currentSurface, type: currentType });
-      currentType = charType;
-      currentSurface = char;
-    }
-  }
-
-  if (currentSurface) {
-    tokens.push({ surface: currentSurface, type: currentType! });
-  }
-
-  return tokens;
+  const tokens = tokenizer.tokenize(text);
+  return tokens.map((t) => ({
+    surface: t.surface_form,
+    pos: t.pos,
+    pos_detail: t.pos_detail_1,
+    reading: t.reading || '',
+    baseForm: t.basic_form,
+  }));
 }
 
-export function getStats(tokens: Token[]): Record<CharType, number> {
+export const POS_COLORS: Record<string, string> = {
+  '名詞': '#3b82f6',
+  '動詞': '#ef4444',
+  '形容詞': '#10b981',
+  '副詞': '#8b5cf6',
+  '助詞': '#6b7280',
+  '助動詞': '#f59e0b',
+  '接続詞': '#ec4899',
+  '感動詞': '#14b8a6',
+  '連体詞': '#a855f7',
+  '記号': '#d1d5db',
+  'フィラー': '#78716c',
+};
+
+export const POS_LIST = Object.keys(POS_COLORS);
+
+export function getPosColor(pos: string): string {
+  return POS_COLORS[pos] || '#9ca3af';
+}
+
+export function getStats(tokens: MorphemeToken[]): Record<string, number> {
   const stats: Record<string, number> = {};
   for (const token of tokens) {
-    stats[token.type] = (stats[token.type] || 0) + 1;
+    stats[token.pos] = (stats[token.pos] || 0) + 1;
   }
-  return stats as Record<CharType, number>;
+  return stats;
 }
-
-export const TYPE_LABELS: Record<CharType, string> = {
-  hiragana: 'ひらがな',
-  katakana: 'カタカナ',
-  kanji: '漢字',
-  latin: '英字',
-  number: '数字',
-  symbol: '記号',
-  space: '空白',
-};
-
-export const TYPE_COLORS: Record<CharType, string> = {
-  hiragana: '#3b82f6',
-  katakana: '#10b981',
-  kanji: '#ef4444',
-  latin: '#8b5cf6',
-  number: '#f59e0b',
-  symbol: '#6b7280',
-  space: '#d1d5db',
-};
