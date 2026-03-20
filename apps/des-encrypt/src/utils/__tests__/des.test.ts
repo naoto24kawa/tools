@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { desDecrypt, desEncrypt } from '../des';
+import { aesDecrypt, aesEncrypt, desDecrypt, desEncrypt } from '../des';
 
 describe('des', () => {
   test('roundtrip encrypt/decrypt', () => {
@@ -19,5 +19,26 @@ describe('des', () => {
   test('wrong key fails', () => {
     const encrypted = desEncrypt('secret data', 'correct-key');
     expect(() => desDecrypt(encrypted, 'wrong-key')).toThrow();
+  });
+});
+
+describe('AES-256-GCM', () => {
+  test('encrypt and decrypt roundtrip', async () => {
+    const plaintext = 'Hello, World!';
+    const key = 'my-secret-key-123';
+    const encrypted = await aesEncrypt(plaintext, key);
+    const decrypted = await aesDecrypt(encrypted, key);
+    expect(decrypted).toBe(plaintext);
+  });
+
+  test('wrong key fails to decrypt', async () => {
+    const encrypted = await aesEncrypt('secret', 'key1');
+    await expect(aesDecrypt(encrypted, 'key2')).rejects.toThrow();
+  });
+
+  test('empty string roundtrip', async () => {
+    const encrypted = await aesEncrypt('', 'key');
+    const decrypted = await aesDecrypt(encrypted, 'key');
+    expect(decrypted).toBe('');
   });
 });

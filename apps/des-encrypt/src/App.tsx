@@ -5,24 +5,34 @@ import { Input } from './components/ui/input';
 import { Label } from './components/ui/label';
 import { Toaster } from './components/ui/toaster';
 import { useToast } from './hooks/useToast';
-import { desDecrypt, desEncrypt } from './utils/des';
+import { aesDecrypt, aesEncrypt, desDecrypt, desEncrypt } from './utils/des';
 
 const MODES = ['encrypt', 'decrypt'] as const;
 type Mode = (typeof MODES)[number];
+type Algorithm = 'aes-256' | '3des';
 
 function App() {
   const [input, setInput] = useState('');
   const [key, setKey] = useState('');
   const [output, setOutput] = useState('');
   const [mode, setMode] = useState<Mode>('encrypt');
+  const [algorithm, setAlgorithm] = useState<Algorithm>('aes-256');
   const [error, setError] = useState('');
   const { toast } = useToast();
 
-  const handleProcess = () => {
+  const handleProcess = async () => {
     if (!input || !key) return;
     setError('');
     try {
-      setOutput(mode === 'encrypt' ? desEncrypt(input, key) : desDecrypt(input, key));
+      if (algorithm === 'aes-256') {
+        const result =
+          mode === 'encrypt'
+            ? await aesEncrypt(input, key)
+            : await aesDecrypt(input, key);
+        setOutput(result);
+      } else {
+        setOutput(mode === 'encrypt' ? desEncrypt(input, key) : desDecrypt(input, key));
+      }
     } catch {
       setError(
         mode === 'decrypt' ? 'Decryption failed. Wrong key or invalid data.' : 'Encryption failed.'
@@ -65,6 +75,33 @@ function App() {
                     {m === 'encrypt' ? 'Encrypt' : 'Decrypt'}
                   </Button>
                 ))}
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label>Algorithm</Label>
+              <div className="flex gap-2">
+                <Button
+                  variant={algorithm === 'aes-256' ? 'default' : 'outline'}
+                  onClick={() => {
+                    setAlgorithm('aes-256');
+                    setOutput('');
+                    setError('');
+                  }}
+                  type="button"
+                >
+                  AES-256-GCM
+                </Button>
+                <Button
+                  variant={algorithm === '3des' ? 'default' : 'outline'}
+                  onClick={() => {
+                    setAlgorithm('3des');
+                    setOutput('');
+                    setError('');
+                  }}
+                  type="button"
+                >
+                  3DES (Legacy)
+                </Button>
               </div>
             </div>
             <div className="space-y-2">
