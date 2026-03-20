@@ -1,11 +1,11 @@
 import path from 'node:path';
 import react from '@vitejs/plugin-react-swc';
+import wasm from 'vite-plugin-wasm';
 import { defineConfig } from 'vite-plus';
 
 export default defineConfig({
-  plugins: [react()],
-  // Pages直接アクセス用にルートパスを使用
-  base: '/',
+  plugins: [react(), wasm()],
+  base: './',
   server: {
     port: 5200,
   },
@@ -24,5 +24,8 @@ export default defineConfig({
     outDir: 'dist',
     emptyOutDir: true,
     sourcemap: false,
+  },
+  test: {
+    setupFiles: ['./src/utils/__tests__/setup.ts'],
   },
 });

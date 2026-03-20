@@ -1,38 +1,43 @@
-import { useState } from 'react';
-import { Button } from './components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './components/ui/card';
-import { Input } from './components/ui/input';
-import { Label } from './components/ui/label';
-import { Toaster } from './components/ui/toaster';
-import { useToast } from './hooks/useToast';
-import { generateHash, verifyHash } from './utils/bcryptHash';
+import { useState } from "react";
+import { Button } from "./components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./components/ui/card";
+import { Input } from "./components/ui/input";
+import { Label } from "./components/ui/label";
+import { Toaster } from "./components/ui/toaster";
+import { useToast } from "./hooks/useToast";
+import { generateHash, verifyHash } from "./utils/bcryptHash";
 
 function App() {
-  const [password, setPassword] = useState('');
+  const [password, setPassword] = useState("");
   const [rounds, setRounds] = useState(10);
-  const [hashOutput, setHashOutput] = useState('');
-  const [verifyPassword, setVerifyPassword] = useState('');
-  const [verifyHashInput, setVerifyHashInput] = useState('');
+  const [hashOutput, setHashOutput] = useState("");
+  const [verifyPassword, setVerifyPassword] = useState("");
+  const [verifyHashInput, setVerifyHashInput] = useState("");
   const [verifyResult, setVerifyResult] = useState<boolean | null>(null);
   const { toast } = useToast();
 
-  const handleGenerate = () => {
+  const handleGenerate = async () => {
     if (!password) return;
-    const hash = generateHash(password, rounds);
-    setHashOutput(hash);
+    try {
+      const hash = await generateHash(password, rounds);
+      setHashOutput(hash);
+    } catch (e) {
+      toast({ title: String(e), variant: "destructive" });
+    }
   };
 
-  const handleVerify = () => {
+  const handleVerify = async () => {
     if (!verifyPassword || !verifyHashInput) return;
-    setVerifyResult(verifyHash(verifyPassword, verifyHashInput));
+    const result = await verifyHash(verifyPassword, verifyHashInput);
+    setVerifyResult(result);
   };
 
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(hashOutput);
-      toast({ title: 'Copied!' });
+      toast({ title: "Copied!" });
     } catch {
-      toast({ title: 'Copy failed', variant: 'destructive' });
+      toast({ title: "Copy failed", variant: "destructive" });
     }
   };
 
@@ -117,9 +122,9 @@ function App() {
             </Button>
             {verifyResult !== null && (
               <div
-                className={`rounded-md p-3 text-sm font-medium ${verifyResult ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}
+                className={`rounded-md p-3 text-sm font-medium ${verifyResult ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}
               >
-                {verifyResult ? 'Match! Password is correct.' : 'No match. Password is incorrect.'}
+                {verifyResult ? "Match! Password is correct." : "No match. Password is incorrect."}
               </div>
             )}
           </CardContent>
