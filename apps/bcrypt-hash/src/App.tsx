@@ -28,8 +28,12 @@ function App() {
 
   const handleVerify = async () => {
     if (!verifyPassword || !verifyHashInput) return;
-    const result = await verifyHash(verifyPassword, verifyHashInput);
-    setVerifyResult(result);
+    try {
+      const result = await verifyHash(verifyPassword, verifyHashInput);
+      setVerifyResult(result);
+    } catch {
+      setVerifyResult(false);
+    }
   };
 
   const handleCopy = async () => {

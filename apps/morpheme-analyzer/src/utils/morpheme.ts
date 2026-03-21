@@ -12,7 +12,7 @@ let tokenizer: kuromoji.Tokenizer<kuromoji.IpadicFeatures> | null = null;
 
 export async function initTokenizer(
   onProgress?: (message: string) => void,
-  dictPath: string = '/dict/',
+  dictPath: string = './dict/',
 ): Promise<void> {
   return new Promise((resolve, reject) => {
     onProgress?.('辞書データを読み込み中...');

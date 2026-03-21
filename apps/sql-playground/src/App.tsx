@@ -44,13 +44,14 @@ export default function App() {
       .then(() => setLoading(false))
       .catch((err) => {
         console.error('Failed to initialize database:', err);
+        setLoading(false);
         toast({
           title: 'Database initialization failed',
           description: String(err),
           variant: 'destructive',
         });
       });
-  }, [toast]);
+  }, []);
 
   const tableNames = loading ? [] : getTableNames();
 

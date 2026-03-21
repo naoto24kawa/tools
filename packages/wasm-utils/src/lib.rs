@@ -37,8 +37,9 @@ pub fn bcrypt_verify(password: &str, hash: &str) -> bool {
 
 /// Compress data using Deflate algorithm.
 #[wasm_bindgen]
-pub fn deflate(input: &[u8], level: u8) -> Vec<u8> {
+pub fn deflate(input: &[u8], level: u8) -> Result<Vec<u8>, JsValue> {
     deflate::compress(input, level)
+        .map_err(|e| JsValue::from_str(&e))
 }
 
 /// Decompress Deflate-compressed data.

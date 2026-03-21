@@ -15,14 +15,10 @@ export async function initDatabase(): Promise<void> {
     // Node.js / Vitest: sql.js resolves wasm from its own dist automatically
     SQL = await initSqlJs();
   } else {
-    // Browser: load from CDN, fallback to local
+    // Browser: load local WASM file
     SQL = await initSqlJs({
-      locateFile: (file: string) => `https://sql.js.org/dist/${file}`,
-    }).catch(() =>
-      initSqlJs({
-        locateFile: (file: string) => `/${file}`,
-      })
-    );
+      locateFile: (file: string) => `./${file}`,
+    });
   }
   db = new SQL.Database();
 }

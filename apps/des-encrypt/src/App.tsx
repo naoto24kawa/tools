@@ -33,9 +33,12 @@ function App() {
       } else {
         setOutput(mode === 'encrypt' ? desEncrypt(input, key) : desDecrypt(input, key));
       }
-    } catch {
+    } catch (e) {
+      const message = e instanceof Error ? e.message : String(e);
       setError(
-        mode === 'decrypt' ? 'Decryption failed. Wrong key or invalid data.' : 'Encryption failed.'
+        mode === 'decrypt'
+          ? `Decryption failed: ${message}`
+          : `Encryption failed: ${message}`
       );
     }
   };

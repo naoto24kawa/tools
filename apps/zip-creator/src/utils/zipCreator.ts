@@ -23,28 +23,32 @@ export async function createZip(files: File[], compress?: boolean): Promise<Blob
   const entries: ZipEntry[] = [];
 
   for (const file of files) {
-    const buffer = await file.arrayBuffer();
-    const data = new Uint8Array(buffer);
-    const crc = crc32_raw(data);
+    try {
+      const buffer = await file.arrayBuffer();
+      const data = new Uint8Array(buffer);
+      const crc = crc32_raw(data);
 
-    let compressedData: Uint8Array;
-    let compressionMethod: number;
+      let compressedData: Uint8Array;
+      let compressionMethod: number;
 
-    if (compress) {
-      compressedData = deflate(data, 6);
-      compressionMethod = 8; // Deflate
-    } else {
-      compressedData = data;
-      compressionMethod = 0; // Store
+      if (compress) {
+        compressedData = deflate(data, 6);
+        compressionMethod = 8; // Deflate
+      } else {
+        compressedData = data;
+        compressionMethod = 0; // Store
+      }
+
+      entries.push({
+        name: file.name,
+        data,
+        compressedData,
+        crc32: crc,
+        compressionMethod,
+      });
+    } catch (e) {
+      throw new Error(`Failed to process file "${file.name}": ${e instanceof Error ? e.message : String(e)}`);
     }
-
-    entries.push({
-      name: file.name,
-      data,
-      compressedData,
-      crc32: crc,
-      compressionMethod,
-    });
   }
 
   return buildZipBlob(entries);

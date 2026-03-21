@@ -14,6 +14,9 @@ export function desDecrypt(ciphertext: string, key: string): string {
 }
 
 export async function aesEncrypt(plaintext: string, passphrase: string): Promise<string> {
+  if (!globalThis.crypto?.subtle) {
+    throw new Error('Web Crypto API is not available. HTTPS connection is required.');
+  }
   const encoder = new TextEncoder();
   const salt = crypto.getRandomValues(new Uint8Array(16));
   const keyMaterial = await crypto.subtle.importKey(
@@ -40,10 +43,17 @@ export async function aesEncrypt(plaintext: string, passphrase: string): Promise
   combined.set(salt, 0);
   combined.set(iv, salt.length);
   combined.set(new Uint8Array(encrypted), salt.length + iv.length);
-  return btoa(String.fromCharCode(...combined));
+  let binary = '';
+  for (let i = 0; i < combined.length; i++) {
+    binary += String.fromCharCode(combined[i]);
+  }
+  return btoa(binary);
 }
 
 export async function aesDecrypt(ciphertext: string, passphrase: string): Promise<string> {
+  if (!globalThis.crypto?.subtle) {
+    throw new Error('Web Crypto API is not available. HTTPS connection is required.');
+  }
   const encoder = new TextEncoder();
   const data = Uint8Array.from(atob(ciphertext), (c) => c.charCodeAt(0));
   const salt = data.slice(0, 16);

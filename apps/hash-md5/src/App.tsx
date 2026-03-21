@@ -16,6 +16,7 @@ export default function App() {
   useEffect(() => {
     if (!input) {
       setHash('');
+      setError('');
       return;
     }
     md5(input)

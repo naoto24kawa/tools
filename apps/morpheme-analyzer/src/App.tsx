@@ -30,9 +30,10 @@ export default function App() {
         setLoading(false);
         setProgressMessage('');
       })
-      .catch(() => {
+      .catch((err) => {
+        console.error('Kuromoji init failed:', err);
         setLoading(false);
-        setError('辞書の読み込みに失敗しました。');
+        setError(`辞書の読み込みに失敗しました: ${err instanceof Error ? err.message : String(err)}`);
         setProgressMessage('');
       });
   };
@@ -45,7 +46,8 @@ export default function App() {
     if (loading || !isTokenizerReady() || !input) return [];
     try {
       return analyze(input);
-    } catch {
+    } catch (e) {
+      console.error('Morpheme analysis failed:', e);
       return [];
     }
   }, [input, loading]);
