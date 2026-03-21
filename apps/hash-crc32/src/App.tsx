@@ -1,23 +1,38 @@
-import { Copy, Hash } from 'lucide-react';
-import { useMemo, useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
-import { Toaster } from '@/components/ui/toaster';
-import { useToast } from '@/hooks/useToast';
-import { crc32 } from '@/utils/crc32';
+import { Copy, Hash } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Toaster } from "@/components/ui/toaster";
+import { useToast } from "@/hooks/useToast";
+import { crc32 } from "@/utils/crc32";
 
 export default function App() {
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
+  const [hash, setHash] = useState("");
+  const [error, setError] = useState("");
   const { toast } = useToast();
-  const hash = useMemo(() => (input ? crc32(input) : ''), [input]);
+
+  useEffect(() => {
+    if (!input) {
+      setHash("");
+      setError("");
+      return;
+    }
+    crc32(input)
+      .then((h) => {
+        setHash(h);
+        setError("");
+      })
+      .catch((e) => setError(String(e)));
+  }, [input]);
 
   const copyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(hash);
-      toast({ title: 'Copied to clipboard' });
+      toast({ title: "Copied to clipboard" });
     } catch {
-      toast({ title: 'コピーに失敗しました', variant: 'destructive' });
+      toast({ title: "コピーに失敗しました", variant: "destructive" });
     }
   };
 
@@ -48,6 +63,7 @@ export default function App() {
                 onChange={(e) => setInput(e.target.value)}
               />
             </div>
+            {error && <p className="text-sm text-destructive">{error}</p>}
             {hash && (
               <div className="space-y-2">
                 <Label>CRC32</Label>

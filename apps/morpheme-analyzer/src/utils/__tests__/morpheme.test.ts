@@ -1,35 +1,42 @@
-import { describe, expect, test } from 'vitest';
-import { getStats, tokenize } from '../morpheme';
+import { describe, expect, test, beforeAll } from 'vitest';
+import path from 'node:path';
+import { initTokenizer, analyze } from '../morpheme';
 
-describe('morpheme', () => {
-  test('tokenizes mixed Japanese text', () => {
-    const tokens = tokenize('Hello世界');
-    expect(tokens.length).toBe(2);
-    expect(tokens[0].type).toBe('latin');
-    expect(tokens[1].type).toBe('kanji');
+beforeAll(async () => {
+  // In test env, use the kuromoji dict from node_modules (pnpm store)
+  const dictPath = path.resolve(process.cwd(), 'node_modules/kuromoji/dict/');
+  await initTokenizer(undefined, dictPath + '/');
+}, 30000);
+
+describe('morpheme (kuromoji)', () => {
+  test('basic tokenization', () => {
+    const tokens = analyze('東京は日本の首都です');
+    expect(tokens.length).toBeGreaterThan(0);
+    expect(tokens[0].surface).toBe('東京');
+    expect(tokens[0].pos).toBe('名詞');
   });
 
-  test('separates hiragana and kanji', () => {
-    const tokens = tokenize('東京は');
-    expect(tokens.length).toBe(2);
-    expect(tokens[0].type).toBe('kanji');
-    expect(tokens[1].type).toBe('hiragana');
+  test('reading', () => {
+    const tokens = analyze('漢字');
+    expect(tokens[0].reading).toBe('カンジ');
   });
 
-  test('handles empty input', () => {
-    expect(tokenize('')).toEqual([]);
+  test('empty string', () => {
+    const tokens = analyze('');
+    expect(tokens).toHaveLength(0);
   });
 
-  test('getStats counts types', () => {
-    const tokens = tokenize('ABCあいう');
-    const stats = getStats(tokens);
-    expect(stats.latin).toBe(1);
-    expect(stats.hiragana).toBe(1);
+  test('returns baseForm', () => {
+    const tokens = analyze('食べた');
+    const verb = tokens.find((t) => t.pos === '動詞');
+    expect(verb).toBeDefined();
+    expect(verb!.baseForm).toBe('食べる');
   });
 
-  test('handles numbers', () => {
-    const tokens = tokenize('123abc');
-    expect(tokens[0].type).toBe('number');
-    expect(tokens[1].type).toBe('latin');
+  test('pos_detail is populated', () => {
+    const tokens = analyze('美しい花');
+    const adj = tokens.find((t) => t.pos === '形容詞');
+    expect(adj).toBeDefined();
+    expect(adj!.pos_detail).toBeTruthy();
   });
 });

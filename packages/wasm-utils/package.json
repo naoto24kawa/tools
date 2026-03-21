@@ -1,0 +1,19 @@
+{
+  "name": "wasm-utils",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "files": ["pkg"],
+  "main": "./pkg/wasm_utils.js",
+  "types": "./pkg/wasm_utils.d.ts",
+  "exports": {
+    ".": {
+      "types": "./pkg/wasm_utils.d.ts",
+      "default": "./pkg/wasm_utils.js"
+    }
+  },
+  "scripts": {
+    "build": "wasm-pack build --target bundler --out-dir pkg",
+    "postinstall": "[ -d pkg ] || (command -v wasm-pack >/dev/null 2>&1 && pnpm run build || echo 'wasm-pack not found: run pnpm run build in packages/wasm-utils after installing wasm-pack')"
+  }
+}

@@ -1,19 +1,18 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Play, Trash2, Database as DbIcon } from 'lucide-react';
+import { Play, Trash2, Database as DbIcon, Loader2 } from 'lucide-react';
 import { Toaster } from '@/components/ui/toaster';
 import { useToast } from '@/hooks/useToast';
 import {
-  createDatabase,
-  executeSQL,
-  getTableSchemas,
-  type Database,
+  initDatabase,
+  executeQuery,
+  getTableNames,
   type QueryResult,
 } from '@/utils/sqlEngine';
 
 const EXAMPLE_QUERIES = `-- Create a table
-CREATE TABLE users (id INT, name VARCHAR, age INT, city VARCHAR);
+CREATE TABLE users (id INTEGER, name TEXT, age INTEGER, city TEXT);
 
 -- Insert data
 INSERT INTO users VALUES (1, 'Alice', 30, 'Tokyo');
@@ -29,55 +28,73 @@ SELECT * FROM users ORDER BY age DESC LIMIT 3;`;
 
 interface HistoryEntry {
   sql: string;
-  result: QueryResult;
+  results: QueryResult[];
+  error?: string;
 }
 
 export default function App() {
-  const [db] = useState<Database>(createDatabase);
+  const [loading, setLoading] = useState(true);
   const [sql, setSql] = useState(EXAMPLE_QUERIES);
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const { toast } = useToast();
   const historyEndRef = useRef<HTMLDivElement>(null);
 
-  const schemas = getTableSchemas(db);
+  useEffect(() => {
+    initDatabase()
+      .then(() => setLoading(false))
+      .catch((err) => {
+        console.error('Failed to initialize database:', err);
+        setLoading(false);
+        toast({
+          title: 'Database initialization failed',
+          description: String(err),
+          variant: 'destructive',
+        });
+      });
+  }, []);
+
+  const tableNames = loading ? [] : getTableNames();
 
   const handleExecute = useCallback(() => {
-    if (!sql.trim()) return;
+    if (!sql.trim() || loading) return;
 
-    // Split by semicolons and execute each statement
-    const statements = sql
-      .split(';')
-      .map((s) => s.trim())
-      .filter((s) => s && !s.startsWith('--'));
+    // Remove comment-only lines and trim
+    const cleanedSql = sql
+      .split('\n')
+      .filter((line) => !line.trim().startsWith('--'))
+      .join('\n')
+      .trim();
 
-    const newEntries: HistoryEntry[] = [];
+    if (!cleanedSql) return;
 
-    for (const stmt of statements) {
-      if (!stmt || stmt.startsWith('--')) continue;
-      const result = executeSQL(db, stmt);
-      newEntries.push({ sql: stmt, result });
-    }
+    try {
+      const results = executeQuery(cleanedSql);
+      const entry: HistoryEntry = { sql: cleanedSql, results };
+      setHistory((prev) => [...prev, entry]);
 
-    setHistory((prev) => [...prev, ...newEntries]);
-
-    const errors = newEntries.filter((e) => e.result.error);
-    if (errors.length > 0) {
+      const totalChanges = results.reduce((sum, r) => sum + r.changes, 0);
+      const totalRows = results.reduce((sum, r) => sum + r.values.length, 0);
+      if (results.length > 0 && results.some((r) => r.columns.length > 0)) {
+        toast({ title: `${totalRows} row(s) returned` });
+      } else if (totalChanges > 0) {
+        toast({ title: `${totalChanges} row(s) affected` });
+      } else {
+        toast({ title: 'Executed successfully' });
+      }
+    } catch (err) {
+      const errorMsg = err instanceof Error ? err.message : String(err);
+      setHistory((prev) => [...prev, { sql: cleanedSql, results: [], error: errorMsg }]);
       toast({
         title: 'Query error',
-        description: errors[0].result.error,
+        description: errorMsg,
         variant: 'destructive',
       });
-    } else {
-      const last = newEntries[newEntries.length - 1];
-      if (last) {
-        toast({ title: last.result.message || 'Executed successfully' });
-      }
     }
 
     setTimeout(() => {
       historyEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, 100);
-  }, [sql, db, toast]);
+  }, [sql, loading, toast]);
 
   const handleClear = () => {
     setHistory([]);
@@ -90,13 +107,24 @@ export default function App() {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="flex items-center gap-3 text-muted-foreground">
+          <Loader2 className="h-6 w-6 animate-spin" />
+          <span>Loading SQL engine...</span>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background p-8">
       <div className="max-w-6xl mx-auto space-y-6">
         <header className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">SQL Playground</h1>
           <p className="text-muted-foreground">
-            In-memory SQL playground. Supports CREATE TABLE, INSERT, SELECT, UPDATE, DELETE.
+            In-memory SQLite playground. Supports full SQL syntax via sql.js.
           </p>
         </header>
 
@@ -137,41 +165,53 @@ export default function App() {
                 <CardContent className="space-y-4 max-h-[500px] overflow-y-auto">
                   {history.map((entry, idx) => (
                     <div key={idx} className="border rounded-lg p-3 space-y-2">
-                      <pre className="text-xs font-mono text-muted-foreground bg-muted p-2 rounded">
+                      <pre className="text-xs font-mono text-muted-foreground bg-muted p-2 rounded whitespace-pre-wrap">
                         {entry.sql}
                       </pre>
-                      {entry.result.error ? (
-                        <p className="text-sm text-destructive">{entry.result.error}</p>
+                      {entry.error ? (
+                        <p className="text-sm text-destructive">{entry.error}</p>
                       ) : (
-                        <>
-                          {entry.result.columns.length > 0 && (
-                            <div className="overflow-x-auto">
-                              <table className="w-full text-sm border-collapse">
-                                <thead>
-                                  <tr className="bg-muted/50">
-                                    {entry.result.columns.map((col) => (
-                                      <th key={col} className="text-left p-1.5 border text-xs font-medium">
-                                        {col}
-                                      </th>
-                                    ))}
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  {entry.result.rows.map((row, ri) => (
-                                    <tr key={ri} className="hover:bg-muted/30">
-                                      {row.map((cell, ci) => (
-                                        <td key={ci} className="p-1.5 border text-xs font-mono">
-                                          {cell}
-                                        </td>
+                        entry.results.map((result, ri) => (
+                          <div key={ri}>
+                            {result.columns.length > 0 && (
+                              <div className="overflow-x-auto">
+                                <table className="w-full text-sm border-collapse">
+                                  <thead>
+                                    <tr className="bg-muted/50">
+                                      {result.columns.map((col) => (
+                                        <th
+                                          key={col}
+                                          className="text-left p-1.5 border text-xs font-medium"
+                                        >
+                                          {col}
+                                        </th>
                                       ))}
                                     </tr>
-                                  ))}
-                                </tbody>
-                              </table>
-                            </div>
-                          )}
-                          <p className="text-xs text-muted-foreground">{entry.result.message}</p>
-                        </>
+                                  </thead>
+                                  <tbody>
+                                    {result.values.map((row, rowIdx) => (
+                                      <tr key={rowIdx} className="hover:bg-muted/30">
+                                        {row.map((cell, ci) => (
+                                          <td key={ci} className="p-1.5 border text-xs font-mono">
+                                            {cell == null ? 'NULL' : String(cell)}
+                                          </td>
+                                        ))}
+                                      </tr>
+                                    ))}
+                                  </tbody>
+                                </table>
+                              </div>
+                            )}
+                            {result.changes > 0 && (
+                              <p className="text-xs text-muted-foreground">
+                                {result.changes} row(s) affected
+                              </p>
+                            )}
+                          </div>
+                        ))
+                      )}
+                      {!entry.error && entry.results.length === 0 && (
+                        <p className="text-xs text-muted-foreground">Executed successfully</p>
                       )}
                     </div>
                   ))}
@@ -184,23 +224,18 @@ export default function App() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <DbIcon className="h-4 w-4" /> Schema
+                <DbIcon className="h-4 w-4" /> Tables
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {schemas.length > 0 ? (
-                <div className="space-y-4">
-                  {schemas.map((schema) => (
-                    <div key={schema.name} className="space-y-1">
-                      <p className="text-sm font-bold">{schema.name}</p>
-                      <ul className="text-xs text-muted-foreground space-y-0.5">
-                        {schema.columns.map((col) => (
-                          <li key={col} className="font-mono pl-2">- {col}</li>
-                        ))}
-                      </ul>
-                    </div>
+              {tableNames.length > 0 ? (
+                <ul className="space-y-1">
+                  {tableNames.map((name) => (
+                    <li key={name} className="text-sm font-mono">
+                      {name}
+                    </li>
                   ))}
-                </div>
+                </ul>
               ) : (
                 <p className="text-sm text-muted-foreground">
                   No tables yet. Run CREATE TABLE to add one.

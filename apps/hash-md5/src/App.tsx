@@ -1,5 +1,5 @@
 import { Copy, Hash } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -9,8 +9,23 @@ import { md5 } from '@/utils/md5';
 
 export default function App() {
   const [input, setInput] = useState('');
+  const [hash, setHash] = useState('');
+  const [error, setError] = useState('');
   const { toast } = useToast();
-  const hash = useMemo(() => (input ? md5(input) : ''), [input]);
+
+  useEffect(() => {
+    if (!input) {
+      setHash('');
+      setError('');
+      return;
+    }
+    md5(input)
+      .then((h) => {
+        setHash(h);
+        setError('');
+      })
+      .catch((e) => setError(String(e)));
+  }, [input]);
 
   const copyToClipboard = async () => {
     try {
@@ -46,6 +61,9 @@ export default function App() {
                 onChange={(e) => setInput(e.target.value)}
               />
             </div>
+            {error && (
+              <p className="text-sm text-destructive">{error}</p>
+            )}
             {hash && (
               <div className="space-y-2">
                 <Label>MD5 Hash</Label>

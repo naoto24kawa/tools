@@ -1,14 +1,9 @@
-import bcrypt from 'bcryptjs';
+import { bcrypt_hash as wasmBcryptHash, bcrypt_verify as wasmBcryptVerify } from "wasm-utils";
 
-export function generateHash(password: string, rounds: number): string {
-  const salt = bcrypt.genSaltSync(rounds);
-  return bcrypt.hashSync(password, salt);
+export async function generateHash(password: string, rounds: number): Promise<string> {
+  return wasmBcryptHash(password, rounds);
 }
 
-export function verifyHash(password: string, hash: string): boolean {
-  try {
-    return bcrypt.compareSync(password, hash);
-  } catch {
-    return false;
-  }
+export async function verifyHash(password: string, hash: string): Promise<boolean> {
+  return wasmBcryptVerify(password, hash);
 }
