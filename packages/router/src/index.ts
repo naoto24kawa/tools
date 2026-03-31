@@ -3,7 +3,6 @@ import { cors } from 'hono/cors';
 import { secureHeaders } from 'hono/secure-headers';
 import { APPS_CONFIG, AVAILABLE_PATHS } from './config/apps';
 import { createProxyHandler } from './utils/proxy';
-import { renderToolsPage } from './views/ToolsListView';
 
 // 環境変数の型定義（将来の拡張用）
 type Bindings = Record<string, never>;
@@ -23,11 +22,10 @@ app.use(
   })
 );
 
-// ルートエンドポイント - 利用可能なツールの一覧を表示
-app.get('/', (c) => {
-  const html = renderToolsPage(APPS_CONFIG);
-  return c.html(html);
-});
+// ルートエンドポイント - homeアプリへプロキシ
+const HOME_URL = 'https://tools-home.elchika.app';
+app.all('/', createProxyHandler({ basePath: '', targetUrl: HOME_URL, serviceName: 'Home' }));
+app.all('/assets/*', createProxyHandler({ basePath: '', targetUrl: HOME_URL, serviceName: 'Home' }));
 
 // ヘルスチェックエンドポイント
 app.get('/health', (c) => {
