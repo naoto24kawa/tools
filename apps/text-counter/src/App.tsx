@@ -47,7 +47,7 @@ export function App() {
           <p className="mt-2 text-sm text-muted-foreground">
             テキストの文字数、単語数、行数などをリアルタイムで解析
           </p>
-          <p className="mt-1 text-xs text-muted-foreground/80">
+          <p className="mt-1 text-xs text-muted-foreground">
             🔒 すべての処理はブラウザ内で完結 - データは外部に送信・保存されません
           </p>
         </div>
@@ -138,8 +138,9 @@ export function App() {
                   <Label>カウント対象</Label>
 
                   <div className="flex items-center justify-between">
-                    <span className="text-sm">スペースを含む</span>
+                    <Label htmlFor="switch-spaces" className="text-sm font-normal">スペースを含む</Label>
                     <Switch
+                      id="switch-spaces"
                       checked={settings.includeSpaces}
                       onCheckedChange={(checked) =>
                         setSettings({ ...settings, includeSpaces: checked })
@@ -148,8 +149,9 @@ export function App() {
                   </div>
 
                   <div className="flex items-center justify-between">
-                    <span className="text-sm">改行を含む</span>
+                    <Label htmlFor="switch-linebreaks" className="text-sm font-normal">改行を含む</Label>
                     <Switch
+                      id="switch-linebreaks"
                       checked={settings.includeLineBreaks}
                       onCheckedChange={(checked) =>
                         setSettings({ ...settings, includeLineBreaks: checked })
@@ -158,8 +160,9 @@ export function App() {
                   </div>
 
                   <div className="flex items-center justify-between">
-                    <span className="text-sm">記号を含む</span>
+                    <Label htmlFor="switch-symbols" className="text-sm font-normal">記号を含む</Label>
                     <Switch
+                      id="switch-symbols"
                       checked={settings.includeSymbols}
                       onCheckedChange={(checked) =>
                         setSettings({ ...settings, includeSymbols: checked })
