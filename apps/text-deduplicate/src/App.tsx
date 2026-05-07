@@ -41,7 +41,7 @@ export function App() {
           <p className="mt-2 text-sm text-muted-foreground">
             テキストの重複行を削除して整理 - ログファイルやデータの整理に最適
           </p>
-          <p className="mt-1 text-xs text-muted-foreground/80">
+          <p className="mt-1 text-xs text-muted-foreground">
             🔒 すべての処理はブラウザ内で完結 - データは外部に送信・保存されません
           </p>
         </div>
