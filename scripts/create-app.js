@@ -64,6 +64,11 @@ function isValidKebabCase(str) {
   return /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/.test(str);
 }
 
+// descriptionのバリデーション（コードインジェクション防止）
+function isValidDescription(str) {
+  return str.length > 0 && str.length <= 100 && !/[`'$\\\n\r]/.test(str);
+}
+
 // ファイルをバックアップ
 function backupFile(filePath) {
   if (fs.existsSync(filePath)) {
@@ -342,6 +347,13 @@ async function main() {
   let description = args[args.indexOf(appName) + 1];
   if (!description || description.startsWith('--')) {
     description = await promptInput('アプリの説明: ');
+  }
+
+  // descriptionのバリデーション
+  if (!isValidDescription(description)) {
+    console.error(`❌ エラー: descriptionに使用できない文字が含まれています（クォート・バックスラッシュ・改行は不可）。`);
+    console.error(`   最大100文字以内で指定してください。`);
+    process.exit(1);
   }
 
   // 変換
