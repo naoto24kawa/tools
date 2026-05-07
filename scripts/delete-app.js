@@ -124,7 +124,7 @@ async function confirm(question) {
 
 // wrangler.tomlからService Bindingを削除
 function removeFromWranglerToml(appName) {
-  const wranglerPath = path.join(__dirname, '..', 'wrangler.toml');
+  const wranglerPath = path.join(__dirname, '..', 'packages', 'router', 'wrangler.toml');
 
   if (!fs.existsSync(wranglerPath)) {
     console.log(`   ⚠️  wrangler.toml が見つかりません`);
@@ -193,7 +193,7 @@ function removeFromPackageJson(appName) {
 
 // src/index.tsから関連コードを削除（マーカーベース）
 function removeFromIndexTs(appName, appNameSnake) {
-  const indexPath = path.join(__dirname, '..', 'src', 'index.ts');
+  const indexPath = path.join(__dirname, '..', 'packages', 'router', 'src', 'index.ts');
 
   if (!fs.existsSync(indexPath)) {
     console.log(`   ⚠️  src/index.ts が見つかりません`);

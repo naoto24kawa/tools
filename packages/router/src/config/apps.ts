@@ -192,13 +192,9 @@ export const APPS_CONFIG: readonly AppConfig[] = [
   { path: '/webcam-test', url: 'https://tools-webcam-test.elchika.app', icon: '📷', displayName: 'Webcam Test', description: 'カメラテスト', category: 'Video' },
 
   // ── Generator ──
-  { path: '/gen-password', url: 'https://tools-gen-password.elchika.app', icon: '🔑', displayName: 'Password Generator', description: 'パスワード生成', category: 'Generator' },
   { path: '/password-generator', url: 'https://tools-password-generator.elchika.app', icon: '🔑', displayName: 'Password Generator', description: 'パスワード生成', category: 'Generator' },
-  { path: '/gen-uuid', url: 'https://tools-gen-uuid.elchika.app', icon: '🆔', displayName: 'UUID Generator', description: 'UUID/ULID生成', category: 'Generator' },
   { path: '/uuid-generator', url: 'https://tools-uuid-generator.elchika.app', icon: '🆔', displayName: 'UUID/ULID Generator', description: 'UUID/ULID生成', category: 'Generator' },
-  { path: '/gen-dummy-data', url: 'https://tools-gen-dummy-data.elchika.app', icon: '📋', displayName: 'Dummy Data', description: 'ダミーデータ生成', category: 'Generator' },
   { path: '/dummy-data-generator', url: 'https://tools-dummy-data-generator.elchika.app', icon: '📋', displayName: 'Dummy Data Generator', description: 'ダミーデータ生成', category: 'Generator' },
-  { path: '/gen-htpasswd', url: 'https://tools-gen-htpasswd.elchika.app', icon: '🔐', displayName: 'htpasswd Generator', description: '.htpasswd生成', category: 'Generator' },
   { path: '/htpasswd-generator', url: 'https://tools-htpasswd-generator.elchika.app', icon: '🔐', displayName: '.htpasswd Generator', description: '.htpasswd生成', category: 'Generator' },
   { path: '/bip39-generator', url: 'https://tools-bip39-generator.elchika.app', icon: '🌱', displayName: 'BIP39 Generator', description: 'ニーモニック生成', category: 'Generator' },
   { path: '/qr-code-generator', url: 'https://tools-qr-code-generator.elchika.app', icon: '📱', displayName: 'QR Code Generator', description: 'QRコード生成', category: 'Generator' },
@@ -211,8 +207,6 @@ export const APPS_CONFIG: readonly AppConfig[] = [
   // ── Network / Misc ──
   { path: '/cidr-calculator', url: 'https://tools-cidr-calculator.elchika.app', icon: '🌐', displayName: 'CIDR Calculator', description: 'CIDR計算', category: 'Network' },
   { path: '/subnet-calculator', url: 'https://tools-subnet-calculator.elchika.app', icon: '🌐', displayName: 'Subnet Calculator', description: 'サブネット計算', category: 'Network' },
-  { path: '/network-subnet', url: 'https://tools-network-subnet.elchika.app', icon: '🌐', displayName: 'Network Subnet', description: 'サブネット計算', category: 'Network' },
-  { path: '/network-user-agent', url: 'https://tools-network-user-agent.elchika.app', icon: '🔎', displayName: 'User Agent Parser', description: 'UA解析', category: 'Network' },
   { path: '/user-agent-parser', url: 'https://tools-user-agent-parser.elchika.app', icon: '🔎', displayName: 'User Agent Parser', description: 'UA解析', category: 'Network' },
   { path: '/display-checker', url: 'https://tools-display-checker.elchika.app', icon: '🖥', displayName: 'Display Checker', description: '画面情報チェック', category: 'Network' },
   { path: '/validator-html', url: 'https://tools-validator-html.elchika.app', icon: '✅', displayName: 'HTML Validator', description: 'HTML検証', category: 'Network' },

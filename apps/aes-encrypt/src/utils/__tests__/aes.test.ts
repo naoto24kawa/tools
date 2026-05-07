@@ -10,19 +10,32 @@ describe('aes', () => {
     expect(decrypted).toBe(plaintext);
   });
 
-  test('encrypted output is base64', async () => {
+  test('encrypted output is valid base64', async () => {
     const encrypted = await aesEncrypt('test', 'pass');
-    expect(encrypted).toMatch(/^[A-Za-z0-9+/]+=*$/);
+    expect(() => atob(encrypted)).not.toThrow();
   });
 
   test('different encryptions produce different output', async () => {
     const e1 = await aesEncrypt('test', 'pass');
     const e2 = await aesEncrypt('test', 'pass');
-    expect(e1).not.toBe(e2); // random salt/iv
+    expect(e1).not.toBe(e2);
   });
 
   test('wrong password fails', async () => {
     const encrypted = await aesEncrypt('test', 'correct');
     await expect(aesDecrypt(encrypted, 'wrong')).rejects.toThrow();
+  });
+
+  test('empty plaintext roundtrip', async () => {
+    const encrypted = await aesEncrypt('', 'pass');
+    const decrypted = await aesDecrypt(encrypted, 'pass');
+    expect(decrypted).toBe('');
+  });
+
+  test('multibyte characters roundtrip', async () => {
+    const plaintext = '日本語テスト🔐';
+    const encrypted = await aesEncrypt(plaintext, 'pass');
+    const decrypted = await aesDecrypt(encrypted, 'pass');
+    expect(decrypted).toBe(plaintext);
   });
 });
