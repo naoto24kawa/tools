@@ -108,7 +108,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-background p-8">
-      <div className="max-w-6xl mx-auto space-y-6">
+      <main className="max-w-6xl mx-auto space-y-6">
         <header className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">Changelog Generator</h1>
           <p className="text-muted-foreground">
@@ -155,6 +155,7 @@ export default function App() {
                       size="icon"
                       onClick={() => removeVersion(version.id)}
                       disabled={versions.length === 1}
+                      aria-label="Remove version"
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
@@ -245,6 +246,7 @@ export default function App() {
                           variant="ghost"
                           size="icon"
                           onClick={() => removeEntry(version.id, entry.id)}
+                          aria-label="Remove entry"
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
@@ -282,7 +284,7 @@ export default function App() {
             </CardContent>
           </Card>
         </div>
-      </div>
+      </main>
       <Toaster />
     </div>
   );

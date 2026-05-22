@@ -101,7 +101,7 @@ Postal Code: 150-0001`;
 
   return (
     <div className="min-h-screen bg-gray-50 p-4">
-      <div className="mx-auto max-w-3xl space-y-4">
+      <main className="mx-auto max-w-3xl space-y-4">
         <Card>
           <CardHeader>
             <CardTitle>Data Anonymizer</CardTitle>
@@ -270,7 +270,7 @@ Postal Code: 150-0001`;
             </div>
           </CardContent>
         </Card>
-      </div>
+      </main>
       <Toaster />
     </div>
   );

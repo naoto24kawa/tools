@@ -105,7 +105,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-background p-8">
-      <div className="max-w-6xl mx-auto space-y-6">
+      <main className="max-w-6xl mx-auto space-y-6">
         <header className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">Data Sampler</h1>
           <p className="text-muted-foreground">
@@ -144,6 +144,7 @@ export default function App() {
                     value={textInput}
                     onChange={(e) => setTextInput(e.target.value)}
                     placeholder="name,age,city&#10;Alice,30,Tokyo&#10;Bob,25,Osaka"
+                    aria-label="Paste data"
                   />
                   <Button type="button" size="sm" className="w-full" onClick={handleParseText}>
                     Parse Text
@@ -287,7 +288,7 @@ export default function App() {
             </CardContent>
           </Card>
         </div>
-      </div>
+      </main>
       <Toaster />
     </div>
   );

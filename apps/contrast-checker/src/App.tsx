@@ -67,7 +67,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-background p-8">
-      <div className="max-w-4xl mx-auto space-y-6">
+      <main className="max-w-4xl mx-auto space-y-6">
         <header className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">Contrast Checker</h1>
           <p className="text-muted-foreground">
@@ -87,6 +87,7 @@ export default function App() {
                   value={isValidHex(fgHex) ? fgHex : '#333333'}
                   onChange={(e) => setFgHex(e.target.value)}
                   className="w-16 h-16 rounded cursor-pointer border-0"
+                  aria-label="Foreground Color Picker"
                 />
                 <div className="space-y-2 flex-1">
                   <Label htmlFor="fgHex">Hex</Label>
@@ -112,6 +113,7 @@ export default function App() {
                   value={isValidHex(bgHex) ? bgHex : '#ffffff'}
                   onChange={(e) => setBgHex(e.target.value)}
                   className="w-16 h-16 rounded cursor-pointer border-0"
+                  aria-label="Background Color Picker"
                 />
                 <div className="space-y-2 flex-1">
                   <Label htmlFor="bgHex">Hex</Label>
@@ -209,7 +211,7 @@ export default function App() {
             </Card>
           </>
         )}
-      </div>
+      </main>
       <Toaster />
     </div>
   );

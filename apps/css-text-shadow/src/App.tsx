@@ -75,7 +75,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-background p-8">
-      <div className="max-w-4xl mx-auto space-y-6">
+      <main className="max-w-4xl mx-auto space-y-6">
         <header className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">CSS Text Shadow Generator</h1>
           <p className="text-muted-foreground">
@@ -117,6 +117,7 @@ export default function App() {
                   value={previewColor}
                   onChange={(e) => setPreviewColor(e.target.value)}
                   className="h-10 w-full cursor-pointer rounded-md border border-input"
+                  aria-label="Text Color"
                 />
               </div>
             </div>
@@ -162,6 +163,7 @@ export default function App() {
                       size="icon"
                       onClick={() => removeLayer(layer.id)}
                       disabled={layers.length <= 1}
+                      aria-label="Remove layer"
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
@@ -179,6 +181,7 @@ export default function App() {
                             updateLayer(layer.id, 'offsetX', parseInt(e.target.value))
                           }
                           className="w-full accent-primary"
+                          aria-label={`Layer ${index + 1} Offset X (px)`}
                         />
                         <span className="text-xs text-muted-foreground font-mono">
                           {layer.offsetX}px
@@ -197,6 +200,7 @@ export default function App() {
                             updateLayer(layer.id, 'offsetY', parseInt(e.target.value))
                           }
                           className="w-full accent-primary"
+                          aria-label={`Layer ${index + 1} Offset Y (px)`}
                         />
                         <span className="text-xs text-muted-foreground font-mono">
                           {layer.offsetY}px
@@ -215,6 +219,7 @@ export default function App() {
                             updateLayer(layer.id, 'blur', parseInt(e.target.value))
                           }
                           className="w-full accent-primary"
+                          aria-label={`Layer ${index + 1} Blur (px)`}
                         />
                         <span className="text-xs text-muted-foreground font-mono">
                           {layer.blur}px
@@ -228,6 +233,7 @@ export default function App() {
                         value={hex}
                         onChange={(e) => updateLayerColor(layer.id, e.target.value, alpha)}
                         className="h-10 w-full cursor-pointer rounded-md border border-input"
+                        aria-label={`Layer ${index + 1} Color`}
                       />
                       <div className="space-y-1">
                         <Label className="text-xs">Opacity</Label>
@@ -241,6 +247,7 @@ export default function App() {
                             updateLayerColor(layer.id, hex, parseFloat(e.target.value))
                           }
                           className="w-full accent-primary"
+                          aria-label={`Layer ${index + 1} Opacity`}
                         />
                         <span className="text-xs text-muted-foreground font-mono">
                           {alpha.toFixed(2)}
@@ -267,7 +274,7 @@ export default function App() {
             </pre>
           </CardContent>
         </Card>
-      </div>
+      </main>
       <Toaster />
     </div>
   );

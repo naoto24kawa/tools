@@ -122,7 +122,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-background p-8">
-      <div className="max-w-2xl mx-auto space-y-6">
+      <main className="max-w-2xl mx-auto space-y-6">
         <header className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">Audio Tone Generator</h1>
           <p className="text-muted-foreground">
@@ -150,6 +150,7 @@ export default function App() {
                   value={frequencyToSliderValue(frequency)}
                   onChange={handleFrequencySliderChange}
                   className="flex-1 h-2 bg-secondary rounded-lg appearance-none cursor-pointer"
+                  aria-label="Frequency slider"
                 />
                 <Input
                   id="frequency"
@@ -261,7 +262,7 @@ export default function App() {
             </div>
           </CardContent>
         </Card>
-      </div>
+      </main>
       <Toaster />
     </div>
   );
