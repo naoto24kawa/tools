@@ -187,8 +187,8 @@ export default function App() {
             </CardContent>
           </Card>
         </div>
-      </div>
+      </main>
       <Toaster />
-    </main>
+    </div>
   );
 }
