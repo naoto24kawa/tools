@@ -1,28 +1,28 @@
-import { Copy, Hash } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
-import { Toaster } from '@/components/ui/toaster';
-import { useToast } from '@/hooks/useToast';
-import { md5 } from '@/utils/md5';
+import { Copy, Hash } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Toaster } from "@/components/ui/toaster";
+import { useToast } from "@/hooks/useToast";
+import { md5 } from "@/utils/md5";
 
 export default function App() {
-  const [input, setInput] = useState('');
-  const [hash, setHash] = useState('');
-  const [error, setError] = useState('');
+  const [input, setInput] = useState("");
+  const [hash, setHash] = useState("");
+  const [error, setError] = useState("");
   const { toast } = useToast();
 
   useEffect(() => {
     if (!input) {
-      setHash('');
-      setError('');
+      setHash("");
+      setError("");
       return;
     }
     md5(input)
       .then((h) => {
         setHash(h);
-        setError('');
+        setError("");
       })
       .catch((e) => setError(String(e)));
   }, [input]);
@@ -30,9 +30,9 @@ export default function App() {
   const copyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(hash);
-      toast({ title: 'Copied to clipboard' });
+      toast({ title: "Copied to clipboard" });
     } catch {
-      toast({ title: 'コピーに失敗しました', variant: 'destructive' });
+      toast({ title: "コピーに失敗しました", variant: "destructive" });
     }
   };
 
@@ -43,42 +43,49 @@ export default function App() {
           <h1 className="text-3xl font-bold tracking-tight">MD5 Hash Generator</h1>
           <p className="text-muted-foreground">テキストのMD5ハッシュを生成します。</p>
         </header>
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Hash className="h-5 w-5" /> Generator
-            </CardTitle>
-            <CardDescription>テキストを入力するとリアルタイムでMD5が生成されます。</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="input">Input</Label>
-              <textarea
-                id="input"
-                className="flex min-h-[150px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none"
-                placeholder="ハッシュ化するテキストを入力..."
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-              />
-            </div>
-            {error && (
-              <p className="text-sm text-destructive">{error}</p>
-            )}
-            {hash && (
+        <main>
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Hash className="h-5 w-5" /> Generator
+              </CardTitle>
+              <CardDescription>
+                テキストを入力するとリアルタイムでMD5が生成されます。
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label>MD5 Hash</Label>
-                <div className="flex items-center gap-2">
-                  <code className="flex-1 bg-muted rounded px-3 py-2 text-sm font-mono break-all">
-                    {hash}
-                  </code>
-                  <Button size="icon" variant="outline" onClick={copyToClipboard}>
-                    <Copy className="h-4 w-4" />
-                  </Button>
-                </div>
+                <Label htmlFor="input">Input</Label>
+                <textarea
+                  id="input"
+                  className="flex min-h-[150px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none"
+                  placeholder="ハッシュ化するテキストを入力..."
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                />
               </div>
-            )}
-          </CardContent>
-        </Card>
+              {error && <p className="text-sm text-destructive">{error}</p>}
+              {hash && (
+                <div className="space-y-2">
+                  <Label>MD5 Hash</Label>
+                  <div className="flex items-center gap-2">
+                    <code className="flex-1 bg-muted rounded px-3 py-2 text-sm font-mono break-all">
+                      {hash}
+                    </code>
+                    <Button
+                      size="icon"
+                      variant="outline"
+                      onClick={copyToClipboard}
+                      aria-label="Copy MD5 hash to clipboard"
+                    >
+                      <Copy className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </main>
       </div>
       <Toaster />
     </div>

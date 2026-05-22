@@ -43,42 +43,49 @@ export default function App() {
           <h1 className="text-3xl font-bold tracking-tight">CRC32 Checksum</h1>
           <p className="text-muted-foreground">テキストのCRC32チェックサムを計算します。</p>
         </header>
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Hash className="h-5 w-5" /> Calculator
-            </CardTitle>
-            <CardDescription>
-              テキストを入力するとリアルタイムでCRC32が計算されます。
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="input">Input</Label>
-              <textarea
-                id="input"
-                className="flex min-h-[150px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none"
-                placeholder="テキストを入力..."
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-              />
-            </div>
-            {error && <p className="text-sm text-destructive">{error}</p>}
-            {hash && (
+        <main>
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Hash className="h-5 w-5" /> Calculator
+              </CardTitle>
+              <CardDescription>
+                テキストを入力するとリアルタイムでCRC32が計算されます。
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label>CRC32</Label>
-                <div className="flex items-center gap-2">
-                  <code className="flex-1 bg-muted rounded px-3 py-2 text-sm font-mono">
-                    {hash}
-                  </code>
-                  <Button size="icon" variant="outline" onClick={copyToClipboard}>
-                    <Copy className="h-4 w-4" />
-                  </Button>
-                </div>
+                <Label htmlFor="input">Input</Label>
+                <textarea
+                  id="input"
+                  className="flex min-h-[150px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none"
+                  placeholder="テキストを入力..."
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                />
               </div>
-            )}
-          </CardContent>
-        </Card>
+              {error && <p className="text-sm text-destructive">{error}</p>}
+              {hash && (
+                <div className="space-y-2">
+                  <Label>CRC32</Label>
+                  <div className="flex items-center gap-2">
+                    <code className="flex-1 bg-muted rounded px-3 py-2 text-sm font-mono">
+                      {hash}
+                    </code>
+                    <Button
+                      size="icon"
+                      variant="outline"
+                      onClick={copyToClipboard}
+                      aria-label="Copy CRC32 checksum to clipboard"
+                    >
+                      <Copy className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </main>
       </div>
       <Toaster />
     </div>
