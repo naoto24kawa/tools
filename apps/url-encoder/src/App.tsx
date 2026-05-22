@@ -1,46 +1,50 @@
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
-import { Copy, Trash2, ArrowRight } from 'lucide-react';
-import { Toaster } from '@/components/ui/toaster';
-import { useToast } from '@/hooks/useToast';
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Copy, Trash2, ArrowRight } from "lucide-react";
+import { Toaster } from "@/components/ui/toaster";
+import { useToast } from "@/hooks/useToast";
 
 export default function App() {
-  const [input, setInput] = useState('');
-  const [output, setOutput] = useState('');
+  const [input, setInput] = useState("");
+  const [output, setOutput] = useState("");
   const { toast } = useToast();
 
   const handleEncode = () => {
     try {
       setOutput(encodeURIComponent(input));
-      toast({ title: 'Encoded successfully' });
+      toast({ title: "Encoded successfully" });
     } catch (e) {
-      toast({ title: 'Encoding failed', variant: 'destructive' });
+      toast({ title: "Encoding failed", variant: "destructive" });
     }
   };
 
   const handleDecode = () => {
     try {
       setOutput(decodeURIComponent(input));
-      toast({ title: 'Decoded successfully' });
+      toast({ title: "Decoded successfully" });
     } catch (e) {
-      toast({ title: 'Decoding failed', description: 'Invalid URL sequence', variant: 'destructive' });
+      toast({
+        title: "Decoding failed",
+        description: "Invalid URL sequence",
+        variant: "destructive",
+      });
     }
   };
 
   const copyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(output);
-      toast({ title: 'Copied to clipboard' });
+      toast({ title: "Copied to clipboard" });
     } catch {
-      toast({ title: 'Copy failed', variant: 'destructive' });
+      toast({ title: "Copy failed", variant: "destructive" });
     }
   };
 
   const clearAll = () => {
-    setInput('');
-    setOutput('');
+    setInput("");
+    setOutput("");
   };
 
   return (
@@ -72,10 +76,10 @@ export default function App() {
               </div>
 
               <div className="flex flex-col gap-4 justify-center pt-10">
-                <Button onClick={handleEncode} disabled={!input}>
+                <Button type="button" onClick={handleEncode} disabled={!input}>
                   Encode <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
-                <Button onClick={handleDecode} variant="secondary" disabled={!input}>
+                <Button type="button" onClick={handleDecode} variant="secondary" disabled={!input}>
                   Decode <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </div>
@@ -93,10 +97,10 @@ export default function App() {
             </div>
 
             <div className="flex justify-end gap-2 pt-4 border-t">
-              <Button variant="outline" onClick={clearAll}>
+              <Button type="button" variant="outline" onClick={clearAll}>
                 <Trash2 className="mr-2 h-4 w-4" /> Clear
               </Button>
-              <Button onClick={copyToClipboard} disabled={!output}>
+              <Button type="button" onClick={copyToClipboard} disabled={!output}>
                 <Copy className="mr-2 h-4 w-4" /> Copy Result
               </Button>
             </div>

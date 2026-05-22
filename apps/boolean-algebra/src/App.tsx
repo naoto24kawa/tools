@@ -72,7 +72,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-background p-8">
-      <div className="max-w-4xl mx-auto space-y-6">
+      <main className="max-w-4xl mx-auto space-y-6">
         <header className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">Boolean Algebra Calculator</h1>
           <p className="text-muted-foreground">
@@ -108,7 +108,7 @@ export default function App() {
               <code className="bg-muted px-1 rounded">^ / XOR</code>
             </div>
 
-            {error && <p className="text-sm text-destructive">{error}</p>}
+            {error && <p className="text-sm text-destructive" role="alert">{error}</p>}
 
             <div className="flex flex-wrap gap-2">
               <Button type="button" onClick={handleEvaluate}>
@@ -225,7 +225,7 @@ export default function App() {
             </Card>
           </>
         )}
-      </div>
+      </main>
       <Toaster />
     </div>
   );

@@ -115,7 +115,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-background p-8">
-      <div className="max-w-2xl mx-auto space-y-6">
+      <main className="max-w-2xl mx-auto space-y-6">
         <header className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">Audio Noise Gate</h1>
           <p className="text-muted-foreground">
@@ -165,6 +165,7 @@ export default function App() {
                 value={options.thresholdDb}
                 onChange={(e) => updateOption('thresholdDb', Number(e.target.value))}
                 className="w-full mt-1"
+                aria-label="スレッショルド (dB)"
               />
               <div className="flex justify-between text-xs text-muted-foreground mt-1">
                 <span>-80 dB</span>
@@ -291,7 +292,7 @@ export default function App() {
             </CardContent>
           </Card>
         )}
-      </div>
+      </main>
       <Toaster />
     </div>
   );

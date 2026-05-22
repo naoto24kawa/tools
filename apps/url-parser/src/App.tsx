@@ -114,7 +114,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-background p-8">
-      <div className="max-w-4xl mx-auto space-y-6">
+      <main className="max-w-4xl mx-auto space-y-6">
         <header className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">URL Parser</h1>
           <p className="text-muted-foreground">
@@ -170,7 +170,7 @@ export default function App() {
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>
-                {parseError && <p className="text-sm text-destructive">{parseError}</p>}
+                {parseError && <p role="alert" className="text-sm text-destructive">{parseError}</p>}
               </CardContent>
             </Card>
 
@@ -421,7 +421,7 @@ export default function App() {
             )}
           </>
         )}
-      </div>
+      </main>
       <Toaster />
     </div>
   );

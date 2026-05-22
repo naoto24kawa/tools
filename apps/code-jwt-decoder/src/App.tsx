@@ -25,99 +25,102 @@ export default function App() {
           <p className="text-muted-foreground">JWTトークンをデコードして中身を表示します。</p>
         </header>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Token Input</CardTitle>
-            <CardDescription>JWTトークンを貼り付けてください。</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <textarea
-              className="flex min-h-[100px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-mono ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none break-all"
-              placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-              value={token}
-              onChange={(e) => setToken(e.target.value)}
-            />
-            <div className="flex justify-end">
-              <Button variant="outline" onClick={() => setToken('')}>
-                <Trash2 className="mr-2 h-4 w-4" /> Clear
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-
-        {result.error && (
-          <Card className="border-red-500">
-            <CardContent className="pt-6">
-              <div className="flex items-center gap-2 text-red-500">
-                <AlertCircle className="h-4 w-4" />
-                <span className="text-sm">{result.error}</span>
+        <main className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Token Input</CardTitle>
+              <CardDescription>JWTトークンを貼り付けてください。</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <textarea
+                aria-label="JWT token input"
+                className="flex min-h-[100px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-mono ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none break-all"
+                placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                value={token}
+                onChange={(e) => setToken(e.target.value)}
+              />
+              <div className="flex justify-end">
+                <Button type="button" variant="outline" onClick={() => setToken('')}>
+                  <Trash2 className="mr-2 h-4 w-4" /> Clear
+                </Button>
               </div>
             </CardContent>
           </Card>
-        )}
 
-        {result.decoded && (
-          <>
-            {result.decoded.isExpired !== null && (
-              <div className="flex items-center gap-2 text-sm">
-                {result.decoded.isExpired ? (
-                  <>
-                    <XCircle className="h-4 w-4 text-red-500" />
-                    <span className="text-red-600">Expired (at {result.decoded.expiresAt})</span>
-                  </>
-                ) : (
-                  <>
-                    <CheckCircle className="h-4 w-4 text-green-500" />
-                    <span className="text-green-600">
-                      Valid (expires {result.decoded.expiresAt})
-                    </span>
-                  </>
-                )}
-              </div>
-            )}
-
-            <div className="grid gap-4 md:grid-cols-2">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Header</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <pre className="text-sm font-mono bg-muted rounded p-3 overflow-auto">
-                    {formatJSON(result.decoded.header)}
-                  </pre>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Payload</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <pre className="text-sm font-mono bg-muted rounded p-3 overflow-auto">
-                    {formatJSON(result.decoded.payload)}
-                  </pre>
-                </CardContent>
-              </Card>
-            </div>
-
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Signature</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <code className="text-sm font-mono bg-muted rounded p-3 block break-all">
-                  {result.decoded.signature}
-                </code>
+          {result.error && (
+            <Card className="border-red-500">
+              <CardContent className="pt-6">
+                <div role="alert" className="flex items-center gap-2 text-red-500">
+                  <AlertCircle className="h-4 w-4" />
+                  <span className="text-sm">{result.error}</span>
+                </div>
               </CardContent>
             </Card>
+          )}
 
-            {result.decoded.issuedAt && (
-              <div className="text-xs text-muted-foreground">
-                Issued at: {result.decoded.issuedAt}
+          {result.decoded && (
+            <>
+              {result.decoded.isExpired !== null && (
+                <div className="flex items-center gap-2 text-sm">
+                  {result.decoded.isExpired ? (
+                    <>
+                      <XCircle className="h-4 w-4 text-red-500" />
+                      <span className="text-red-600">Expired (at {result.decoded.expiresAt})</span>
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle className="h-4 w-4 text-green-500" />
+                      <span className="text-green-600">
+                        Valid (expires {result.decoded.expiresAt})
+                      </span>
+                    </>
+                  )}
+                </div>
+              )}
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Header</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <pre className="text-sm font-mono bg-muted rounded p-3 overflow-auto">
+                      {formatJSON(result.decoded.header)}
+                    </pre>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Payload</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <pre className="text-sm font-mono bg-muted rounded p-3 overflow-auto">
+                      {formatJSON(result.decoded.payload)}
+                    </pre>
+                  </CardContent>
+                </Card>
               </div>
-            )}
-          </>
-        )}
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Signature</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <code className="text-sm font-mono bg-muted rounded p-3 block break-all">
+                    {result.decoded.signature}
+                  </code>
+                </CardContent>
+              </Card>
+
+              {result.decoded.issuedAt && (
+                <div className="text-xs text-muted-foreground">
+                  Issued at: {result.decoded.issuedAt}
+                </div>
+              )}
+            </>
+          )}
+        </main>
       </div>
       <Toaster />
     </div>

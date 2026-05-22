@@ -60,46 +60,55 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-50 p-4">
       <div className="mx-auto max-w-3xl">
-        <Card>
-          <CardHeader>
-            <CardTitle>JSON Editor</CardTitle>
-            <CardDescription>Edit, format, minify, and validate JSON</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex flex-wrap gap-2">
-              <Button onClick={validate} type="button">
-                Validate
-              </Button>
-              <Button onClick={handleFormat} variant="outline" type="button">
-                Format
-              </Button>
-              <Button onClick={handleMinify} variant="outline" type="button">
-                Minify
-              </Button>
-              <Button onClick={handleSort} variant="outline" type="button">
-                Sort Keys
-              </Button>
-              <Button onClick={handleCopy} variant="outline" type="button">
-                Copy
-              </Button>
-            </div>
-            {error && <div className="rounded-md bg-red-100 p-3 text-sm text-red-800">{error}</div>}
-            <div className="space-y-2">
-              <Label htmlFor="editor">JSON</Label>
-              <textarea
-                id="editor"
-                className="w-full rounded-md border p-3 font-mono text-sm"
-                rows={20}
-                value={input}
-                onChange={(e) => {
-                  setInput(e.target.value);
-                  setError(null);
-                }}
-                spellCheck={false}
-              />
-            </div>
-          </CardContent>
-        </Card>
+        <header className="sr-only">
+          <h1>JSON Editor</h1>
+        </header>
+        <main>
+          <Card>
+            <CardHeader>
+              <CardTitle>JSON Editor</CardTitle>
+              <CardDescription>Edit, format, minify, and validate JSON</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex flex-wrap gap-2">
+                <Button onClick={validate} type="button">
+                  Validate
+                </Button>
+                <Button onClick={handleFormat} variant="outline" type="button">
+                  Format
+                </Button>
+                <Button onClick={handleMinify} variant="outline" type="button">
+                  Minify
+                </Button>
+                <Button onClick={handleSort} variant="outline" type="button">
+                  Sort Keys
+                </Button>
+                <Button onClick={handleCopy} variant="outline" type="button">
+                  Copy
+                </Button>
+              </div>
+              {error && (
+                <div role="alert" className="rounded-md bg-red-100 p-3 text-sm text-red-800">
+                  {error}
+                </div>
+              )}
+              <div className="space-y-2">
+                <Label htmlFor="editor">JSON</Label>
+                <textarea
+                  id="editor"
+                  className="w-full rounded-md border p-3 font-mono text-sm"
+                  rows={20}
+                  value={input}
+                  onChange={(e) => {
+                    setInput(e.target.value);
+                    setError(null);
+                  }}
+                  spellCheck={false}
+                />
+              </div>
+            </CardContent>
+          </Card>
+        </main>
       </div>
       <Toaster />
     </div>

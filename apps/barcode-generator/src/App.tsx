@@ -94,6 +94,7 @@ export default function App() {
           </p>
         </header>
 
+        <main>
         <div className="grid gap-6 md:grid-cols-[1fr,1fr]">
           <Card>
             <CardHeader>
@@ -110,7 +111,7 @@ export default function App() {
                   onChange={(e) => setValue(e.target.value)}
                 />
                 {value.length > 0 && !isValid && (
-                  <p className="text-sm text-destructive">
+                  <p role="alert" className="text-sm text-destructive">
                     Invalid value for {options.format} format.
                   </p>
                 )}
@@ -239,7 +240,7 @@ export default function App() {
                 )}
               </div>
 
-              {error && <p className="text-sm text-destructive">{error}</p>}
+              {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
 
               <div className="flex justify-end gap-2 pt-4 border-t">
                 <Button type="button" variant="outline" onClick={handleClear}>
@@ -255,6 +256,7 @@ export default function App() {
             </CardContent>
           </Card>
         </div>
+        </main>
       </div>
       <Toaster />
     </div>

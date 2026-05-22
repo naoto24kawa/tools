@@ -106,7 +106,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-background p-8">
-      <div className="max-w-5xl mx-auto space-y-6">
+      <main className="max-w-5xl mx-auto space-y-6">
         <header className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">Gradient Mesh Generator</h1>
           <p className="text-muted-foreground">
@@ -156,6 +156,7 @@ export default function App() {
                     value={toHex(p.color)}
                     onChange={(e) => updatePointColor(i, e.target.value)}
                     className="w-8 h-8 rounded cursor-pointer"
+                    aria-label={`Point ${i + 1} color`}
                   />
                   <span className="text-xs text-muted-foreground flex-1">
                     ({(p.x * 100).toFixed(0)}%, {(p.y * 100).toFixed(0)}%)
@@ -166,6 +167,7 @@ export default function App() {
                     size="icon"
                     onClick={() => removePoint(i)}
                     className="h-6 w-6"
+                    aria-label={`Remove point ${i + 1}`}
                   >
                     <Trash2 className="h-3 w-3" />
                   </Button>
@@ -187,7 +189,7 @@ export default function App() {
             </CardContent>
           </Card>
         </div>
-      </div>
+      </main>
       <Toaster />
     </div>
   );

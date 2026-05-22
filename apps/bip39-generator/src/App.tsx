@@ -34,6 +34,11 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-50 p-4">
       <div className="mx-auto max-w-2xl space-y-4">
+        <header className="space-y-2">
+          <h1 className="text-3xl font-bold tracking-tight">BIP39 Mnemonic Generator</h1>
+          <p className="text-muted-foreground">Generate and validate BIP39 mnemonic phrases.</p>
+        </header>
+        <main className="space-y-4">
         <Card>
           <CardHeader>
             <CardTitle>BIP39 Mnemonic Generator</CardTitle>
@@ -45,6 +50,7 @@ function App() {
               <div className="flex gap-2">
                 {WORD_COUNTS.map((count) => (
                   <Button
+                    type="button"
                     key={count}
                     variant={wordCount === count ? 'default' : 'outline'}
                     onClick={() => setWordCount(count)}
@@ -107,6 +113,7 @@ function App() {
             </Button>
             {validationResult !== null && (
               <div
+                role="alert"
                 className={`rounded-md p-3 text-sm font-medium ${validationResult ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}
               >
                 {validationResult ? 'Valid mnemonic!' : 'Invalid mnemonic phrase.'}
@@ -114,6 +121,7 @@ function App() {
             )}
           </CardContent>
         </Card>
+        </main>
       </div>
       <Toaster />
     </div>

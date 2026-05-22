@@ -1,13 +1,13 @@
-import { AspectRatioSelector } from './components/AspectRatioSelector';
-import { ColorPicker } from './components/ColorPicker';
-import { ExportPanel } from './components/ExportPanel';
-import { PatternSelector } from './components/PatternSelector';
-import { PresetSelector } from './components/PresetSelector';
-import { SizeInput } from './components/SizeInput';
-import { TextInput } from './components/TextInput';
-import { Card } from './components/ui/card';
-import { ASPECT_RATIOS, COLOR_PRESETS, SIZE_PRESETS } from './config/presets';
-import { useImageSettings } from './hooks/useImageSettings';
+import { AspectRatioSelector } from "./components/AspectRatioSelector";
+import { ColorPicker } from "./components/ColorPicker";
+import { ExportPanel } from "./components/ExportPanel";
+import { PatternSelector } from "./components/PatternSelector";
+import { PresetSelector } from "./components/PresetSelector";
+import { SizeInput } from "./components/SizeInput";
+import { TextInput } from "./components/TextInput";
+import { Card } from "./components/ui/card";
+import { ASPECT_RATIOS, COLOR_PRESETS, SIZE_PRESETS } from "./config/presets";
+import { useImageSettings } from "./hooks/useImageSettings";
 
 export function App() {
   const { settings, handlers } = useImageSettings();
@@ -31,7 +31,7 @@ export function App() {
         </div>
       </header>
 
-      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+      <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-[400px_1fr]">
           <Card className="h-fit max-h-[calc(100vh-12rem)] overflow-y-auto p-6">
             <div className="space-y-6">
@@ -93,7 +93,7 @@ export function App() {
             />
           </Card>
         </div>
-      </div>
+      </main>
     </div>
   );
 }

@@ -41,78 +41,98 @@ export default function App() {
           <p className="text-muted-foreground">色の明暗・彩度・色相を調整します。</p>
         </header>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div className="text-center">
-            <div className="h-32 rounded-lg border" style={{ backgroundColor: color }} />
-            <div className="text-xs text-muted-foreground mt-1">Original</div>
-          </div>
-          <div className="text-center">
-            <div className="h-32 rounded-lg border" style={{ backgroundColor: adjusted }} />
-            <div className="flex items-center justify-center gap-1 mt-1">
-              <code className="text-sm font-mono">{adjusted}</code>
-              <Button size="icon" variant="ghost" onClick={() => copyColor(adjusted)}>
-                <Copy className="h-3 w-3" />
-              </Button>
+        <main className="space-y-6">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="text-center">
+              <div
+                className="h-32 rounded-lg border"
+                style={{ backgroundColor: color }}
+                aria-label={`元のカラープレビュー: ${color}`}
+              />
+              <div className="text-xs text-muted-foreground mt-1">Original</div>
+            </div>
+            <div className="text-center">
+              <div
+                className="h-32 rounded-lg border"
+                style={{ backgroundColor: adjusted }}
+                aria-label={`調整後カラープレビュー: ${adjusted}`}
+              />
+              <div className="flex items-center justify-center gap-1 mt-1">
+                <code className="text-sm font-mono">{adjusted}</code>
+                <Button
+                  type="button"
+                  size="icon"
+                  variant="ghost"
+                  onClick={() => copyColor(adjusted)}
+                  aria-label="調整後の色をコピー"
+                >
+                  <Copy className="h-3 w-3" />
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Controls</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center gap-4">
-              <Label>Base Color</Label>
-              <input
-                type="color"
-                value={color}
-                onChange={(e) => setColor(e.target.value)}
-                className="w-12 h-10 rounded cursor-pointer border-0"
-              />
-              <input
-                type="text"
-                value={color}
-                onChange={(e) => setColor(e.target.value)}
-                className="w-28 h-10 rounded-md border border-input bg-background px-3 text-sm font-mono"
-              />
-            </div>
-            {(
-              [
-                ['brightness', 'Brightness', brightness, setBrightness, -50, 50],
-                ['saturation', 'Saturation', saturation, setSaturation, -50, 50],
-                ['hue', 'Hue', hue, setHue, -180, 180],
-              ] as const
-            ).map(([key, label, val, setter, min, max]) => (
-              <div key={key} className="space-y-1">
-                <Label className="text-xs">
-                  {label}: {val > 0 ? `+${val}` : val}
-                </Label>
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">Controls</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center gap-4">
+                <Label>Base Color</Label>
                 <input
-                  type="range"
-                  min={min}
-                  max={max}
-                  value={val}
-                  onChange={(e) => setter(Number(e.target.value))}
-                  className="w-full"
+                  type="color"
+                  value={color}
+                  onChange={(e) => setColor(e.target.value)}
+                  className="w-12 h-10 rounded cursor-pointer border-0"
+                  aria-label="ベースカラーピッカー"
+                />
+                <input
+                  type="text"
+                  value={color}
+                  onChange={(e) => setColor(e.target.value)}
+                  className="w-28 h-10 rounded-md border border-input bg-background px-3 text-sm font-mono"
                 />
               </div>
-            ))}
-            <div className="text-xs text-muted-foreground">
-              HSL: {hsl.h}deg, {hsl.s}%, {hsl.l}%
-            </div>
-            <Button
-              variant="outline"
-              onClick={() => {
-                setBrightness(0);
-                setSaturation(0);
-                setHue(0);
-              }}
-            >
-              Reset
-            </Button>
-          </CardContent>
-        </Card>
+              {(
+                [
+                  ['brightness', 'Brightness', brightness, setBrightness, -50, 50],
+                  ['saturation', 'Saturation', saturation, setSaturation, -50, 50],
+                  ['hue', 'Hue', hue, setHue, -180, 180],
+                ] as const
+              ).map(([key, label, val, setter, min, max]) => (
+                <div key={key} className="space-y-1">
+                  <Label className="text-xs">
+                    {label}: {val > 0 ? `+${val}` : val}
+                  </Label>
+                  <input
+                    type="range"
+                    min={min}
+                    max={max}
+                    value={val}
+                    onChange={(e) => setter(Number(e.target.value))}
+                    className="w-full"
+                    aria-label={label}
+                    aria-valuetext={String(val > 0 ? `+${val}` : val)}
+                  />
+                </div>
+              ))}
+              <div className="text-xs text-muted-foreground">
+                HSL: {hsl.h}deg, {hsl.s}%, {hsl.l}%
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  setBrightness(0);
+                  setSaturation(0);
+                  setHue(0);
+                }}
+              >
+                Reset
+              </Button>
+            </CardContent>
+          </Card>
+        </main>
       </div>
       <Toaster />
     </div>

@@ -200,6 +200,7 @@ export default function App() {
           </p>
         </header>
 
+        <main className="space-y-6">
         {/* Video Upload */}
         <Card>
           <CardHeader>
@@ -434,6 +435,7 @@ export default function App() {
             </CardContent>
           </Card>
         )}
+        </main>
       </div>
       <Toaster />
     </div>

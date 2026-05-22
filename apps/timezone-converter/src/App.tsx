@@ -67,7 +67,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-background p-8">
-      <div className="max-w-5xl mx-auto space-y-6">
+      <main className="max-w-5xl mx-auto space-y-6">
         <header className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">Timezone Converter</h1>
           <p className="text-muted-foreground">
@@ -115,7 +115,7 @@ export default function App() {
               </div>
 
               <div className="flex items-center justify-center pt-6">
-                <Button type="button" onClick={handleConvert} disabled={!datetime}>
+                <Button type="button" onClick={handleConvert} disabled={!datetime} aria-label="Convert timezone">
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               </div>
@@ -141,7 +141,7 @@ export default function App() {
                     <Label>Result</Label>
                     <div className="flex items-center gap-2 p-3 rounded-md bg-muted">
                       <span className="text-lg font-mono flex-1">{convertedResult}</span>
-                      <Button type="button" variant="ghost" size="sm" onClick={copyResult}>
+                      <Button type="button" variant="ghost" size="sm" onClick={copyResult} aria-label="Copy result">
                         <Copy className="h-4 w-4" />
                       </Button>
                     </div>
@@ -171,7 +171,7 @@ export default function App() {
             </div>
           </CardContent>
         </Card>
-      </div>
+      </main>
       <Toaster />
     </div>
   );

@@ -122,7 +122,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-background p-8">
-      <div className="max-w-5xl mx-auto space-y-6">
+      <main className="max-w-5xl mx-auto space-y-6">
         <header className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">Regex Builder</h1>
           <p className="text-muted-foreground">
@@ -281,11 +281,11 @@ export default function App() {
                 <code className="flex-1 p-2 rounded-md bg-muted font-mono text-sm break-all">
                   /{pattern}/{flagsStr}
                 </code>
-                <Button type="button" size="sm" onClick={copyRegex} disabled={!pattern}>
+                <Button type="button" size="sm" onClick={copyRegex} disabled={!pattern} aria-label="Copy regex">
                   <Copy className="h-4 w-4" />
                 </Button>
               </div>
-              {error && <p className="text-sm text-destructive">{error}</p>}
+              {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
             </div>
           </CardContent>
         </Card>
@@ -299,6 +299,7 @@ export default function App() {
           </CardHeader>
           <CardContent className="space-y-4">
             <textarea
+              aria-label="Test string"
               className="flex min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none font-mono"
               placeholder="Enter test string..."
               value={testString}
@@ -343,7 +344,7 @@ export default function App() {
             )}
           </CardContent>
         </Card>
-      </div>
+      </main>
       <Toaster />
     </div>
   );

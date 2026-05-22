@@ -73,7 +73,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-background p-8">
-      <div className="max-w-4xl mx-auto space-y-6">
+      <main className="max-w-4xl mx-auto space-y-6">
         <header className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">IP Address Info</h1>
           <p className="text-muted-foreground">
@@ -103,7 +103,7 @@ export default function App() {
                 <Trash2 className="h-4 w-4" />
               </Button>
             </div>
-            {error && <p className="text-sm text-destructive">{error}</p>}
+            {error && <p className="text-sm text-destructive" role="alert">{error}</p>}
           </CardContent>
         </Card>
 
@@ -138,6 +138,7 @@ export default function App() {
                       variant="ghost"
                       size="icon"
                       onClick={() => copyToClipboard(row.value, row.label)}
+                      aria-label={`Copy ${row.label}`}
                     >
                       <Copy className="h-4 w-4" />
                     </Button>
@@ -147,7 +148,7 @@ export default function App() {
             </CardContent>
           </Card>
         )}
-      </div>
+      </main>
       <Toaster />
     </div>
   );

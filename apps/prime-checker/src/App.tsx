@@ -94,7 +94,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-background p-8">
-      <div className="max-w-4xl mx-auto space-y-6">
+      <main className="max-w-4xl mx-auto space-y-6">
         <header className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">Prime Checker</h1>
           <p className="text-muted-foreground">
@@ -139,7 +139,7 @@ export default function App() {
                     Check
                   </Button>
                 </div>
-                {checkError && <p className="text-sm text-destructive">{checkError}</p>}
+                {checkError && <p role="alert" className="text-sm text-destructive">{checkError}</p>}
               </div>
               {checkResult && (
                 <div className="space-y-2 rounded-md border p-4">
@@ -199,7 +199,7 @@ export default function App() {
                     Generate
                   </Button>
                 </div>
-                {sieveError && <p className="text-sm text-destructive">{sieveError}</p>}
+                {sieveError && <p role="alert" className="text-sm text-destructive">{sieveError}</p>}
               </div>
               {sieveResult.length > 0 && (
                 <div className="space-y-2 rounded-md border p-4">
@@ -251,7 +251,7 @@ export default function App() {
                     Find
                   </Button>
                 </div>
-                {nthError && <p className="text-sm text-destructive">{nthError}</p>}
+                {nthError && <p role="alert" className="text-sm text-destructive">{nthError}</p>}
               </div>
               {nthResult !== null && (
                 <div className="rounded-md border p-4">
@@ -274,7 +274,7 @@ export default function App() {
             </CardContent>
           </Card>
         )}
-      </div>
+      </main>
       <Toaster />
     </div>
   );

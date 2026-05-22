@@ -38,6 +38,7 @@ export default function App() {
           <p className="text-muted-foreground">リストの要素をランダムにシャッフルします。</p>
         </header>
 
+        <main>
         <Card>
           <CardHeader>
             <CardTitle>Randomizer</CardTitle>
@@ -69,7 +70,7 @@ export default function App() {
 
             <div className="flex flex-wrap items-end justify-between gap-4 pt-4 border-t">
               <div className="flex items-end gap-2">
-                <Button onClick={handleShuffle} disabled={!input.trim()}>
+                <Button type="button" onClick={handleShuffle} disabled={!input.trim()}>
                   <Shuffle className="mr-2 h-4 w-4" /> Shuffle All
                 </Button>
                 <div className="flex items-end gap-2">
@@ -86,13 +87,14 @@ export default function App() {
                       className="flex h-10 w-20 rounded-md border border-input bg-background px-3 py-2 text-sm"
                     />
                   </div>
-                  <Button variant="secondary" onClick={handlePick} disabled={!input.trim()}>
+                  <Button type="button" variant="secondary" onClick={handlePick} disabled={!input.trim()}>
                     Pick
                   </Button>
                 </div>
               </div>
               <div className="flex gap-2">
                 <Button
+                  type="button"
                   variant="outline"
                   onClick={() => {
                     setInput('');
@@ -101,13 +103,14 @@ export default function App() {
                 >
                   <Trash2 className="mr-2 h-4 w-4" /> Clear
                 </Button>
-                <Button onClick={copyToClipboard} disabled={!output}>
+                <Button type="button" onClick={copyToClipboard} disabled={!output}>
                   <Copy className="mr-2 h-4 w-4" /> Copy
                 </Button>
               </div>
             </div>
           </CardContent>
         </Card>
+        </main>
       </div>
       <Toaster />
     </div>

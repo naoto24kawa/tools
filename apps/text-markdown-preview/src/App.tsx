@@ -43,13 +43,14 @@ export default function App() {
           <h1 className="text-3xl font-bold tracking-tight">Markdown Preview</h1>
           <p className="text-muted-foreground">Markdownのリアルタイムプレビューツールです。</p>
         </header>
-        <div className="grid gap-4 md:grid-cols-2">
+        <main className="grid gap-4 md:grid-cols-2">
           <Card>
             <CardHeader>
               <CardTitle className="text-lg">Markdown</CardTitle>
             </CardHeader>
             <CardContent>
               <textarea
+                aria-label="Markdownテキスト入力"
                 className="flex min-h-[500px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-mono ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
@@ -60,7 +61,7 @@ export default function App() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle className="text-lg">Preview</CardTitle>
-                <Button size="sm" variant="ghost" onClick={copyHtml}>
+                <Button type="button" size="sm" variant="ghost" onClick={copyHtml}>
                   <Copy className="h-3 w-3 mr-1" /> HTML
                 </Button>
               </div>
@@ -69,13 +70,14 @@ export default function App() {
               <div className="prose prose-sm dark:prose-invert max-w-none min-h-[500px]">
                 <textarea
                   readOnly
+                  aria-label="HTML出力プレビュー"
                   className="w-full min-h-[500px] border-0 bg-transparent text-sm resize-none"
                   value={html}
                 />
               </div>
             </CardContent>
           </Card>
-        </div>
+        </main>
       </div>
       <Toaster />
     </div>

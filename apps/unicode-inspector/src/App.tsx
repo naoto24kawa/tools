@@ -34,7 +34,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-background p-8">
-      <div className="max-w-5xl mx-auto space-y-6">
+      <main className="max-w-5xl mx-auto space-y-6">
         <header className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">Unicode Inspector</h1>
           <p className="text-muted-foreground">
@@ -49,6 +49,7 @@ export default function App() {
           </CardHeader>
           <CardContent className="space-y-4">
             <textarea
+              aria-label="Text to inspect"
               className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm resize-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               value={input}
               onChange={(e) => setInput(e.target.value)}
@@ -61,7 +62,7 @@ export default function App() {
                 onChange={(e) => setCodepointSearch(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleCodepointSearch()}
               />
-              <Button type="button" onClick={handleCodepointSearch}>
+              <Button type="button" onClick={handleCodepointSearch} aria-label="Search codepoint">
                 <Search className="h-4 w-4" />
               </Button>
             </div>
@@ -175,7 +176,7 @@ export default function App() {
             </CardContent>
           </Card>
         )}
-      </div>
+      </main>
       <Toaster />
     </div>
   );

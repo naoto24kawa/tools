@@ -180,6 +180,7 @@ export default function App() {
           </p>
         </header>
 
+        <main className="space-y-6">
         {/* Upload area */}
         <Card>
           <CardHeader>
@@ -257,6 +258,7 @@ export default function App() {
                         type="button"
                         variant="ghost"
                         size="icon"
+                        aria-label={`Move ${img.file.name} up`}
                         onClick={() => moveImage(index, 'up')}
                         disabled={index === 0}
                       >
@@ -266,6 +268,7 @@ export default function App() {
                         type="button"
                         variant="ghost"
                         size="icon"
+                        aria-label={`Move ${img.file.name} down`}
                         onClick={() => moveImage(index, 'down')}
                         disabled={index === images.length - 1}
                       >
@@ -275,6 +278,7 @@ export default function App() {
                         type="button"
                         variant="ghost"
                         size="icon"
+                        aria-label={`Remove ${img.file.name}`}
                         onClick={() => removeImage(img.id)}
                       >
                         <X className="h-4 w-4" />
@@ -393,6 +397,7 @@ export default function App() {
             )}
           </Button>
         </div>
+      </main>
       </div>
       <Toaster />
     </div>

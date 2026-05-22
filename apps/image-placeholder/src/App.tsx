@@ -70,7 +70,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-background p-8">
-      <div className="max-w-4xl mx-auto space-y-6">
+      <main className="max-w-4xl mx-auto space-y-6">
         <header className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">Image Placeholder Generator</h1>
           <p className="text-muted-foreground">
@@ -119,6 +119,7 @@ export default function App() {
                       value={options.backgroundColor}
                       onChange={(e) => updateOption('backgroundColor', e.target.value)}
                       className="h-10 w-full cursor-pointer rounded-md border border-input"
+                      aria-label="Background Color"
                     />
                   </div>
                   <div className="space-y-2">
@@ -128,6 +129,7 @@ export default function App() {
                       value={options.textColor}
                       onChange={(e) => updateOption('textColor', e.target.value)}
                       className="h-10 w-full cursor-pointer rounded-md border border-input"
+                      aria-label="Text Color"
                     />
                   </div>
                 </div>
@@ -217,7 +219,7 @@ export default function App() {
             </CardContent>
           </Card>
         </div>
-      </div>
+      </main>
       <Toaster />
     </div>
   );

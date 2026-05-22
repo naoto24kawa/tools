@@ -106,7 +106,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-background p-8">
-      <div className="max-w-4xl mx-auto space-y-6">
+      <main className="max-w-4xl mx-auto space-y-6">
         <header className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">SSL Certificate Decoder</h1>
           <p className="text-muted-foreground">
@@ -123,6 +123,7 @@ export default function App() {
           </CardHeader>
           <CardContent className="space-y-4">
             <textarea
+              aria-label="PEM certificate input"
               className="flex min-h-[250px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-mono ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none"
               placeholder="-----BEGIN CERTIFICATE-----
 MIIFazCCA1OgAwIBAgIRAII...
@@ -130,7 +131,7 @@ MIIFazCCA1OgAwIBAgIRAII...
               value={pemInput}
               onChange={(e) => setPemInput(e.target.value)}
             />
-            {error && <p className="text-sm text-destructive">{error}</p>}
+            {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
             <div className="flex justify-between">
               <Button type="button" variant="outline" size="sm" onClick={loadSample}>
                 Load Sample
@@ -193,7 +194,7 @@ MIIFazCCA1OgAwIBAgIRAII...
             </CardContent>
           </Card>
         )}
-      </div>
+      </main>
       <Toaster />
     </div>
   );

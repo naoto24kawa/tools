@@ -1,8 +1,8 @@
-import { Button } from './components/ui/button';
-import { Card } from './components/ui/card';
-import { FILE_SIZE_PRESETS } from './config/constants';
-import { useResizeState } from './hooks/useResizeState';
-import { downloadBlob, formatFileSize, generateFilename } from './utils/exportImage';
+import { Button } from "./components/ui/button";
+import { Card } from "./components/ui/card";
+import { FILE_SIZE_PRESETS } from "./config/constants";
+import { useResizeState } from "./hooks/useResizeState";
+import { downloadBlob, formatFileSize, generateFilename } from "./utils/exportImage";
 
 export function App() {
   const {
@@ -33,7 +33,7 @@ export function App() {
         image.file.name,
         resizeResult.width,
         resizeResult.height,
-        exportSettings.format
+        exportSettings.format,
       );
       downloadBlob(resizeResult.blob, filename);
     }
@@ -69,6 +69,7 @@ export function App() {
                   accept="image/*"
                   onChange={handleFileChange}
                   className="w-full"
+                  aria-label="画像ファイルを選択"
                 />
               </div>
 
@@ -88,7 +89,7 @@ export function App() {
                       onChange={(e) =>
                         setResizeSettings({
                           ...resizeSettings,
-                          method: e.target.value as 'percent' | 'pixel' | 'filesize',
+                          method: e.target.value as "percent" | "pixel" | "filesize",
                         })
                       }
                       className="w-full p-2 border rounded"
@@ -99,7 +100,7 @@ export function App() {
                     </select>
                   </div>
 
-                  {resizeSettings.method === 'percent' && (
+                  {resizeSettings.method === "percent" && (
                     <div>
                       <label htmlFor="scale-percent" className="text-sm font-medium mb-2 block">
                         スケール: {resizeSettings.percent}%
@@ -121,7 +122,7 @@ export function App() {
                     </div>
                   )}
 
-                  {resizeSettings.method === 'pixel' && (
+                  {resizeSettings.method === "pixel" && (
                     <div className="space-y-4">
                       <div>
                         <label htmlFor="resize-width" className="text-sm font-medium mb-2 block">
@@ -175,7 +176,7 @@ export function App() {
                     </div>
                   )}
 
-                  {resizeSettings.method === 'filesize' && (
+                  {resizeSettings.method === "filesize" && (
                     <div className="space-y-4">
                       <div>
                         <label htmlFor="target-filesize" className="text-sm font-medium mb-2 block">
@@ -204,6 +205,7 @@ export function App() {
                         <div className="flex flex-wrap gap-2">
                           {FILE_SIZE_PRESETS.map((preset) => (
                             <Button
+                              type="button"
                               key={preset.value}
                               size="sm"
                               variant="outline"
@@ -229,7 +231,7 @@ export function App() {
                       onChange={(e) =>
                         setExportSettings({
                           ...exportSettings,
-                          format: e.target.value as 'png' | 'jpeg' | 'webp',
+                          format: e.target.value as "png" | "jpeg" | "webp",
                         })
                       }
                       className="w-full p-2 border rounded"
@@ -241,26 +243,27 @@ export function App() {
                   </div>
 
                   <Button
+                    type="button"
                     onClick={handleResize}
                     className="w-full"
-                    disabled={status === 'processing'}
+                    disabled={status === "processing"}
                   >
-                    {status === 'processing' ? 'リサイズ中...' : 'リサイズ実行'}
+                    {status === "processing" ? "リサイズ中..." : "リサイズ実行"}
                   </Button>
 
                   {resizeResult && (
-                    <Button onClick={handleDownload} className="w-full" variant="outline">
+                    <Button type="button" onClick={handleDownload} className="w-full" variant="outline">
                       ダウンロード
                     </Button>
                   )}
 
-                  <Button onClick={resetImage} variant="outline" className="w-full">
+                  <Button type="button" onClick={resetImage} variant="outline" className="w-full">
                     別の画像を選択
                   </Button>
                 </>
               )}
 
-              {error && <p className="text-sm text-destructive">{error}</p>}
+              {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
             </div>
           </Card>
 

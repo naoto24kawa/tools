@@ -57,7 +57,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-background p-8">
-      <div className="max-w-4xl mx-auto space-y-6">
+      <main className="max-w-4xl mx-auto space-y-6">
         <header className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">SemVer Calculator</h1>
           <p className="text-muted-foreground">
@@ -82,7 +82,7 @@ export default function App() {
                   onChange={(e) => setVersion(e.target.value)}
                 />
                 {version && !parsed && (
-                  <p className="text-sm text-destructive">Invalid semver format</p>
+                  <p role="alert" className="text-sm text-destructive">Invalid semver format</p>
                 )}
               </div>
               <Button
@@ -174,10 +174,10 @@ export default function App() {
                 </p>
               )}
               {compareA && !isValid(compareA) && (
-                <p className="text-sm text-destructive">Version A is invalid</p>
+                <p role="alert" className="text-sm text-destructive">Version A is invalid</p>
               )}
               {compareB && !isValid(compareB) && (
-                <p className="text-sm text-destructive">Version B is invalid</p>
+                <p role="alert" className="text-sm text-destructive">Version B is invalid</p>
               )}
             </CardContent>
           </Card>
@@ -226,7 +226,7 @@ export default function App() {
             </CardContent>
           </Card>
         </div>
-      </div>
+      </main>
       <Toaster />
     </div>
   );

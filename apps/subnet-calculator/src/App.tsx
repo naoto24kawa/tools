@@ -101,6 +101,7 @@ export default function App() {
           </p>
         </header>
 
+        <main className="space-y-6">
         <Card>
           <CardHeader>
             <CardTitle>Input</CardTitle>
@@ -152,7 +153,7 @@ export default function App() {
               </div>
             </div>
 
-            {error && <p className="text-sm text-destructive">{error}</p>}
+            {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
 
             <div className="flex gap-2">
               <Button type="button" onClick={handleCalculate}>
@@ -193,6 +194,7 @@ export default function App() {
             </CardContent>
           </Card>
         )}
+        </main>
       </div>
       <Toaster />
     </div>

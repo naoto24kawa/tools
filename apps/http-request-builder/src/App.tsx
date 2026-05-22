@@ -117,7 +117,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-background p-8">
-      <div className="max-w-5xl mx-auto space-y-6">
+      <main className="max-w-5xl mx-auto space-y-6">
         <header className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">HTTP Request Builder</h1>
           <p className="text-muted-foreground">
@@ -202,6 +202,7 @@ export default function App() {
                       checked={header.enabled}
                       onChange={(e) => updateHeader(header.id, 'enabled', e.target.checked)}
                       className="shrink-0"
+                      aria-label={`Enable header ${header.key || 'row'}`}
                     />
                     <Input
                       placeholder="Header name"
@@ -220,6 +221,7 @@ export default function App() {
                       variant="ghost"
                       size="icon"
                       onClick={() => removeHeader(header.id)}
+                      aria-label="Remove header"
                     >
                       <X className="h-4 w-4" />
                     </Button>
@@ -271,7 +273,7 @@ export default function App() {
         {error && (
           <Card>
             <CardContent className="pt-6">
-              <div className="text-destructive text-sm">
+              <div className="text-destructive text-sm" role="alert">
                 <strong>Error:</strong> {error}
               </div>
             </CardContent>
@@ -362,7 +364,7 @@ export default function App() {
             </CardContent>
           </Card>
         )}
-      </div>
+      </main>
       <Toaster />
     </div>
   );

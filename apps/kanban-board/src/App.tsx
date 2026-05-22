@@ -88,7 +88,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-background p-8">
-      <div className="max-w-6xl mx-auto space-y-6">
+      <main className="max-w-6xl mx-auto space-y-6">
         <header className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">Kanban Board</h1>
           <p className="text-muted-foreground">
@@ -229,6 +229,7 @@ export default function App() {
                                   size="icon"
                                   className="h-6 w-6"
                                   onClick={() => startEdit(card)}
+                                  aria-label="Edit card"
                                 >
                                   <Pencil className="h-3 w-3" />
                                 </Button>
@@ -238,6 +239,7 @@ export default function App() {
                                   size="icon"
                                   className="h-6 w-6"
                                   onClick={() => handleDelete(card.id)}
+                                  aria-label="Delete card"
                                 >
                                   <Trash2 className="h-3 w-3 text-destructive" />
                                 </Button>
@@ -280,7 +282,7 @@ export default function App() {
             );
           })}
         </div>
-      </div>
+      </main>
       <Toaster />
     </div>
   );

@@ -33,89 +33,95 @@ export default function App() {
           </p>
         </header>
 
-        <div className="flex items-end gap-4">
-          <div className="space-y-1">
-            <Label>ベースカラー</Label>
-            <div className="flex gap-2">
+        <main className="space-y-6">
+          <div className="flex items-end gap-4">
+            <div className="space-y-1">
+              <Label>ベースカラー</Label>
+              <div className="flex gap-2">
+                <input
+                  type="color"
+                  value={color}
+                  onChange={(e) => setColor(e.target.value)}
+                  className="w-12 h-10 rounded cursor-pointer border-0"
+                  aria-label="ベースカラーピッカー"
+                />
+                <input
+                  type="text"
+                  value={color}
+                  onChange={(e) => setColor(e.target.value)}
+                  className="w-28 h-10 rounded-md border border-input bg-background px-3 text-sm font-mono"
+                />
+              </div>
+            </div>
+            <div className="space-y-1">
+              <Label>段階数</Label>
               <input
-                type="color"
-                value={color}
-                onChange={(e) => setColor(e.target.value)}
-                className="w-12 h-10 rounded cursor-pointer border-0"
-              />
-              <input
-                type="text"
-                value={color}
-                onChange={(e) => setColor(e.target.value)}
-                className="w-28 h-10 rounded-md border border-input bg-background px-3 text-sm font-mono"
+                type="number"
+                min={3}
+                max={20}
+                value={count}
+                onChange={(e) => setCount(Math.max(3, Number(e.target.value)))}
+                className="w-20 h-10 rounded-md border border-input bg-background px-3 text-sm"
               />
             </div>
           </div>
-          <div className="space-y-1">
-            <Label>段階数</Label>
-            <input
-              type="number"
-              min={3}
-              max={20}
-              value={count}
-              onChange={(e) => setCount(Math.max(3, Number(e.target.value)))}
-              className="w-20 h-10 rounded-md border border-input bg-background px-3 text-sm"
-            />
-          </div>
-        </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Tints (明色)</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex rounded-lg overflow-hidden">
-              {palette.tints.map((hex) => (
-                <button
-                  type="button"
-                  key={`tint-${hex}`}
-                  onClick={() => copyColor(hex)}
-                  className="flex-1 h-16 relative group"
-                  style={{ backgroundColor: hex }}
-                >
-                  <span className="absolute bottom-0 left-0 right-0 text-[9px] font-mono text-center opacity-0 group-hover:opacity-100 bg-black/50 text-white py-0.5">
-                    {hex}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">Tints (明色)</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex rounded-lg overflow-hidden">
+                {palette.tints.map((hex) => (
+                  <button
+                    type="button"
+                    key={`tint-${hex}`}
+                    onClick={() => copyColor(hex)}
+                    className="flex-1 h-16 relative group"
+                    style={{ backgroundColor: hex }}
+                    aria-label={`ティント ${hex} をコピー`}
+                  >
+                    <span className="absolute bottom-0 left-0 right-0 text-[9px] font-mono text-center opacity-0 group-hover:opacity-100 bg-black/50 text-white py-0.5">
+                      {hex}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Shades (暗色)</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex rounded-lg overflow-hidden">
-              {palette.shades.map((hex) => (
-                <button
-                  type="button"
-                  key={`shade-${hex}`}
-                  onClick={() => copyColor(hex)}
-                  className="flex-1 h-16 relative group"
-                  style={{ backgroundColor: hex }}
-                >
-                  <span className="absolute bottom-0 left-0 right-0 text-[9px] font-mono text-center opacity-0 group-hover:opacity-100 bg-black/50 text-white py-0.5">
-                    {hex}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">Shades (暗色)</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex rounded-lg overflow-hidden">
+                {palette.shades.map((hex) => (
+                  <button
+                    type="button"
+                    key={`shade-${hex}`}
+                    onClick={() => copyColor(hex)}
+                    className="flex-1 h-16 relative group"
+                    style={{ backgroundColor: hex }}
+                    aria-label={`シェード ${hex} をコピー`}
+                  >
+                    <span className="absolute bottom-0 left-0 right-0 text-[9px] font-mono text-center opacity-0 group-hover:opacity-100 bg-black/50 text-white py-0.5">
+                      {hex}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
 
-        <Button
-          variant="outline"
-          onClick={() => copyColor(palette.tints.concat(palette.shades).join('\n'))}
-        >
-          <Copy className="mr-2 h-4 w-4" /> Copy All Colors
-        </Button>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => copyColor(palette.tints.concat(palette.shades).join('\n'))}
+          >
+            <Copy className="mr-2 h-4 w-4" /> Copy All Colors
+          </Button>
+        </main>
       </div>
       <Toaster />
     </div>

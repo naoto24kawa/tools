@@ -72,6 +72,7 @@ export default function App() {
           </p>
         </header>
 
+        <main>
         <Card>
           <CardHeader>
             <CardTitle>Generator</CardTitle>
@@ -150,6 +151,7 @@ export default function App() {
             </div>
           </CardContent>
         </Card>
+        </main>
       </div>
       <Toaster />
     </div>

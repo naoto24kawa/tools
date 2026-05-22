@@ -26,7 +26,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-background p-8">
-      <div className="max-w-6xl mx-auto space-y-6">
+      <main className="max-w-6xl mx-auto space-y-6">
         <header className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">CSS to Tailwind</h1>
           <p className="text-muted-foreground">
@@ -47,6 +47,7 @@ export default function App() {
               placeholder={`.element {\n  display: flex;\n  align-items: center;\n  padding: 1rem;\n  background-color: #3b82f6;\n  border-radius: 0.5rem;\n  color: #ffffff;\n  font-weight: 700;\n}`}
               value={input}
               onChange={(e) => setInput(e.target.value)}
+              aria-label="CSS Input"
             />
             <Button
               type="button"
@@ -146,7 +147,7 @@ export default function App() {
             </Card>
           </>
         )}
-      </div>
+      </main>
       <Toaster />
     </div>
   );

@@ -50,75 +50,79 @@ export default function App() {
           <h1 className="text-3xl font-bold tracking-tight">Image Brightness/Contrast</h1>
           <p className="text-muted-foreground">画像の明るさ/コントラスト/彩度を調整します。</p>
         </header>
-        <Card>
-          <CardHeader>
-            <CardTitle>Adjuster</CardTitle>
-            <CardDescription>画像をアップロードしてスライダーで調整してください。</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <button
-              type="button"
-              onClick={() => fileRef.current?.click()}
-              className="w-full border-2 border-dashed rounded-lg p-6 text-center cursor-pointer hover:bg-muted transition-colors"
-            >
-              <Upload className="mx-auto h-6 w-6 text-muted-foreground mb-1" />
-              <p className="text-sm text-muted-foreground">画像を選択</p>
-              <input
-                ref={fileRef}
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={(e) => {
-                  if (e.target.files?.[0]) handleFile(e.target.files[0]);
-                }}
-              />
-            </button>
-            {src && (
-              <>
-                <div className="flex justify-center">
-                  <img
-                    ref={imgRef}
-                    src={src}
-                    alt="Original"
-                    className="max-h-64 rounded border"
-                    style={{
-                      filter: `brightness(${brightness}%) contrast(${contrast}%) saturate(${saturate}%)`,
-                    }}
-                  />
-                </div>
-                {(
-                  [
-                    ['Brightness', brightness, setBrightness],
-                    ['Contrast', contrast, setContrast],
-                    ['Saturate', saturate, setSaturate],
-                  ] as const
-                ).map(([label, val, setter]) => (
-                  <div key={label} className="space-y-1">
-                    <Label className="text-xs">
-                      {label}: {val}%
-                    </Label>
-                    <input
-                      type="range"
-                      min={0}
-                      max={200}
-                      value={val}
-                      onChange={(e) => setter(Number(e.target.value))}
-                      className="w-full"
+        <main>
+          <Card>
+            <CardHeader>
+              <CardTitle>Adjuster</CardTitle>
+              <CardDescription>画像をアップロードしてスライダーで調整してください。</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <button
+                type="button"
+                onClick={() => fileRef.current?.click()}
+                className="w-full border-2 border-dashed rounded-lg p-6 text-center cursor-pointer hover:bg-muted transition-colors"
+              >
+                <Upload className="mx-auto h-6 w-6 text-muted-foreground mb-1" />
+                <p className="text-sm text-muted-foreground">画像を選択</p>
+                <input
+                  ref={fileRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  aria-label="画像ファイルを選択"
+                  onChange={(e) => {
+                    if (e.target.files?.[0]) handleFile(e.target.files[0]);
+                  }}
+                />
+              </button>
+              {src && (
+                <>
+                  <div className="flex justify-center">
+                    <img
+                      ref={imgRef}
+                      src={src}
+                      alt="調整中の画像"
+                      className="max-h-64 rounded border"
+                      style={{
+                        filter: `brightness(${brightness}%) contrast(${contrast}%) saturate(${saturate}%)`,
+                      }}
                     />
                   </div>
-                ))}
-                <div className="flex gap-2">
-                  <Button variant="outline" onClick={reset}>
-                    <RotateCcw className="mr-2 h-4 w-4" /> Reset
-                  </Button>
-                  <Button onClick={download}>
-                    <Download className="mr-2 h-4 w-4" /> Download
-                  </Button>
-                </div>
-              </>
-            )}
-          </CardContent>
-        </Card>
+                  {(
+                    [
+                      ['Brightness', brightness, setBrightness],
+                      ['Contrast', contrast, setContrast],
+                      ['Saturate', saturate, setSaturate],
+                    ] as const
+                  ).map(([label, val, setter]) => (
+                    <div key={label} className="space-y-1">
+                      <Label className="text-xs">
+                        {label}: {val}%
+                      </Label>
+                      <input
+                        type="range"
+                        min={0}
+                        max={200}
+                        value={val}
+                        onChange={(e) => setter(Number(e.target.value))}
+                        className="w-full"
+                        aria-label={`${label}: ${val}%`}
+                      />
+                    </div>
+                  ))}
+                  <div className="flex gap-2">
+                    <Button type="button" variant="outline" onClick={reset}>
+                      <RotateCcw className="mr-2 h-4 w-4" /> Reset
+                    </Button>
+                    <Button type="button" onClick={download}>
+                      <Download className="mr-2 h-4 w-4" /> Download
+                    </Button>
+                  </div>
+                </>
+              )}
+            </CardContent>
+          </Card>
+        </main>
       </div>
       <Toaster />
     </div>

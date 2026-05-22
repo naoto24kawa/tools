@@ -17,6 +17,7 @@ export default function App() {
           <h1 className="text-3xl font-bold tracking-tight">HTML Validator</h1>
           <p className="text-muted-foreground">HTMLの構文チェックを行います。</p>
         </header>
+        <main>
         <Card>
           <CardHeader>
             <CardTitle>Validator</CardTitle>
@@ -24,7 +25,7 @@ export default function App() {
           </CardHeader>
           <CardContent className="space-y-4">
             {input.trim() && (
-              <div className="flex items-center gap-2 text-sm">
+              <div aria-live="polite" className="flex items-center gap-2 text-sm">
                 {errors.length === 0 ? (
                   <>
                     <CheckCircle className="h-4 w-4 text-green-500" />
@@ -42,7 +43,10 @@ export default function App() {
                 )}
               </div>
             )}
+            <label htmlFor="html-input" className="sr-only">HTML input</label>
             <textarea
+              id="html-input"
+              aria-label="HTML input"
               className="flex min-h-[300px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-mono ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none"
               placeholder="<html>...</html>"
               value={input}
@@ -66,6 +70,7 @@ export default function App() {
             )}
           </CardContent>
         </Card>
+        </main>
       </div>
       <Toaster />
     </div>

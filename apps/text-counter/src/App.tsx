@@ -100,7 +100,7 @@ export function App() {
               </div>
 
               <div className="mt-6 flex gap-2">
-                <Button onClick={handleCopyStats} variant="outline" className="flex-1" size="sm">
+                <Button type="button" onClick={handleCopyStats} variant="outline" className="flex-1" size="sm">
                   統計をコピー
                 </Button>
               </div>
@@ -175,7 +175,7 @@ export function App() {
 
             {/* アクションボタン */}
             <Card className="p-6">
-              <Button onClick={clearText} variant="destructive" className="w-full">
+              <Button type="button" onClick={clearText} variant="destructive" className="w-full">
                 テキストをクリア
               </Button>
             </Card>

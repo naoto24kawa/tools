@@ -16,6 +16,7 @@ export default function App() {
           <h1 className="text-3xl font-bold tracking-tight">XML Validator</h1>
           <p className="text-muted-foreground">XMLの構文チェックを行います。</p>
         </header>
+        <main>
         <Card>
           <CardHeader>
             <CardTitle>Validator</CardTitle>
@@ -23,7 +24,7 @@ export default function App() {
           </CardHeader>
           <CardContent className="space-y-4">
             {input.trim() && (
-              <div className="flex items-center gap-2 text-sm">
+              <div aria-live="polite" className="flex items-center gap-2 text-sm">
                 {result.valid ? (
                   <>
                     <CheckCircle className="h-4 w-4 text-green-500" />
@@ -39,8 +40,9 @@ export default function App() {
             )}
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <Label>Input</Label>
+                <Label htmlFor="xml-input">Input</Label>
                 <textarea
+                  id="xml-input"
                   className="flex min-h-[350px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-mono ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none"
                   placeholder='<?xml version="1.0"?><root>...</root>'
                   value={input}
@@ -50,7 +52,7 @@ export default function App() {
               <div className="space-y-2">
                 <Label>Result</Label>
                 {result.error ? (
-                  <div className="min-h-[350px] rounded-md border border-red-200 bg-red-50 dark:bg-red-950 p-3 text-sm text-red-700 font-mono whitespace-pre-wrap">
+                  <div role="alert" className="min-h-[350px] rounded-md border border-red-200 bg-red-50 dark:bg-red-950 p-3 text-sm text-red-700 font-mono whitespace-pre-wrap">
                     {result.error}
                   </div>
                 ) : (
@@ -64,6 +66,7 @@ export default function App() {
             </div>
           </CardContent>
         </Card>
+        </main>
       </div>
       <Toaster />
     </div>

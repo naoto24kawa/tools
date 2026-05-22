@@ -80,6 +80,7 @@ export default function App() {
           </p>
         </header>
 
+        <main className="space-y-6">
         <Card>
           <CardHeader>
             <CardTitle>Generator</CardTitle>
@@ -156,6 +157,7 @@ export default function App() {
                       variant="ghost"
                       size="icon"
                       onClick={() => handleCopy(id.value)}
+                      aria-label="Copy ID"
                     >
                       <Copy className="h-4 w-4" />
                     </Button>
@@ -165,6 +167,7 @@ export default function App() {
             </CardContent>
           </Card>
         )}
+        </main>
       </div>
       <Toaster />
     </div>

@@ -116,6 +116,7 @@ export default function App() {
           </p>
         </header>
 
+        <main className="space-y-6">
         <div className="grid gap-6 md:grid-cols-2">
           {/* Encrypt Card */}
           <Card>
@@ -169,7 +170,7 @@ export default function App() {
                   onChange={(e) => setEncryptConfirm(e.target.value)}
                 />
                 {encryptPassword && encryptConfirm && encryptPassword !== encryptConfirm && (
-                  <p className="text-xs text-destructive">Passwords do not match</p>
+                  <p role="alert" className="text-xs text-destructive">Passwords do not match</p>
                 )}
               </div>
 
@@ -188,7 +189,7 @@ export default function App() {
                   <Upload className="mr-2 h-4 w-4" />
                   {encrypting ? 'Encrypting...' : 'Encrypt'}
                 </Button>
-                <Button type="button" variant="outline" onClick={clearEncrypt}>
+                <Button type="button" variant="outline" aria-label="Clear encrypt form" onClick={clearEncrypt}>
                   <Trash2 className="h-4 w-4" />
                 </Button>
               </div>
@@ -261,7 +262,7 @@ export default function App() {
                   <Upload className="mr-2 h-4 w-4" />
                   {decrypting ? 'Decrypting...' : 'Decrypt'}
                 </Button>
-                <Button type="button" variant="outline" onClick={clearDecrypt}>
+                <Button type="button" variant="outline" aria-label="Clear decrypt form" onClick={clearDecrypt}>
                   <Trash2 className="h-4 w-4" />
                 </Button>
               </div>
@@ -280,6 +281,7 @@ export default function App() {
             </CardContent>
           </Card>
         </div>
+      </main>
       </div>
       <Toaster />
     </div>

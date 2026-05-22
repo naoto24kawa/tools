@@ -105,6 +105,7 @@ export default function App() {
           </p>
         </header>
 
+        <main className="space-y-6">
         <Card>
           <CardHeader>
             <CardTitle>Field Configuration</CardTitle>
@@ -146,6 +147,7 @@ export default function App() {
                   size="icon"
                   onClick={() => removeField(index)}
                   disabled={fields.length <= 1}
+                  aria-label={`Remove field ${field.name}`}
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>
@@ -224,6 +226,7 @@ export default function App() {
             </CardContent>
           </Card>
         )}
+        </main>
       </div>
       <Toaster />
     </div>

@@ -125,6 +125,7 @@ export default function App() {
           </p>
         </header>
 
+        <main className="space-y-6">
         <Card>
           <CardHeader>
             <CardTitle>PDFファイル選択</CardTitle>
@@ -262,6 +263,7 @@ export default function App() {
             </CardContent>
           </Card>
         )}
+      </main>
       </div>
       <Toaster />
     </div>

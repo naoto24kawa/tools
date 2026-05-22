@@ -78,7 +78,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-background p-4 md:p-8">
-      <div className="max-w-3xl mx-auto space-y-6">
+      <main className="max-w-3xl mx-auto space-y-6">
         <header className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">通貨換算ツール</h1>
           <p className="text-muted-foreground">
@@ -122,6 +122,7 @@ export default function App() {
                 size="icon"
                 onClick={handleSwap}
                 className="mb-1"
+                aria-label="Swap currencies"
               >
                 <ArrowRightLeft className="h-4 w-4" />
               </Button>
@@ -212,7 +213,7 @@ export default function App() {
             </CardContent>
           )}
         </Card>
-      </div>
+      </main>
       <Toaster />
     </div>
   );

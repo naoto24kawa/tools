@@ -57,91 +57,111 @@ export default function App() {
           </p>
         </header>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Permissions</CardTitle>
-            <CardDescription>チェックボックスで権限を設定してください。</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b">
-                  <th className="text-left py-2" />
-                  {PERMS.map((p) => (
-                    <th key={p} className="text-center py-2 w-20">
-                      {PERM_LABELS[p]}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {ROLES.map((role) => (
-                  <tr key={role} className="border-b">
-                    <td className="py-2 font-medium">{ROLE_LABELS[role]}</td>
-                    {PERMS.map((perm) => (
-                      <td key={perm} className="text-center py-2">
-                        <input
-                          type="checkbox"
-                          checked={permissions[role][perm]}
-                          onChange={() => toggle(role, perm)}
-                          className="h-5 w-5 rounded border-input cursor-pointer"
-                        />
-                      </td>
+        <main>
+          <Card>
+            <CardHeader>
+              <CardTitle>Permissions</CardTitle>
+              <CardDescription>チェックボックスで権限を設定してください。</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b">
+                    <th className="text-left py-2" />
+                    {PERMS.map((p) => (
+                      <th key={p} className="text-center py-2 w-20">
+                        {PERM_LABELS[p]}
+                      </th>
                     ))}
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {ROLES.map((role) => (
+                    <tr key={role} className="border-b">
+                      <td className="py-2 font-medium">{ROLE_LABELS[role]}</td>
+                      {PERMS.map((perm) => (
+                        <td key={perm} className="text-center py-2">
+                          <input
+                            type="checkbox"
+                            aria-label={`${ROLE_LABELS[role]} ${perm}`}
+                            checked={permissions[role][perm]}
+                            onChange={() => toggle(role, perm)}
+                            className="h-5 w-5 rounded border-input cursor-pointer"
+                          />
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
 
-            <div className="grid gap-4 md:grid-cols-2 pt-4 border-t">
-              <div className="space-y-2">
-                <Label>Octal</Label>
-                <div className="flex items-center gap-2">
-                  <code className="text-3xl font-mono font-bold">{octal}</code>
-                  <Button size="icon" variant="ghost" onClick={() => copyValue(octal)}>
-                    <Copy className="h-4 w-4" />
-                  </Button>
+              <div className="grid gap-4 md:grid-cols-2 pt-4 border-t">
+                <div className="space-y-2">
+                  <Label>Octal</Label>
+                  <div className="flex items-center gap-2">
+                    <code className="text-3xl font-mono font-bold">{octal}</code>
+                    <Button
+                      type="button"
+                      size="icon"
+                      variant="ghost"
+                      onClick={() => copyValue(octal)}
+                      aria-label="Copy octal value"
+                    >
+                      <Copy className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  <div className="flex gap-1">
+                    <Label className="text-xs text-muted-foreground" htmlFor="octal-input">
+                      直接入力:
+                    </Label>
+                    <input
+                      id="octal-input"
+                      type="text"
+                      maxLength={3}
+                      value={octal}
+                      onChange={(e) => setFromOctal(e.target.value)}
+                      className="w-16 text-center rounded border border-input bg-background px-2 py-1 text-sm font-mono"
+                    />
+                  </div>
                 </div>
-                <div className="flex gap-1">
-                  <Label className="text-xs text-muted-foreground">直接入力:</Label>
-                  <input
-                    type="text"
-                    maxLength={3}
-                    value={octal}
-                    onChange={(e) => setFromOctal(e.target.value)}
-                    className="w-16 text-center rounded border border-input bg-background px-2 py-1 text-sm font-mono"
-                  />
+                <div className="space-y-2">
+                  <Label>Symbolic</Label>
+                  <div className="flex items-center gap-2">
+                    <code className="text-xl font-mono">{symbolic}</code>
+                    <Button
+                      type="button"
+                      size="icon"
+                      variant="ghost"
+                      onClick={() => copyValue(symbolic)}
+                      aria-label="Copy symbolic value"
+                    >
+                      <Copy className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  <code className="text-xs text-muted-foreground font-mono block">
+                    chmod {octal}
+                  </code>
                 </div>
               </div>
-              <div className="space-y-2">
-                <Label>Symbolic</Label>
-                <div className="flex items-center gap-2">
-                  <code className="text-xl font-mono">{symbolic}</code>
-                  <Button size="icon" variant="ghost" onClick={() => copyValue(symbolic)}>
-                    <Copy className="h-4 w-4" />
-                  </Button>
-                </div>
-                <code className="text-xs text-muted-foreground font-mono block">chmod {octal}</code>
-              </div>
-            </div>
 
-            <div className="pt-4 border-t">
-              <Label className="text-xs text-muted-foreground">よく使うモード</Label>
-              <div className="flex flex-wrap gap-2 mt-1">
-                {COMMON_MODES.map((m) => (
-                  <button
-                    type="button"
-                    key={m.octal}
-                    onClick={() => setFromOctal(m.octal)}
-                    className="px-2 py-1 rounded text-xs border hover:bg-muted transition-colors font-mono"
-                  >
-                    {m.octal} ({m.desc})
-                  </button>
-                ))}
+              <div className="pt-4 border-t">
+                <Label className="text-xs text-muted-foreground">よく使うモード</Label>
+                <div className="flex flex-wrap gap-2 mt-1">
+                  {COMMON_MODES.map((m) => (
+                    <button
+                      type="button"
+                      key={m.octal}
+                      onClick={() => setFromOctal(m.octal)}
+                      className="px-2 py-1 rounded text-xs border hover:bg-muted transition-colors font-mono"
+                    >
+                      {m.octal} ({m.desc})
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </main>
       </div>
       <Toaster />
     </div>

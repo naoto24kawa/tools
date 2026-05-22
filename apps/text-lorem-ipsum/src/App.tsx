@@ -45,7 +45,7 @@ export default function App() {
           <p className="text-muted-foreground">ダミーテキスト(Lorem Ipsum)を生成します。</p>
         </header>
 
-        <div className="grid gap-4 md:grid-cols-[280px,1fr]">
+        <main className="grid gap-4 md:grid-cols-[280px,1fr]">
           <Card>
             <CardHeader>
               <CardTitle className="text-lg">設定</CardTitle>
@@ -95,7 +95,7 @@ export default function App() {
                 <Label htmlFor="startWithLorem">&quot;Lorem ipsum...&quot; から開始</Label>
               </div>
 
-              <Button onClick={generate} className="w-full">
+              <Button type="button" onClick={generate} className="w-full">
                 <RefreshCw className="mr-2 h-4 w-4" /> 生成
               </Button>
             </CardContent>
@@ -109,22 +109,23 @@ export default function App() {
             <CardContent className="space-y-4">
               <textarea
                 readOnly
+                aria-label="生成されたダミーテキスト"
                 className="flex min-h-[400px] w-full rounded-md border border-input bg-muted px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none"
                 placeholder="ここに生成結果が表示されます..."
                 value={output}
               />
 
               <div className="flex justify-end gap-2 pt-4 border-t">
-                <Button variant="outline" onClick={clearAll}>
+                <Button type="button" variant="outline" onClick={clearAll}>
                   <Trash2 className="mr-2 h-4 w-4" /> Clear
                 </Button>
-                <Button onClick={copyToClipboard} disabled={!output}>
+                <Button type="button" onClick={copyToClipboard} disabled={!output}>
                   <Copy className="mr-2 h-4 w-4" /> Copy Result
                 </Button>
               </div>
             </CardContent>
           </Card>
-        </div>
+        </main>
       </div>
       <Toaster />
     </div>

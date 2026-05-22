@@ -126,7 +126,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-background p-8">
-      <div className="max-w-6xl mx-auto space-y-6">
+      <main className="max-w-6xl mx-auto space-y-6">
         <header className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">CSS Animation Builder</h1>
           <p className="text-muted-foreground">
@@ -285,6 +285,7 @@ export default function App() {
                           size="icon"
                           onClick={() => removeKeyframe(kf.id)}
                           disabled={keyframes.length <= 1}
+                          aria-label="Remove keyframe"
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
@@ -407,7 +408,7 @@ export default function App() {
             </Card>
           </div>
         </div>
-      </div>
+      </main>
       <Toaster />
     </div>
   );

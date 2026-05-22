@@ -156,7 +156,7 @@ export default function App() {
   if (view === 'decks') {
     return (
       <div className="min-h-screen bg-background p-8">
-        <div className="max-w-3xl mx-auto space-y-6">
+        <main className="max-w-3xl mx-auto space-y-6">
           <header className="space-y-2">
             <h1 className="text-3xl font-bold tracking-tight">Flashcard</h1>
             <p className="text-muted-foreground">
@@ -204,6 +204,7 @@ export default function App() {
                         variant="ghost"
                         size="icon"
                         onClick={() => handleDeleteDeck(deck.id)}
+                        aria-label="Delete deck"
                       >
                         <Trash2 className="h-4 w-4 text-destructive" />
                       </Button>
@@ -248,7 +249,7 @@ export default function App() {
               onChange={handleImport}
             />
           </div>
-        </div>
+        </main>
         <Toaster />
       </div>
     );
@@ -258,7 +259,7 @@ export default function App() {
   if (view === 'cards' && selectedDeck) {
     return (
       <div className="min-h-screen bg-background p-8">
-        <div className="max-w-3xl mx-auto space-y-6">
+        <main className="max-w-3xl mx-auto space-y-6">
           <div className="flex items-center gap-3">
             <Button type="button" variant="ghost" onClick={() => setView('decks')}>
               <ArrowLeft className="mr-2 h-4 w-4" /> Back
@@ -329,6 +330,7 @@ export default function App() {
                     variant="ghost"
                     size="icon"
                     onClick={() => handleDeleteCard(card.id)}
+                    aria-label="Delete card"
                   >
                     <Trash2 className="h-4 w-4 text-destructive" />
                   </Button>
@@ -341,7 +343,7 @@ export default function App() {
               </p>
             )}
           </div>
-        </div>
+        </main>
         <Toaster />
       </div>
     );
@@ -351,7 +353,7 @@ export default function App() {
   if (view === 'study' && studyCards.length > 0) {
     return (
       <div className="min-h-screen bg-background p-8">
-        <div className="max-w-2xl mx-auto space-y-6">
+        <main className="max-w-2xl mx-auto space-y-6">
           <div className="flex items-center gap-3">
             <Button type="button" variant="ghost" onClick={() => setView('cards')}>
               <ArrowLeft className="mr-2 h-4 w-4" /> Back
@@ -422,7 +424,7 @@ export default function App() {
               Next <ChevronRight className="ml-1 h-4 w-4" />
             </Button>
           </div>
-        </div>
+        </main>
         <Toaster />
       </div>
     );

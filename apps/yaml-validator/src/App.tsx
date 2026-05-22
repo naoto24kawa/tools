@@ -48,7 +48,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-background p-8">
-      <div className="max-w-6xl mx-auto space-y-6">
+      <main className="max-w-6xl mx-auto space-y-6">
         <header className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">YAML Validator</h1>
           <p className="text-muted-foreground">
@@ -73,13 +73,14 @@ export default function App() {
             </CardHeader>
             <CardContent className="space-y-4">
               <textarea
+                aria-label="YAML input"
                 className="flex min-h-[400px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-mono ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none"
                 placeholder="key: value&#10;list:&#10;  - item1&#10;  - item2"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
               />
               {result.error && (
-                <div className="flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-md text-sm text-red-800">
+                <div role="alert" className="flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-md text-sm text-red-800">
                   <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
                   <span>{result.error}</span>
                 </div>
@@ -114,7 +115,7 @@ export default function App() {
             </CardContent>
           </Card>
         </div>
-      </div>
+      </main>
       <Toaster />
     </div>
   );

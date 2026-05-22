@@ -120,7 +120,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-background p-8">
-      <div className="max-w-4xl mx-auto space-y-6">
+      <main className="max-w-4xl mx-auto space-y-6">
         <header className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">Typing Speed Test</h1>
           <p className="text-muted-foreground">
@@ -213,6 +213,7 @@ export default function App() {
 
             <textarea
               ref={inputRef}
+              aria-label="Typing input"
               className="w-full min-h-[100px] rounded-md border border-input bg-background px-3 py-2 text-sm font-mono ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring resize-none"
               placeholder={
                 gameState === 'idle'
@@ -272,7 +273,7 @@ export default function App() {
             </CardContent>
           </Card>
         )}
-      </div>
+      </main>
       <Toaster />
     </div>
   );

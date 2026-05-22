@@ -28,50 +28,54 @@ export default function App() {
           <h1 className="text-3xl font-bold tracking-tight">JSON Minify</h1>
           <p className="text-muted-foreground">JSONの空白・改行を除去してミニファイします。</p>
         </header>
-        <Card>
-          <CardHeader>
-            <CardTitle>Minifier</CardTitle>
-            <CardDescription>JSONを入力するとリアルタイムでミニファイされます。</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid gap-4 md:grid-cols-2">
-              <div className="space-y-2">
-                <Label htmlFor="input">Input ({input.length} bytes)</Label>
-                <textarea
-                  id="input"
-                  className="flex min-h-[300px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-mono ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none"
-                  placeholder='{\n  "key": "value"\n}'
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                />
+        <main>
+          <Card>
+            <CardHeader>
+              <CardTitle>Minifier</CardTitle>
+              <CardDescription>JSONを入力するとリアルタイムでミニファイされます。</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="input">Input ({input.length} bytes)</Label>
+                  <textarea
+                    id="input"
+                    className="flex min-h-[300px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-mono ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none"
+                    placeholder='{\n  "key": "value"\n}'
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="output">
+                    Output ({result.result.length} bytes
+                    {result.savedBytes > 0 ? `, -${result.savedBytes} bytes saved` : ''})
+                  </Label>
+                  <textarea
+                    id="output"
+                    readOnly
+                    aria-label="Minified JSON output"
+                    className="flex min-h-[300px] w-full rounded-md border border-input bg-muted px-3 py-2 text-sm font-mono ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none"
+                    value={result.result}
+                  />
+                </div>
               </div>
-              <div className="space-y-2">
-                <Label>
-                  Output ({result.result.length} bytes
-                  {result.savedBytes > 0 ? `, -${result.savedBytes} bytes saved` : ''})
-                </Label>
-                <textarea
-                  readOnly
-                  className="flex min-h-[300px] w-full rounded-md border border-input bg-muted px-3 py-2 text-sm font-mono ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none"
-                  value={result.result}
-                />
+              {result.error && (
+                <div role="alert" className="text-sm text-red-500 bg-red-50 dark:bg-red-950 rounded p-2">
+                  {result.error}
+                </div>
+              )}
+              <div className="flex justify-end gap-2 pt-4 border-t">
+                <Button type="button" variant="outline" onClick={() => setInput('')}>
+                  <Trash2 className="mr-2 h-4 w-4" aria-hidden="true" /> Clear
+                </Button>
+                <Button type="button" onClick={copyToClipboard} disabled={!result.result}>
+                  <Copy className="mr-2 h-4 w-4" aria-hidden="true" /> Copy
+                </Button>
               </div>
-            </div>
-            {result.error && (
-              <div className="text-sm text-red-500 bg-red-50 dark:bg-red-950 rounded p-2">
-                {result.error}
-              </div>
-            )}
-            <div className="flex justify-end gap-2 pt-4 border-t">
-              <Button variant="outline" onClick={() => setInput('')}>
-                <Trash2 className="mr-2 h-4 w-4" /> Clear
-              </Button>
-              <Button onClick={copyToClipboard} disabled={!result.result}>
-                <Copy className="mr-2 h-4 w-4" /> Copy
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </main>
       </div>
       <Toaster />
     </div>

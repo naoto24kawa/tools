@@ -32,7 +32,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-background p-8">
-      <div className="max-w-5xl mx-auto space-y-6">
+      <main className="max-w-5xl mx-auto space-y-6">
         <header className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">ARIA Reference</h1>
           <p className="text-muted-foreground">
@@ -158,7 +158,7 @@ export default function App() {
             </Card>
           )}
         </div>
-      </div>
+      </main>
       <Toaster />
     </div>
   );

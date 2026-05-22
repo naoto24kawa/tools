@@ -116,6 +116,7 @@ export default function App() {
           </p>
         </header>
 
+        <main>
         <Card>
           <CardHeader>
             <CardTitle>Upload Image</CardTitle>
@@ -169,7 +170,7 @@ export default function App() {
 
             {/* Error */}
             {error && (
-              <div className="flex items-center gap-2 rounded-md border border-destructive/50 bg-destructive/10 p-4">
+              <div role="alert" className="flex items-center gap-2 rounded-md border border-destructive/50 bg-destructive/10 p-4">
                 <ImageIcon className="h-5 w-5 text-destructive" />
                 <p className="text-sm text-destructive">{error}</p>
               </div>
@@ -199,6 +200,7 @@ export default function App() {
             </div>
           </CardContent>
         </Card>
+        </main>
       </div>
       <Toaster />
     </div>
