@@ -79,7 +79,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3O
 
   return (
     <div className="min-h-screen bg-gray-50 p-4">
-      <div className="mx-auto max-w-3xl space-y-4">
+      <main className="mx-auto max-w-3xl space-y-4">
         <Card>
           <CardHeader>
             <CardTitle>Secret Redactor</CardTitle>
@@ -205,7 +205,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3O
             </div>
           </CardContent>
         </Card>
-      </div>
+      </main>
       <Toaster />
     </div>
   );

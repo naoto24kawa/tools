@@ -120,7 +120,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-background p-8">
-      <div className="max-w-6xl mx-auto space-y-6">
+      <main className="max-w-6xl mx-auto space-y-6">
         <header className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">Markdown to Slides</h1>
           <p className="text-muted-foreground">
@@ -136,6 +136,7 @@ export default function App() {
             </CardHeader>
             <CardContent className="space-y-4">
               <textarea
+                aria-label="Markdown input"
                 className="flex min-h-[400px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-mono ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none"
                 placeholder="# Slide 1&#10;Content here&#10;---&#10;# Slide 2&#10;More content"
                 value={input}
@@ -226,7 +227,7 @@ export default function App() {
             </CardContent>
           </Card>
         </div>
-      </div>
+      </main>
       <Toaster />
     </div>
   );

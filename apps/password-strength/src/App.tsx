@@ -46,7 +46,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gray-50 p-4">
-      <div className="mx-auto max-w-2xl space-y-4">
+      <main className="mx-auto max-w-2xl space-y-4">
         <Card>
           <CardHeader>
             <CardTitle>Password Strength Checker</CardTitle>
@@ -151,7 +151,7 @@ export default function App() {
             )}
           </CardContent>
         </Card>
-      </div>
+      </main>
       <Toaster />
     </div>
   );

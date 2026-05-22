@@ -65,7 +65,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-background p-8">
-      <div className="max-w-6xl mx-auto space-y-6">
+      <main className="max-w-6xl mx-auto space-y-6">
         <header className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">List to Table</h1>
           <p className="text-muted-foreground">
@@ -81,6 +81,7 @@ export default function App() {
             </CardHeader>
             <CardContent className="space-y-4">
               <textarea
+                aria-label="Input data"
                 className="flex min-h-[200px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-mono resize-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
@@ -206,7 +207,7 @@ export default function App() {
             </Card>
           </div>
         </div>
-      </div>
+      </main>
       <Toaster />
     </div>
   );

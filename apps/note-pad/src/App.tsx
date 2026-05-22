@@ -113,7 +113,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-background flex">
       {/* Sidebar */}
-      <div className="w-64 border-r bg-muted/30 flex flex-col h-screen">
+      <nav aria-label="Notes navigation" className="w-64 border-r bg-muted/30 flex flex-col h-screen">
         <div className="p-4 border-b space-y-3">
           <h1 className="text-lg font-bold tracking-tight">Note Pad</h1>
           <div className="relative">
@@ -185,10 +185,10 @@ export default function App() {
             </div>
           )}
         </div>
-      </div>
+      </nav>
 
       {/* Editor */}
-      <div className="flex-1 flex flex-col h-screen">
+      <main className="flex-1 flex flex-col h-screen">
         {selectedNote ? (
           <>
             <div className="border-b p-4 flex items-center justify-between">
@@ -243,6 +243,7 @@ export default function App() {
                 />
               ) : (
                 <textarea
+                  aria-label="Note content"
                   className="w-full h-full resize-none border-0 p-6 text-sm font-mono bg-background focus:outline-none"
                   placeholder="Start writing... (Markdown supported)"
                   value={selectedNote.content}
@@ -259,7 +260,7 @@ export default function App() {
             </div>
           </div>
         )}
-      </div>
+      </main>
       <Toaster />
     </div>
   );
