@@ -170,7 +170,7 @@ export default function App() {
                   onChange={(e) => setEncryptConfirm(e.target.value)}
                 />
                 {encryptPassword && encryptConfirm && encryptPassword !== encryptConfirm && (
-                  <p className="text-xs text-destructive">Passwords do not match</p>
+                  <p role="alert" className="text-xs text-destructive">Passwords do not match</p>
                 )}
               </div>
 

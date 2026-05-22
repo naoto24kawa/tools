@@ -75,7 +75,7 @@ export default function App() {
   if (error) {
     return (
       <div className="min-h-screen bg-background p-8 flex items-center justify-center">
-        <Card className="max-w-md w-full">
+        <Card role="alert" className="max-w-md w-full">
           <CardHeader>
             <CardTitle className="text-destructive">エラー</CardTitle>
             <CardDescription>{error}</CardDescription>

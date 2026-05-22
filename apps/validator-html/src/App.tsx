@@ -25,7 +25,7 @@ export default function App() {
           </CardHeader>
           <CardContent className="space-y-4">
             {input.trim() && (
-              <div className="flex items-center gap-2 text-sm">
+              <div aria-live="polite" className="flex items-center gap-2 text-sm">
                 {errors.length === 0 ? (
                   <>
                     <CheckCircle className="h-4 w-4 text-green-500" />

@@ -82,7 +82,7 @@ export default function App() {
                   onChange={(e) => setVersion(e.target.value)}
                 />
                 {version && !parsed && (
-                  <p className="text-sm text-destructive">Invalid semver format</p>
+                  <p role="alert" className="text-sm text-destructive">Invalid semver format</p>
                 )}
               </div>
               <Button
@@ -174,10 +174,10 @@ export default function App() {
                 </p>
               )}
               {compareA && !isValid(compareA) && (
-                <p className="text-sm text-destructive">Version A is invalid</p>
+                <p role="alert" className="text-sm text-destructive">Version A is invalid</p>
               )}
               {compareB && !isValid(compareB) && (
-                <p className="text-sm text-destructive">Version B is invalid</p>
+                <p role="alert" className="text-sm text-destructive">Version B is invalid</p>
               )}
             </CardContent>
           </Card>

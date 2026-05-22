@@ -89,7 +89,7 @@ export default function App() {
                 />
                 <div className="flex items-center justify-between">
                   {result.error ? (
-                    <span className="text-xs text-red-500">{result.error}</span>
+                    <span role="alert" className="text-xs text-red-500">{result.error}</span>
                   ) : (
                     <div className="flex items-center gap-1">
                       <span className="text-2xl font-bold font-mono">

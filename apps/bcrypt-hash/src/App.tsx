@@ -130,6 +130,7 @@ function App() {
               </Button>
               {verifyResult !== null && (
                 <div
+                  role="alert"
                   className={`rounded-md p-3 text-sm font-medium ${verifyResult ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}
                 >
                   {verifyResult

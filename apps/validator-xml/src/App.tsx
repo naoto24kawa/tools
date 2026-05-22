@@ -24,7 +24,7 @@ export default function App() {
           </CardHeader>
           <CardContent className="space-y-4">
             {input.trim() && (
-              <div className="flex items-center gap-2 text-sm">
+              <div aria-live="polite" className="flex items-center gap-2 text-sm">
                 {result.valid ? (
                   <>
                     <CheckCircle className="h-4 w-4 text-green-500" />
@@ -52,7 +52,7 @@ export default function App() {
               <div className="space-y-2">
                 <Label>Result</Label>
                 {result.error ? (
-                  <div className="min-h-[350px] rounded-md border border-red-200 bg-red-50 dark:bg-red-950 p-3 text-sm text-red-700 font-mono whitespace-pre-wrap">
+                  <div role="alert" className="min-h-[350px] rounded-md border border-red-200 bg-red-50 dark:bg-red-950 p-3 text-sm text-red-700 font-mono whitespace-pre-wrap">
                     {result.error}
                   </div>
                 ) : (

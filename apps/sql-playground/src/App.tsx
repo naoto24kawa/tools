@@ -170,7 +170,7 @@ export default function App() {
                         {entry.sql}
                       </pre>
                       {entry.error ? (
-                        <p className="text-sm text-destructive">{entry.error}</p>
+                        <p role="alert" className="text-sm text-destructive">{entry.error}</p>
                       ) : (
                         entry.results.map((result, ri) => (
                           <div key={ri}>

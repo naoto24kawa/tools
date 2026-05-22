@@ -111,7 +111,7 @@ export default function App() {
                   onChange={(e) => setValue(e.target.value)}
                 />
                 {value.length > 0 && !isValid && (
-                  <p className="text-sm text-destructive">
+                  <p role="alert" className="text-sm text-destructive">
                     Invalid value for {options.format} format.
                   </p>
                 )}

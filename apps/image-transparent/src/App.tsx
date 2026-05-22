@@ -77,7 +77,7 @@ export function App() {
       {/* メインコンテンツ */}
       <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
         {error && (
-          <div className="mb-6 rounded-lg border border-destructive bg-destructive/10 p-4 text-destructive">
+          <div role="alert" className="mb-6 rounded-lg border border-destructive bg-destructive/10 p-4 text-destructive">
             {error}
           </div>
         )}

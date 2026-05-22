@@ -87,7 +87,7 @@ export default function App() {
                 </div>
               </div>
               {!isValidA(a) && (
-                <div className="text-sm text-red-500">a must be coprime with 26</div>
+                <div role="alert" className="text-sm text-red-500">a must be coprime with 26</div>
               )}
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="space-y-2">

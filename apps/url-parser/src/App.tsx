@@ -170,7 +170,7 @@ export default function App() {
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>
-                {parseError && <p className="text-sm text-destructive">{parseError}</p>}
+                {parseError && <p role="alert" className="text-sm text-destructive">{parseError}</p>}
               </CardContent>
             </Card>
 
