@@ -19,7 +19,8 @@ const ROOT = path.resolve(__dirname, '..');
 const APPS_DIR = path.join(ROOT, 'apps');
 const APPS_TS = path.join(ROOT, 'packages/router/src/config/apps.ts');
 
-const TEMPLATE_DESCRIPTION = 'クライアントサイドで動作する画像トリミングアプリ';
+const TEMPLATE_KEYWORD = '画像トリミングアプリ';
+const TEMPLATE_DESCRIPTION = `クライアントサイドで動作する${TEMPLATE_KEYWORD}`;
 const BASE_URL = 'https://tools.elchika.app';
 
 // -----------------------------------------------------------------
@@ -42,7 +43,18 @@ function parseAppsTs(filePath) {
 }
 
 // -----------------------------------------------------------------
-// 2. index.html からフォールバック情報を抽出
+// 2. HTML 属性値のエスケープ
+// -----------------------------------------------------------------
+function escapeHtml(str) {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
+// -----------------------------------------------------------------
+// 3. index.html からフォールバック情報を抽出
 // -----------------------------------------------------------------
 function extractFromHtml(html) {
   const titleMatch = html.match(/<title>([^<]+)<\/title>/i);
@@ -54,19 +66,19 @@ function extractFromHtml(html) {
 }
 
 // -----------------------------------------------------------------
-// 3. OGP タグを生成
+// 4. OGP タグを生成
 // -----------------------------------------------------------------
 function buildOgpBlock(ogTitle, ogDescription, ogUrl) {
   return [
-    `    <meta property="og:title" content="${ogTitle}" />`,
-    `    <meta property="og:description" content="${ogDescription}" />`,
+    `    <meta property="og:title" content="${escapeHtml(ogTitle)}" />`,
+    `    <meta property="og:description" content="${escapeHtml(ogDescription)}" />`,
     `    <meta property="og:type" content="website" />`,
     `    <meta property="og:url" content="${ogUrl}" />`,
   ].join('\n');
 }
 
 // -----------------------------------------------------------------
-// 4. HTML を変換
+// 5. HTML を変換
 // -----------------------------------------------------------------
 function transformHtml(html, toolDirName, appsMap) {
   // すでに OGP タグがあればスキップ
@@ -96,13 +108,13 @@ function transformHtml(html, toolDirName, appsMap) {
   let updatedHtml = html;
   if (appInfo) {
     updatedHtml = updatedHtml.replace(
-      /<meta\s+name="description"\s+content="[^"]*クライアントサイドで動作する画像トリミングアプリ[^"]*"\s*\/>/i,
+      new RegExp(`<meta\\s+name="description"\\s+content="[^"]*${TEMPLATE_KEYWORD}[^"]*"\\s*/>`, 'i'),
       `<meta name="description" content="${appInfo.description}" />`
     );
     // title もテンプレートのままなら上書き
-    if (/画像トリミングアプリ/.test(updatedHtml)) {
+    if (new RegExp(TEMPLATE_KEYWORD).test(updatedHtml)) {
       updatedHtml = updatedHtml.replace(
-        /<title>[^<]*画像トリミングアプリ[^<]*<\/title>/i,
+        new RegExp(`<title>[^<]*${TEMPLATE_KEYWORD}[^<]*<\\/title>`, 'i'),
         `<title>${appInfo.displayName} - Elchika Tools</title>`
       );
     }
@@ -116,7 +128,7 @@ function transformHtml(html, toolDirName, appsMap) {
 }
 
 // -----------------------------------------------------------------
-// 5. メイン処理
+// 6. メイン処理
 // -----------------------------------------------------------------
 function main() {
   console.log('Parsing apps.ts ...');
