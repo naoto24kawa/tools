@@ -82,7 +82,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gray-50 p-4">
-      <div className="mx-auto max-w-2xl space-y-4">
+      <main className="mx-auto max-w-2xl space-y-4">
         <Card>
           <CardHeader>
             <CardTitle>TOTP Generator</CardTitle>
@@ -116,7 +116,7 @@ export default function App() {
                   </Button>
                 </div>
               )}
-              {error && <p className="text-sm text-red-500">{error}</p>}
+              {error && <p role="alert" className="text-sm text-red-500">{error}</p>}
             </div>
 
             {/* TOTP Code Display */}
@@ -186,7 +186,7 @@ export default function App() {
             </div>
           </CardContent>
         </Card>
-      </div>
+      </main>
       <Toaster />
     </div>
   );

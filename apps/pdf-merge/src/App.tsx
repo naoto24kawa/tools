@@ -145,6 +145,7 @@ export default function App() {
           </p>
         </header>
 
+        <main>
         <Card>
           <CardHeader>
             <CardTitle>Upload PDFs</CardTitle>
@@ -218,6 +219,7 @@ export default function App() {
                         variant="ghost"
                         size="icon"
                         className="h-7 w-7 shrink-0"
+                        aria-label={`Remove ${file.name}`}
                         onClick={() => removeFile(index)}
                       >
                         <X className="h-3 w-3" />
@@ -247,6 +249,7 @@ export default function App() {
           </CardContent>
         </Card>
       </div>
+        </main>
       <Toaster />
     </div>
   );

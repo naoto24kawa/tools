@@ -124,6 +124,7 @@ export default function App() {
           </p>
         </header>
 
+        <main className="space-y-6">
         {/* Upload & Options */}
         <Card>
           <CardHeader>
@@ -286,6 +287,7 @@ export default function App() {
                         type="button"
                         size="sm"
                         variant="secondary"
+                        aria-label={`Download page ${index + 1}`}
                         onClick={() => handleDownload(dataUrl, index)}
                       >
                         <Download className="h-4 w-4" />
@@ -297,6 +299,7 @@ export default function App() {
             </CardContent>
           </Card>
         )}
+      </main>
       </div>
       <Toaster />
     </div>

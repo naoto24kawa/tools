@@ -128,6 +128,7 @@ export default function App() {
           </p>
         </header>
 
+        <main>
         <Card>
           <CardHeader>
             <CardTitle>Upload PDF</CardTitle>
@@ -226,6 +227,7 @@ export default function App() {
             )}
           </CardContent>
         </Card>
+      </main>
       </div>
       <Toaster />
     </div>

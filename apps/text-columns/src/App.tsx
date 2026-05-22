@@ -25,7 +25,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-background p-8">
-      <div className="max-w-6xl mx-auto space-y-6">
+      <main className="max-w-6xl mx-auto space-y-6">
         <header className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">Text Columns</h1>
           <p className="text-muted-foreground">
@@ -42,6 +42,7 @@ export default function App() {
               </CardHeader>
               <CardContent>
                 <textarea
+                  aria-label="Text input"
                   className="flex min-h-[200px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none"
                   placeholder="Enter text here..."
                   value={input}
@@ -167,7 +168,7 @@ export default function App() {
             </Card>
           </div>
         </div>
-      </div>
+      </main>
       <Toaster />
     </div>
   );

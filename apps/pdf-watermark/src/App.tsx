@@ -110,6 +110,7 @@ export default function App() {
           <p className="text-muted-foreground">Add a text watermark to your PDF documents.</p>
         </header>
 
+        <main className="space-y-6">
         <div className="grid gap-6 md:grid-cols-2">
           {/* File Upload */}
           <Card>
@@ -251,6 +252,7 @@ export default function App() {
             </Button>
           </CardContent>
         </Card>
+      </main>
       </div>
       <Toaster />
     </div>

@@ -157,6 +157,7 @@ export default function App() {
           </p>
         </header>
 
+        <main className="space-y-6">
         {/* File Upload */}
         <Card>
           <CardHeader>
@@ -290,6 +291,7 @@ export default function App() {
             </div>
           </>
         )}
+      </main>
       </div>
       <Toaster />
     </div>

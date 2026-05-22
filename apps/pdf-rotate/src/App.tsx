@@ -137,6 +137,7 @@ export default function App() {
           </p>
         </header>
 
+        <main className="space-y-6">
         <Card>
           <CardHeader>
             <CardTitle>Upload PDF</CardTitle>
@@ -156,7 +157,13 @@ export default function App() {
                   className="cursor-pointer"
                 />
                 {file && (
-                  <Button type="button" variant="outline" size="icon" onClick={handleClear}>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    aria-label="Clear file"
+                    onClick={handleClear}
+                  >
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 )}
@@ -251,6 +258,7 @@ export default function App() {
             )}
           </CardContent>
         </Card>
+      </main>
       </div>
       <Toaster />
     </div>

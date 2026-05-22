@@ -187,7 +187,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-background p-4">
-      <div className="max-w-7xl mx-auto space-y-4">
+      <main className="max-w-7xl mx-auto space-y-4">
         <header className="space-y-1">
           <h1 className="text-2xl font-bold tracking-tight">Whiteboard</h1>
           <p className="text-sm text-muted-foreground">
@@ -207,6 +207,7 @@ export default function App() {
                     size="sm"
                     onClick={() => setCurrentTool(tool.id)}
                     title={tool.label}
+                    aria-label={tool.label}
                   >
                     {tool.icon}
                   </Button>
@@ -260,6 +261,7 @@ export default function App() {
                   onClick={handleUndo}
                   disabled={wbState.strokes.length === 0}
                   title="Undo (Ctrl+Z)"
+                  aria-label="Undo"
                 >
                   <Undo2 className="h-4 w-4" />
                 </Button>
@@ -270,10 +272,11 @@ export default function App() {
                   onClick={handleRedo}
                   disabled={wbState.undoneStrokes.length === 0}
                   title="Redo (Ctrl+Shift+Z)"
+                  aria-label="Redo"
                 >
                   <Redo2 className="h-4 w-4" />
                 </Button>
-                <Button type="button" variant="outline" size="sm" onClick={handleClear}>
+                <Button type="button" variant="outline" size="sm" onClick={handleClear} aria-label="Clear canvas">
                   <Trash2 className="h-4 w-4" />
                 </Button>
                 <Button type="button" variant="outline" size="sm" onClick={handleSave}>
@@ -299,7 +302,7 @@ export default function App() {
             onTouchEnd={handleTouchEnd}
           />
         </div>
-      </div>
+      </main>
       <Toaster />
     </div>
   );
