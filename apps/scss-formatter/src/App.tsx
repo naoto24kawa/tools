@@ -64,71 +64,73 @@ export default function App() {
           </p>
         </header>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Formatter</CardTitle>
-            <CardDescription>Paste your SCSS code to format or minify.</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                <Label htmlFor="indent-size">Indent Size</Label>
-                <Select value={indentSize} onValueChange={setIndentSize}>
-                  <SelectTrigger className="w-[80px]" id="indent-size">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="2">2</SelectItem>
-                    <SelectItem value="4">4</SelectItem>
-                    <SelectItem value="8">8</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
-            <div className="grid gap-6 md:grid-cols-[1fr,auto,1fr] items-start">
-              <div className="space-y-2">
-                <Label htmlFor="input">Input SCSS</Label>
-                <textarea
-                  id="input"
-                  className="flex min-h-[400px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-mono ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-none"
-                  placeholder="Paste your SCSS code here..."
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                />
+        <main>
+          <Card>
+            <CardHeader>
+              <CardTitle>Formatter</CardTitle>
+              <CardDescription>Paste your SCSS code to format or minify.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <Label htmlFor="indent-size">Indent Size</Label>
+                  <Select value={indentSize} onValueChange={setIndentSize}>
+                    <SelectTrigger className="w-[80px]" id="indent-size">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="2">2</SelectItem>
+                      <SelectItem value="4">4</SelectItem>
+                      <SelectItem value="8">8</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
 
-              <div className="flex flex-col gap-4 justify-center pt-10">
-                <Button type="button" onClick={handleFormat} disabled={!input}>
-                  <Code className="mr-2 h-4 w-4" /> Format
+              <div className="grid gap-6 md:grid-cols-[1fr,auto,1fr] items-start">
+                <div className="space-y-2">
+                  <Label htmlFor="input">Input SCSS</Label>
+                  <textarea
+                    id="input"
+                    className="flex min-h-[400px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-mono ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-none"
+                    placeholder="Paste your SCSS code here..."
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                  />
+                </div>
+
+                <div className="flex flex-col gap-4 justify-center pt-10">
+                  <Button type="button" onClick={handleFormat} disabled={!input}>
+                    <Code className="mr-2 h-4 w-4" /> Format
+                  </Button>
+                  <Button type="button" onClick={handleMinify} variant="secondary" disabled={!input}>
+                    <Minimize2 className="mr-2 h-4 w-4" /> Minify
+                  </Button>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="output">Output</Label>
+                  <textarea
+                    id="output"
+                    readOnly
+                    className="flex min-h-[400px] w-full rounded-md border border-input bg-muted px-3 py-2 text-sm font-mono ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-none"
+                    placeholder="Result will appear here..."
+                    value={output}
+                  />
+                </div>
+              </div>
+
+              <div className="flex justify-end gap-2 pt-4 border-t">
+                <Button type="button" variant="outline" onClick={clearAll}>
+                  <Trash2 className="mr-2 h-4 w-4" /> Clear
                 </Button>
-                <Button type="button" onClick={handleMinify} variant="secondary" disabled={!input}>
-                  <Minimize2 className="mr-2 h-4 w-4" /> Minify
+                <Button type="button" onClick={copyToClipboard} disabled={!output}>
+                  <Copy className="mr-2 h-4 w-4" /> Copy Result
                 </Button>
               </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="output">Output</Label>
-                <textarea
-                  id="output"
-                  readOnly
-                  className="flex min-h-[400px] w-full rounded-md border border-input bg-muted px-3 py-2 text-sm font-mono ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-none"
-                  placeholder="Result will appear here..."
-                  value={output}
-                />
-              </div>
-            </div>
-
-            <div className="flex justify-end gap-2 pt-4 border-t">
-              <Button type="button" variant="outline" onClick={clearAll}>
-                <Trash2 className="mr-2 h-4 w-4" /> Clear
-              </Button>
-              <Button type="button" onClick={copyToClipboard} disabled={!output}>
-                <Copy className="mr-2 h-4 w-4" /> Copy Result
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </main>
       </div>
       <Toaster />
     </div>

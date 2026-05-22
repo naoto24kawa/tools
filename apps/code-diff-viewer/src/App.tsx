@@ -25,68 +25,72 @@ export default function App() {
           <p className="text-muted-foreground">2つのテキストの差分を表示します。</p>
         </header>
 
-        <div className="grid gap-4 md:grid-cols-2">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Text A</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <textarea
-                className="flex min-h-[200px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-mono ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none"
-                placeholder="Original text..."
-                value={textA}
-                onChange={(e) => setTextA(e.target.value)}
-              />
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Text B</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <textarea
-                className="flex min-h-[200px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-mono ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none"
-                placeholder="Modified text..."
-                value={textB}
-                onChange={(e) => setTextB(e.target.value)}
-              />
-            </CardContent>
-          </Card>
-        </div>
+        <main className="space-y-6">
+          <div className="grid gap-4 md:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Text A</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <textarea
+                  aria-label="Text A - original text"
+                  className="flex min-h-[200px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-mono ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none"
+                  placeholder="Original text..."
+                  value={textA}
+                  onChange={(e) => setTextA(e.target.value)}
+                />
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Text B</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <textarea
+                  aria-label="Text B - modified text"
+                  className="flex min-h-[200px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-mono ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none"
+                  placeholder="Modified text..."
+                  value={textB}
+                  onChange={(e) => setTextB(e.target.value)}
+                />
+              </CardContent>
+            </Card>
+          </div>
 
-        {(textA || textB) && (
-          <Card>
-            <CardHeader>
-              <CardTitle>Diff</CardTitle>
-              <CardDescription>
-                <span className="text-green-600">+{stats.added}</span>{' '}
-                <span className="text-red-600">-{stats.removed}</span>{' '}
-                <span className="text-muted-foreground">{stats.same} unchanged</span>
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="font-mono text-sm border rounded overflow-hidden">
-                {diff.map((line, i) => {
-                  const key = `${line.type}-${line.lineA ?? ''}-${line.lineB ?? ''}-${i}`;
-                  return (
-                    <div key={key} className={`flex ${LINE_COLORS[line.type]}`}>
-                      <span className="w-10 text-right px-1 text-xs text-muted-foreground select-none border-r">
-                        {line.lineA ?? ''}
-                      </span>
-                      <span className="w-10 text-right px-1 text-xs text-muted-foreground select-none border-r">
-                        {line.lineB ?? ''}
-                      </span>
-                      <span className="w-6 text-center select-none font-bold">
-                        {LINE_PREFIX[line.type]}
-                      </span>
-                      <span className="flex-1 px-2 whitespace-pre">{line.content}</span>
-                    </div>
-                  );
-                })}
-              </div>
-            </CardContent>
-          </Card>
-        )}
+          {(textA || textB) && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Diff</CardTitle>
+                <CardDescription>
+                  <span className="text-green-600">+{stats.added}</span>{' '}
+                  <span className="text-red-600">-{stats.removed}</span>{' '}
+                  <span className="text-muted-foreground">{stats.same} unchanged</span>
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="font-mono text-sm border rounded overflow-hidden">
+                  {diff.map((line, i) => {
+                    const key = `${line.type}-${line.lineA ?? ''}-${line.lineB ?? ''}-${i}`;
+                    return (
+                      <div key={key} className={`flex ${LINE_COLORS[line.type]}`}>
+                        <span className="w-10 text-right px-1 text-xs text-muted-foreground select-none border-r">
+                          {line.lineA ?? ''}
+                        </span>
+                        <span className="w-10 text-right px-1 text-xs text-muted-foreground select-none border-r">
+                          {line.lineB ?? ''}
+                        </span>
+                        <span className="w-6 text-center select-none font-bold">
+                          {LINE_PREFIX[line.type]}
+                        </span>
+                        <span className="flex-1 px-2 whitespace-pre">{line.content}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </main>
       </div>
       <Toaster />
     </div>

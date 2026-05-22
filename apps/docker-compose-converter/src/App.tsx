@@ -55,50 +55,52 @@ export default function App() {
           </p>
         </header>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Converter</CardTitle>
-            <CardDescription>Paste your docker run command below.</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="input">Docker Run Command</Label>
-              <textarea
-                id="input"
-                className="flex min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-mono ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-none"
-                placeholder="docker run -d --name web -p 80:80 -v /data:/data nginx"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-              />
-            </div>
+        <main>
+          <Card>
+            <CardHeader>
+              <CardTitle>Converter</CardTitle>
+              <CardDescription>Paste your docker run command below.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="input">Docker Run Command</Label>
+                <textarea
+                  id="input"
+                  className="flex min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-mono ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-none"
+                  placeholder="docker run -d --name web -p 80:80 -v /data:/data nginx"
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                />
+              </div>
 
-            <div className="flex justify-center">
-              <Button type="button" onClick={handleConvert} disabled={!input.trim()}>
-                Convert <ArrowDown className="ml-2 h-4 w-4" />
-              </Button>
-            </div>
+              <div className="flex justify-center">
+                <Button type="button" onClick={handleConvert} disabled={!input.trim()}>
+                  Convert <ArrowDown className="ml-2 h-4 w-4" />
+                </Button>
+              </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="output">docker-compose.yml</Label>
-              <textarea
-                id="output"
-                readOnly
-                className="flex min-h-[300px] w-full rounded-md border border-input bg-muted px-3 py-2 text-sm font-mono ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-none"
-                placeholder="Converted docker-compose.yml will appear here..."
-                value={output}
-              />
-            </div>
+              <div className="space-y-2">
+                <Label htmlFor="output">docker-compose.yml</Label>
+                <textarea
+                  id="output"
+                  readOnly
+                  className="flex min-h-[300px] w-full rounded-md border border-input bg-muted px-3 py-2 text-sm font-mono ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 resize-none"
+                  placeholder="Converted docker-compose.yml will appear here..."
+                  value={output}
+                />
+              </div>
 
-            <div className="flex justify-end gap-2 pt-4 border-t">
-              <Button type="button" variant="outline" onClick={clearAll}>
-                <Trash2 className="mr-2 h-4 w-4" /> Clear
-              </Button>
-              <Button type="button" onClick={copyToClipboard} disabled={!output}>
-                <Copy className="mr-2 h-4 w-4" /> Copy Result
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+              <div className="flex justify-end gap-2 pt-4 border-t">
+                <Button type="button" variant="outline" onClick={clearAll}>
+                  <Trash2 className="mr-2 h-4 w-4" /> Clear
+                </Button>
+                <Button type="button" onClick={copyToClipboard} disabled={!output}>
+                  <Copy className="mr-2 h-4 w-4" /> Copy Result
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </main>
       </div>
       <Toaster />
     </div>
