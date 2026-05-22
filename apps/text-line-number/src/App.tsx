@@ -38,7 +38,7 @@ export default function App() {
           <p className="text-muted-foreground">テキストの各行に行番号を付与します。</p>
         </header>
 
-        <div className="grid gap-4 md:grid-cols-[240px,1fr]">
+        <main className="grid gap-4 md:grid-cols-[240px,1fr]">
           <Card>
             <CardHeader>
               <CardTitle className="text-lg">設定</CardTitle>
@@ -119,16 +119,16 @@ export default function App() {
                 />
               </div>
               <div className="flex justify-end gap-2 pt-4 border-t">
-                <Button variant="outline" onClick={() => setInput('')}>
+                <Button type="button" variant="outline" onClick={() => setInput('')}>
                   <Trash2 className="mr-2 h-4 w-4" /> Clear
                 </Button>
-                <Button onClick={copyToClipboard} disabled={!output}>
+                <Button type="button" onClick={copyToClipboard} disabled={!output}>
                   <Copy className="mr-2 h-4 w-4" /> Copy Result
                 </Button>
               </div>
             </CardContent>
           </Card>
-        </div>
+        </main>
       </div>
       <Toaster />
     </div>

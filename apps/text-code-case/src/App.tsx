@@ -45,7 +45,7 @@ export default function App() {
           </p>
         </header>
 
-        <div className="grid gap-4 md:grid-cols-[240px,1fr]">
+        <main className="grid gap-4 md:grid-cols-[240px,1fr]">
           <Card>
             <CardHeader>
               <CardTitle className="text-lg">変換タイプ</CardTitle>
@@ -111,7 +111,7 @@ export default function App() {
               </div>
             </CardContent>
           </Card>
-        </div>
+        </main>
       </div>
       <Toaster />
     </div>

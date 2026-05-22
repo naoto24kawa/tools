@@ -40,93 +40,97 @@ export default function App() {
           <p className="text-muted-foreground">画像にフィルター効果を適用します。</p>
         </header>
 
-        {!src && (
-          <button
-            type="button"
-            onClick={() => fileRef.current?.click()}
-            className="w-full border-2 border-dashed rounded-lg p-12 text-center cursor-pointer hover:bg-muted transition-colors"
-          >
-            <Upload className="mx-auto h-8 w-8 text-muted-foreground mb-2" />
-            <p className="text-sm text-muted-foreground">画像を選択</p>
-            <input
-              ref={fileRef}
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={(e) => {
-                if (e.target.files?.[0]) handleFile(e.target.files[0]);
-              }}
-            />
-          </button>
-        )}
+        <main>
+          {!src && (
+            <button
+              type="button"
+              onClick={() => fileRef.current?.click()}
+              className="w-full border-2 border-dashed rounded-lg p-12 text-center cursor-pointer hover:bg-muted transition-colors"
+            >
+              <Upload className="mx-auto h-8 w-8 text-muted-foreground mb-2" />
+              <p className="text-sm text-muted-foreground">画像を選択</p>
+              <input
+                ref={fileRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                aria-label="画像ファイルを選択"
+                onChange={(e) => {
+                  if (e.target.files?.[0]) handleFile(e.target.files[0]);
+                }}
+              />
+            </button>
+          )}
 
-        {src && (
-          <div className="grid gap-4 md:grid-cols-[280px,1fr]">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Filters</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {SLIDERS.map((s) => (
-                  <div key={s.key} className="space-y-1">
-                    <Label className="text-xs">
-                      {s.label}: {filters[s.key]}
-                      {s.unit}
-                    </Label>
-                    <input
-                      type="range"
-                      min={s.min}
-                      max={s.max}
-                      value={filters[s.key]}
-                      onChange={(e) =>
-                        setFilters((p) => ({ ...p, [s.key]: Number(e.target.value) }))
-                      }
-                      className="w-full"
-                    />
+          {src && (
+            <div className="grid gap-4 md:grid-cols-[280px,1fr]">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Filters</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {SLIDERS.map((s) => (
+                    <div key={s.key} className="space-y-1">
+                      <Label className="text-xs">
+                        {s.label}: {filters[s.key]}
+                        {s.unit}
+                      </Label>
+                      <input
+                        type="range"
+                        min={s.min}
+                        max={s.max}
+                        value={filters[s.key]}
+                        onChange={(e) =>
+                          setFilters((p) => ({ ...p, [s.key]: Number(e.target.value) }))
+                        }
+                        className="w-full"
+                        aria-label={`${s.label}: ${filters[s.key]}${s.unit}`}
+                      />
+                    </div>
+                  ))}
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => setFilters({ ...DEFAULT_FILTERS })}
+                  >
+                    <RotateCcw className="mr-2 h-4 w-4" /> Reset
+                  </Button>
+                  <div className="pt-2 border-t space-y-1">
+                    <Label className="text-xs text-muted-foreground">Presets</Label>
+                    <div className="grid grid-cols-2 gap-1">
+                      {FILTER_PRESETS.map((p) => (
+                        <button
+                          type="button"
+                          key={p.name}
+                          onClick={() => {
+                            setFilters({ ...DEFAULT_FILTERS }); /* Apply preset via img style */
+                          }}
+                          className="px-2 py-1 rounded text-xs border hover:bg-muted"
+                        >
+                          {p.name}
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                ))}
-                <Button
-                  variant="outline"
-                  className="w-full"
-                  onClick={() => setFilters({ ...DEFAULT_FILTERS })}
-                >
-                  <RotateCcw className="mr-2 h-4 w-4" /> Reset
-                </Button>
-                <div className="pt-2 border-t space-y-1">
-                  <Label className="text-xs text-muted-foreground">Presets</Label>
-                  <div className="grid grid-cols-2 gap-1">
-                    {FILTER_PRESETS.map((p) => (
-                      <button
-                        type="button"
-                        key={p.name}
-                        onClick={() => {
-                          setFilters({ ...DEFAULT_FILTERS }); /* Apply preset via img style */
-                        }}
-                        className="px-2 py-1 rounded text-xs border hover:bg-muted"
-                      >
-                        {p.name}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Preview</CardTitle>
-                <CardDescription>filter: {filterStr}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <img
-                  src={src}
-                  alt="Filtered"
-                  className="max-w-full rounded border"
-                  style={{ filter: filterStr }}
-                />
-              </CardContent>
-            </Card>
-          </div>
-        )}
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Preview</CardTitle>
+                  <CardDescription>filter: {filterStr}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <img
+                    src={src}
+                    alt="フィルター適用後プレビュー"
+                    className="max-w-full rounded border"
+                    style={{ filter: filterStr }}
+                  />
+                </CardContent>
+              </Card>
+            </div>
+          )}
+        </main>
       </div>
       <Toaster />
     </div>

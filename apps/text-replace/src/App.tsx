@@ -56,7 +56,7 @@ export default function App() {
           </p>
         </header>
 
-        <div className="grid gap-4 md:grid-cols-[280px,1fr]">
+        <main className="grid gap-4 md:grid-cols-[280px,1fr]">
           <Card>
             <CardHeader>
               <CardTitle className="text-lg">検索・置換</CardTitle>
@@ -149,16 +149,16 @@ export default function App() {
                 />
               </div>
               <div className="flex justify-end gap-2 pt-4 border-t">
-                <Button variant="outline" onClick={clearAll}>
+                <Button type="button" variant="outline" onClick={clearAll}>
                   <Trash2 className="mr-2 h-4 w-4" /> Clear
                 </Button>
-                <Button onClick={copyToClipboard} disabled={!result.text}>
+                <Button type="button" onClick={copyToClipboard} disabled={!result.text}>
                   <Copy className="mr-2 h-4 w-4" /> Copy Result
                 </Button>
               </div>
             </CardContent>
           </Card>
-        </div>
+        </main>
       </div>
       <Toaster />
     </div>

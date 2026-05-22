@@ -42,54 +42,58 @@ export default function App() {
           <h1 className="text-3xl font-bold tracking-tight">ASCII Art Converter</h1>
           <p className="text-muted-foreground">画像をアスキーアートに変換します。</p>
         </header>
-        <Card>
-          <CardHeader>
-            <CardTitle>Converter</CardTitle>
-            <CardDescription>画像をアップロードしてください。</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-end gap-4">
-              <div className="space-y-1">
-                <Label>Width: {width} chars</Label>
-                <input
-                  type="range"
-                  min={20}
-                  max={200}
-                  value={width}
-                  onChange={(e) => setWidth(Number(e.target.value))}
-                  className="w-48"
-                />
+        <main>
+          <Card>
+            <CardHeader>
+              <CardTitle>Converter</CardTitle>
+              <CardDescription>画像をアップロードしてください。</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-end gap-4">
+                <div className="space-y-1">
+                  <Label>Width: {width} chars</Label>
+                  <input
+                    type="range"
+                    min={20}
+                    max={200}
+                    value={width}
+                    onChange={(e) => setWidth(Number(e.target.value))}
+                    className="w-48"
+                    aria-label={`Width: ${width} chars`}
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={() => fileRef.current?.click()}
+                  className="flex-1 border-2 border-dashed rounded-lg p-4 text-center cursor-pointer hover:bg-muted transition-colors"
+                >
+                  <Upload className="mx-auto h-5 w-5 text-muted-foreground" />
+                  <p className="text-xs text-muted-foreground">画像を選択</p>
+                  <input
+                    ref={fileRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    aria-label="画像ファイルを選択"
+                    onChange={(e) => {
+                      if (e.target.files?.[0]) handleFile(e.target.files[0]);
+                    }}
+                  />
+                </button>
               </div>
-              <button
-                type="button"
-                onClick={() => fileRef.current?.click()}
-                className="flex-1 border-2 border-dashed rounded-lg p-4 text-center cursor-pointer hover:bg-muted transition-colors"
-              >
-                <Upload className="mx-auto h-5 w-5 text-muted-foreground" />
-                <p className="text-xs text-muted-foreground">画像を選択</p>
-                <input
-                  ref={fileRef}
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={(e) => {
-                    if (e.target.files?.[0]) handleFile(e.target.files[0]);
-                  }}
-                />
-              </button>
-            </div>
-            {ascii && (
-              <div className="space-y-2">
-                <pre className="bg-muted rounded p-2 text-[4px] leading-[4px] font-mono overflow-auto max-h-[500px] whitespace-pre">
-                  {ascii}
-                </pre>
-                <Button onClick={copyAscii}>
-                  <Copy className="mr-2 h-4 w-4" /> Copy ASCII
-                </Button>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+              {ascii && (
+                <div className="space-y-2">
+                  <pre className="bg-muted rounded p-2 text-[4px] leading-[4px] font-mono overflow-auto max-h-[500px] whitespace-pre">
+                    {ascii}
+                  </pre>
+                  <Button onClick={copyAscii}>
+                    <Copy className="mr-2 h-4 w-4" /> Copy ASCII
+                  </Button>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </main>
       </div>
       <Toaster />
     </div>

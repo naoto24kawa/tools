@@ -48,7 +48,7 @@ export default function App() {
           <p className="text-muted-foreground">テキスト内の単語出現頻度を集計します。</p>
         </header>
 
-        <div className="grid gap-4 md:grid-cols-[240px,1fr]">
+        <main className="grid gap-4 md:grid-cols-[240px,1fr]">
           <Card>
             <CardHeader>
               <CardTitle className="text-lg">設定</CardTitle>
@@ -110,6 +110,7 @@ export default function App() {
               </CardHeader>
               <CardContent>
                 <textarea
+                  aria-label="解析するテキスト"
                   className="flex min-h-[120px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none"
                   placeholder="ここにテキストを入力..."
                   value={input}
@@ -150,17 +151,17 @@ export default function App() {
                   <div className="text-muted-foreground text-sm">結果がここに表示されます...</div>
                 )}
                 <div className="flex justify-end gap-2 pt-4 border-t">
-                  <Button variant="outline" onClick={() => setInput('')}>
+                  <Button type="button" variant="outline" onClick={() => setInput('')}>
                     <Trash2 className="mr-2 h-4 w-4" /> Clear
                   </Button>
-                  <Button onClick={copyToClipboard} disabled={items.length === 0}>
+                  <Button type="button" onClick={copyToClipboard} disabled={items.length === 0}>
                     <Copy className="mr-2 h-4 w-4" /> Copy TSV
                   </Button>
                 </div>
               </CardContent>
             </Card>
           </div>
-        </div>
+        </main>
       </div>
       <Toaster />
     </div>
