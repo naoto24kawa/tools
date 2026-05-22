@@ -47,13 +47,16 @@ export default function App() {
           <p className="text-muted-foreground">2つのリストの差分/共通/和集合を表示します。</p>
         </header>
 
+        <main className="space-y-6">
         <div className="grid gap-4 md:grid-cols-2">
           <Card>
             <CardHeader>
               <CardTitle className="text-lg">List A</CardTitle>
             </CardHeader>
             <CardContent>
+              <label htmlFor="list-a" className="sr-only">List A</label>
               <textarea
+                id="list-a"
                 className="flex min-h-[200px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none"
                 placeholder="1行1項目..."
                 value={listA}
@@ -66,7 +69,9 @@ export default function App() {
               <CardTitle className="text-lg">List B</CardTitle>
             </CardHeader>
             <CardContent>
+              <label htmlFor="list-b" className="sr-only">List B</label>
               <textarea
+                id="list-b"
                 className="flex min-h-[200px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none"
                 placeholder="1行1項目..."
                 value={listB}
@@ -103,7 +108,7 @@ export default function App() {
             />
             <Label htmlFor="caseSensitive">大文字小文字を区別</Label>
           </div>
-          <Button variant="outline" onClick={copyResult} disabled={currentList.length === 0}>
+          <Button type="button" variant="outline" onClick={copyResult} disabled={currentList.length === 0}>
             <Copy className="mr-2 h-4 w-4" /> Copy
           </Button>
         </div>
@@ -132,6 +137,7 @@ export default function App() {
             )}
           </CardContent>
         </Card>
+        </main>
       </div>
       <Toaster />
     </div>

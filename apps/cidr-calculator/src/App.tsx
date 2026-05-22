@@ -119,6 +119,7 @@ export default function App() {
           </p>
         </header>
 
+        <main className="space-y-6">
         {/* CIDR Parser */}
         <Card>
           <CardHeader>
@@ -146,7 +147,7 @@ export default function App() {
                 Calculate
               </Button>
             </div>
-            {cidrError && <p className="text-sm text-destructive">{cidrError}</p>}
+            {cidrError && <p role="alert" className="text-sm text-destructive">{cidrError}</p>}
             {cidrResult && (
               <div className="rounded-md border p-4 space-y-1">
                 <ResultRow label="CIDR" value={cidrResult.cidr} />
@@ -209,7 +210,7 @@ export default function App() {
                 Check
               </Button>
             </div>
-            {containsError && <p className="text-sm text-destructive">{containsError}</p>}
+            {containsError && <p role="alert" className="text-sm text-destructive">{containsError}</p>}
             {containsResult !== null && (
               <div
                 className={`rounded-md border p-4 text-sm font-medium ${
@@ -263,7 +264,7 @@ export default function App() {
                 Check
               </Button>
             </div>
-            {overlapError && <p className="text-sm text-destructive">{overlapError}</p>}
+            {overlapError && <p role="alert" className="text-sm text-destructive">{overlapError}</p>}
             {overlapResult !== null && (
               <div
                 className={`rounded-md border p-4 text-sm font-medium ${
@@ -279,6 +280,7 @@ export default function App() {
             )}
           </CardContent>
         </Card>
+        </main>
       </div>
       <Toaster />
     </div>

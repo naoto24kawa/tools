@@ -62,11 +62,12 @@ export default function App() {
           <p className="text-muted-foreground">ブラウザの画面サイズ、デバイス情報を表示します。</p>
         </header>
 
+        <main className="space-y-6">
         <div className="flex gap-2">
-          <Button onClick={refresh}>
+          <Button type="button" onClick={refresh}>
             <RefreshCw className="mr-2 h-4 w-4" /> Refresh
           </Button>
-          <Button variant="outline" onClick={copyAll}>
+          <Button type="button" variant="outline" onClick={copyAll}>
             <Copy className="mr-2 h-4 w-4" /> Copy All
           </Button>
         </div>
@@ -95,6 +96,7 @@ export default function App() {
             <code className="text-xs font-mono break-all">{info.userAgent}</code>
           </CardContent>
         </Card>
+        </main>
       </div>
       <Toaster />
     </div>

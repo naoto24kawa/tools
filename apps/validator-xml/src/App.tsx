@@ -16,6 +16,7 @@ export default function App() {
           <h1 className="text-3xl font-bold tracking-tight">XML Validator</h1>
           <p className="text-muted-foreground">XMLの構文チェックを行います。</p>
         </header>
+        <main>
         <Card>
           <CardHeader>
             <CardTitle>Validator</CardTitle>
@@ -39,8 +40,9 @@ export default function App() {
             )}
             <div className="grid gap-4 md:grid-cols-2">
               <div className="space-y-2">
-                <Label>Input</Label>
+                <Label htmlFor="xml-input">Input</Label>
                 <textarea
+                  id="xml-input"
                   className="flex min-h-[350px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-mono ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none"
                   placeholder='<?xml version="1.0"?><root>...</root>'
                   value={input}
@@ -64,6 +66,7 @@ export default function App() {
             </div>
           </CardContent>
         </Card>
+        </main>
       </div>
       <Toaster />
     </div>

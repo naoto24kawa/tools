@@ -37,6 +37,7 @@ export default function App() {
           <p className="text-muted-foreground">パスワードの強度を判定します。</p>
         </header>
 
+        <main>
         <Card>
           <CardHeader>
             <CardTitle>Checker</CardTitle>
@@ -105,6 +106,7 @@ export default function App() {
             )}
           </CardContent>
         </Card>
+        </main>
       </div>
       <Toaster />
     </div>
