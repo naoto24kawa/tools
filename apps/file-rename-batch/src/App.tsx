@@ -206,7 +206,7 @@ export default function App() {
               <CardTitle>
                 Preview ({files.length} file{files.length !== 1 ? 's' : ''})
               </CardTitle>
-              <CardDescription>Old name -> new name</CardDescription>
+              <CardDescription>Old name {'->'} new name</CardDescription>
             </CardHeader>
             <CardContent>
               {renamedFiles.length === 0 ? (
