@@ -53,7 +53,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-background p-8">
-      <div className="max-w-6xl mx-auto space-y-6">
+      <main className="max-w-6xl mx-auto space-y-6">
         <header className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">Icon Search</h1>
           <p className="text-muted-foreground">
@@ -87,6 +87,7 @@ export default function App() {
                     value={iconSize}
                     onChange={(e) => setIconSize(Number(e.target.value))}
                     className="w-24"
+                    aria-label="Icon Size"
                   />
                   <span className="text-sm text-muted-foreground w-12">{iconSize}px</span>
                 </div>
@@ -100,6 +101,7 @@ export default function App() {
                     value={iconColor}
                     onChange={(e) => setIconColor(e.target.value)}
                     className="h-10 w-10 rounded-md border border-input cursor-pointer"
+                    aria-label="Icon Color"
                   />
                 </div>
               </div>
@@ -233,7 +235,7 @@ export default function App() {
             </Card>
           )}
         </div>
-      </div>
+      </main>
       <Toaster />
     </div>
   );

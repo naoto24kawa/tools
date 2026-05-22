@@ -68,7 +68,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-background p-8">
-      <div className="max-w-4xl mx-auto space-y-6">
+      <main className="max-w-4xl mx-auto space-y-6">
         <header className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">DNS Lookup</h1>
           <p className="text-muted-foreground">
@@ -161,7 +161,7 @@ export default function App() {
             </CardHeader>
             <CardContent>
               {result.error && (
-                <div className="p-3 mb-4 bg-red-50 border border-red-200 rounded-md text-sm text-red-800">
+                <div className="p-3 mb-4 bg-red-50 border border-red-200 rounded-md text-sm text-red-800" role="alert">
                   {result.error}
                 </div>
               )}
@@ -193,6 +193,7 @@ export default function App() {
                               variant="ghost"
                               size="icon"
                               onClick={() => copyToClipboard(answer.data)}
+                              aria-label="Copy DNS record"
                             >
                               <Copy className="h-3 w-3" />
                             </Button>
@@ -249,7 +250,7 @@ export default function App() {
             </div>
           </CardContent>
         </Card>
-      </div>
+      </main>
       <Toaster />
     </div>
   );

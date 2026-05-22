@@ -113,7 +113,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-background p-8">
-      <div className="max-w-6xl mx-auto space-y-6">
+      <main className="max-w-6xl mx-auto space-y-6">
         <header className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">Graph Plotter</h1>
           <p className="text-muted-foreground">
@@ -136,6 +136,7 @@ export default function App() {
                       value={fn.color}
                       onChange={(e) => updateColor(i, e.target.value)}
                       className="w-8 h-8 rounded cursor-pointer border-0"
+                      aria-label={`Function ${i + 1} color`}
                     />
                     <Input
                       placeholder="e.g. x^2"
@@ -149,6 +150,7 @@ export default function App() {
                         variant="ghost"
                         size="icon"
                         onClick={() => removeFunction(i)}
+                        aria-label={`Remove function ${i + 1}`}
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
@@ -235,7 +237,7 @@ export default function App() {
 
           <Card>
             <CardContent className="p-4">
-              {error && <p className="text-sm text-destructive mb-2">{error}</p>}
+              {error && <p className="text-sm text-destructive mb-2" role="alert">{error}</p>}
               <div className="border rounded-md overflow-hidden">
                 <canvas
                   ref={canvasRef}
@@ -261,7 +263,7 @@ export default function App() {
             </CardContent>
           </Card>
         </div>
-      </div>
+      </main>
       <Toaster />
     </div>
   );

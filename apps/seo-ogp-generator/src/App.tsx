@@ -34,6 +34,7 @@ export default function App() {
           <p className="text-muted-foreground">OGP(Open Graph Protocol)メタタグを生成します。</p>
         </header>
 
+        <main>
         <div className="grid gap-4 md:grid-cols-[1fr,1fr]">
           <Card>
             <CardHeader>
@@ -100,12 +101,13 @@ export default function App() {
                 className="flex min-h-[300px] w-full rounded-md border border-input bg-muted px-3 py-2 text-xs font-mono ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 resize-none"
                 value={tags}
               />
-              <Button onClick={copyTags} disabled={!tags} className="w-full">
+              <Button type="button" onClick={copyTags} disabled={!tags} className="w-full">
                 <Copy className="mr-2 h-4 w-4" /> Copy Tags
               </Button>
             </CardContent>
           </Card>
         </div>
+        </main>
       </div>
       <Toaster />
     </div>

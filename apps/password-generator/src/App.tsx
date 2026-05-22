@@ -94,6 +94,7 @@ export default function App() {
           </p>
         </header>
 
+        <main className="space-y-6">
         <Card>
           <CardHeader>
             <CardTitle>Options</CardTitle>
@@ -175,6 +176,7 @@ export default function App() {
                         variant="outline"
                         size="icon"
                         onClick={() => handleCopy(password)}
+                        aria-label="Copy password"
                       >
                         <Copy className="h-4 w-4" />
                       </Button>
@@ -200,6 +202,7 @@ export default function App() {
             </CardContent>
           </Card>
         )}
+        </main>
       </div>
       <Toaster />
     </div>

@@ -76,7 +76,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-background p-8">
-      <div className="max-w-6xl mx-auto space-y-6">
+      <main className="max-w-6xl mx-auto space-y-6">
         <header className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">Font Preview</h1>
           <p className="text-muted-foreground">
@@ -232,6 +232,7 @@ export default function App() {
                     value={fontSize}
                     onChange={(e) => setFontSize(Number(e.target.value))}
                     className="w-full"
+                    aria-label="Font Size"
                   />
                 </div>
 
@@ -267,6 +268,7 @@ export default function App() {
                     value={lineHeight}
                     onChange={(e) => setLineHeight(Number(e.target.value))}
                     className="w-full"
+                    aria-label="Line Height"
                   />
                 </div>
 
@@ -283,6 +285,7 @@ export default function App() {
                     value={letterSpacing}
                     onChange={(e) => setLetterSpacing(Number(e.target.value))}
                     className="w-full"
+                    aria-label="Letter Spacing"
                   />
                 </div>
 
@@ -294,6 +297,7 @@ export default function App() {
                       value={color}
                       onChange={(e) => setColor(e.target.value)}
                       className="h-10 w-10 rounded-md border border-input cursor-pointer"
+                      aria-label="Font Color"
                     />
                     <Input
                       value={color}
@@ -306,7 +310,7 @@ export default function App() {
             </Card>
           </div>
         </div>
-      </div>
+      </main>
       <Toaster />
     </div>
   );

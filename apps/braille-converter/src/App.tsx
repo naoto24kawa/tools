@@ -35,6 +35,11 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-50 p-4">
       <div className="mx-auto max-w-2xl">
+        <header className="space-y-2 mb-4">
+          <h1 className="text-3xl font-bold tracking-tight">Braille Converter</h1>
+          <p className="text-muted-foreground">Convert text to Braille and back.</p>
+        </header>
+        <main>
         <Card>
           <CardHeader>
             <CardTitle>Braille Converter</CardTitle>
@@ -90,6 +95,7 @@ function App() {
             </div>
           </CardContent>
         </Card>
+        </main>
       </div>
       <Toaster />
     </div>

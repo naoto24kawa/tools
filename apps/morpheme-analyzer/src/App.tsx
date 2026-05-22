@@ -112,6 +112,7 @@ export default function App() {
           </p>
         </header>
 
+        <main className="space-y-6">
         <Card>
           <CardHeader>
             <CardTitle>入力</CardTitle>
@@ -259,6 +260,7 @@ export default function App() {
             </Card>
           </>
         )}
+        </main>
       </div>
       <Toaster />
     </div>

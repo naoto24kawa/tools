@@ -100,6 +100,7 @@ export default function App() {
           </p>
         </header>
 
+        <main>
         <div className="grid gap-6 md:grid-cols-[1fr,1fr]">
           <div className="space-y-6">
             <Card>
@@ -286,6 +287,7 @@ export default function App() {
             </Card>
           </div>
         </div>
+        </main>
       </div>
       <Toaster />
     </div>

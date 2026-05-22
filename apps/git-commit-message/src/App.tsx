@@ -54,7 +54,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-background p-8">
-      <div className="max-w-4xl mx-auto space-y-6">
+      <main className="max-w-4xl mx-auto space-y-6">
         <header className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">Git Commit Message Builder</h1>
           <p className="text-muted-foreground">
@@ -97,7 +97,7 @@ export default function App() {
                   onChange={(e) => setScope(e.target.value)}
                 />
                 {scopeError && (
-                  <p className="text-sm text-destructive flex items-center gap-1">
+                  <p className="text-sm text-destructive flex items-center gap-1" role="alert">
                     <AlertTriangle className="h-3 w-3" />
                     {scopeError}
                   </p>
@@ -115,7 +115,7 @@ export default function App() {
                   onChange={(e) => setDescription(e.target.value)}
                 />
                 {descError && (
-                  <p className="text-sm text-destructive flex items-center gap-1">
+                  <p className="text-sm text-destructive flex items-center gap-1" role="alert">
                     <AlertTriangle className="h-3 w-3" />
                     {descError}
                   </p>
@@ -185,7 +185,7 @@ export default function App() {
             </CardContent>
           </Card>
         </div>
-      </div>
+      </main>
       <Toaster />
     </div>
   );
