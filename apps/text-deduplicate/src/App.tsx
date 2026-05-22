@@ -133,11 +133,11 @@ export function App() {
             {/* アクションボタン */}
             <Card className="p-6">
               <div className="space-y-2">
-                <Button onClick={handleCopyResult} variant="outline" className="w-full" size="lg">
+                <Button type="button" onClick={handleCopyResult} variant="outline" className="w-full" size="lg">
                   <Copy className="mr-2 h-4 w-4" />
                   結果をコピー
                 </Button>
-                <Button onClick={clearText} variant="destructive" className="w-full" size="lg">
+                <Button type="button" onClick={clearText} variant="destructive" className="w-full" size="lg">
                   <Trash2 className="mr-2 h-4 w-4" />
                   テキストをクリア
                 </Button>

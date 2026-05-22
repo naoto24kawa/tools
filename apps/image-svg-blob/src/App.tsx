@@ -98,7 +98,7 @@ export default function App() {
                     aria-label="Blob color"
                   />
                 </div>
-                <Button onClick={regenerate} className="w-full">
+                <Button type="button" onClick={regenerate} className="w-full">
                   <RefreshCw className="mr-2 h-4 w-4" /> Regenerate
                 </Button>
               </CardContent>
@@ -114,7 +114,7 @@ export default function App() {
                   value={svg}
                   aria-label="生成されたSVGコード"
                 />
-                <Button onClick={copySVG}>
+                <Button type="button" onClick={copySVG}>
                   <Copy className="mr-2 h-4 w-4" /> Copy SVG
                 </Button>
               </CardContent>

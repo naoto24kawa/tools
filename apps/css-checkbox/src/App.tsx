@@ -112,7 +112,7 @@ export default function App() {
                 <pre className="bg-muted rounded p-3 text-xs font-mono whitespace-pre-wrap max-h-[300px] overflow-auto">
                   {css}
                 </pre>
-                <Button onClick={copyCSS}>
+                <Button type="button" onClick={copyCSS}>
                   <Copy className="mr-2 h-4 w-4" /> Copy CSS
                 </Button>
               </CardContent>

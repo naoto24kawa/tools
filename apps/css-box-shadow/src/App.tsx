@@ -55,7 +55,7 @@ export default function App() {
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-lg">Shadow Layers</CardTitle>
-                  <Button size="sm" variant="outline" onClick={addLayer}>
+                  <Button type="button" size="sm" variant="outline" onClick={addLayer}>
                     <Plus className="mr-1 h-3 w-3" /> Add
                   </Button>
                 </div>
@@ -151,7 +151,7 @@ export default function App() {
                 <code className="block bg-muted rounded p-3 text-xs font-mono break-all">
                   {fullCSS}
                 </code>
-                <Button onClick={copyCSS} className="w-full">
+                <Button type="button" onClick={copyCSS} className="w-full">
                   <Copy className="mr-2 h-4 w-4" /> Copy CSS
                 </Button>
               </CardContent>

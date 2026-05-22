@@ -103,6 +103,7 @@ export default function App() {
                       value={output}
                     />
                     <Button
+                      type="button"
                       size="icon"
                       variant="outline"
                       onClick={copyToClipboard}

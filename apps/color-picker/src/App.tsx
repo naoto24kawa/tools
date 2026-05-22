@@ -64,6 +64,7 @@ export default function App() {
                     <span className="w-12 text-muted-foreground">{label}</span>
                     <code className="flex-1 font-mono">{value}</code>
                     <Button
+                      type="button"
                       size="icon"
                       variant="ghost"
                       onClick={() => copyValue(value)}

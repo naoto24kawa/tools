@@ -60,6 +60,7 @@ export default function App() {
               <div className="flex items-center justify-center gap-1 mt-1">
                 <code className="text-sm font-mono">{adjusted}</code>
                 <Button
+                  type="button"
                   size="icon"
                   variant="ghost"
                   onClick={() => copyColor(adjusted)}
@@ -119,6 +120,7 @@ export default function App() {
                 HSL: {hsl.h}deg, {hsl.s}%, {hsl.l}%
               </div>
               <Button
+                type="button"
                 variant="outline"
                 onClick={() => {
                   setBrightness(0);

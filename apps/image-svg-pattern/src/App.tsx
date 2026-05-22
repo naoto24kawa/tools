@@ -118,7 +118,7 @@ export default function App() {
                   value={svg}
                   aria-label="生成されたSVGコード"
                 />
-                <Button onClick={copySVG}>
+                <Button type="button" onClick={copySVG}>
                   <Copy className="mr-2 h-4 w-4" /> Copy SVG
                 </Button>
               </CardContent>

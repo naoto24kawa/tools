@@ -107,7 +107,7 @@ export default function App() {
                   />
                   <Label htmlFor="dup">重複を許可</Label>
                 </div>
-                <Button onClick={generate} className="w-full">
+                <Button type="button" onClick={generate} className="w-full">
                   <RefreshCw className="mr-2 h-4 w-4" /> Generate
                 </Button>
               </CardContent>
@@ -137,7 +137,7 @@ export default function App() {
                 )}
                 {results.length > 0 && (
                   <div className="flex justify-end pt-4 border-t">
-                    <Button variant="outline" onClick={copyAll}>
+                    <Button type="button" variant="outline" onClick={copyAll}>
                       <Copy className="mr-2 h-4 w-4" /> Copy All
                     </Button>
                   </div>

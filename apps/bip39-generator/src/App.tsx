@@ -50,6 +50,7 @@ function App() {
               <div className="flex gap-2">
                 {WORD_COUNTS.map((count) => (
                   <Button
+                    type="button"
                     key={count}
                     variant={wordCount === count ? 'default' : 'outline'}
                     onClick={() => setWordCount(count)}

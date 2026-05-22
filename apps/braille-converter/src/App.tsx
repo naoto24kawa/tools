@@ -51,6 +51,7 @@ function App() {
               <div className="flex gap-2">
                 {MODES.map((m) => (
                   <Button
+                    type="button"
                     key={m}
                     variant={mode === m ? 'default' : 'outline'}
                     onClick={() => setMode(m)}

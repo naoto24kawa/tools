@@ -71,6 +71,7 @@ export default function App() {
                       />
                       <div className="text-xs text-muted-foreground">{icon.label}</div>
                       <Button
+                        type="button"
                         size="sm"
                         variant="outline"
                         onClick={() => downloadDataUrl(icon.dataUrl, `icon-${icon.size}.png`)}

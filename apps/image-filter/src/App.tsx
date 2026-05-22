@@ -89,6 +89,7 @@ export default function App() {
                     </div>
                   ))}
                   <Button
+                    type="button"
                     variant="outline"
                     className="w-full"
                     onClick={() => setFilters({ ...DEFAULT_FILTERS })}

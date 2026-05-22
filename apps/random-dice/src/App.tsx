@@ -65,7 +65,7 @@ export default function App() {
                     className="flex h-10 w-20 rounded-md border border-input bg-background px-3 py-2 text-sm"
                   />
                 </div>
-                <Button onClick={roll} size="lg">
+                <Button type="button" onClick={roll} size="lg">
                   <Dices className="mr-2 h-5 w-5" /> Roll {count}d{sides}
                 </Button>
               </div>

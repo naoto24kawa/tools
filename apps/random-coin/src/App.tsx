@@ -41,7 +41,7 @@ export default function App() {
                     className="flex h-10 w-24 rounded-md border border-input bg-background px-3 py-2 text-sm"
                   />
                 </div>
-                <Button onClick={flip} size="lg">
+                <Button type="button" onClick={flip} size="lg">
                   <Coins className="mr-2 h-5 w-5" /> Flip!
                 </Button>
               </div>

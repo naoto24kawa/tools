@@ -53,6 +53,7 @@ function App() {
                 <div className="flex gap-2">
                   {KEY_SIZES.map((size) => (
                     <Button
+                      type="button"
                       key={size}
                       variant={keySize === size ? "default" : "outline"}
                       onClick={() => setKeySize(size)}
@@ -72,6 +73,7 @@ function App() {
                     <div className="flex items-center justify-between">
                       <Label htmlFor="public-key">Public Key</Label>
                       <Button
+                        type="button"
                         variant="outline"
                         size="sm"
                         onClick={() => handleCopy(keyPair.publicKey, "Public key")}
@@ -92,6 +94,7 @@ function App() {
                     <div className="flex items-center justify-between">
                       <Label htmlFor="private-key">Private Key</Label>
                       <Button
+                        type="button"
                         variant="outline"
                         size="sm"
                         onClick={() => handleCopy(keyPair.privateKey, "Private key")}

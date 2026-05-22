@@ -64,6 +64,7 @@ export default function App() {
                   <div className="flex items-center justify-center gap-1 mt-2">
                     <code className="text-sm font-mono">{color}</code>
                     <Button
+                      type="button"
                       size="icon"
                       variant="ghost"
                       onClick={() => copyColor(color)}
@@ -83,6 +84,7 @@ export default function App() {
                   <div className="flex items-center justify-center gap-1 mt-2">
                     <code className="text-sm font-mono">{inverted}</code>
                     <Button
+                      type="button"
                       size="icon"
                       variant="ghost"
                       onClick={() => copyColor(inverted)}

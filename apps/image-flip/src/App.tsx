@@ -78,13 +78,13 @@ export default function App() {
               {src && (
                 <>
                   <div className="flex gap-2 justify-center">
-                    <Button onClick={() => flip("horizontal")}>
+                    <Button type="button" onClick={() => flip("horizontal")}>
                       <FlipHorizontal className="mr-2 h-4 w-4" /> 水平反転
                     </Button>
-                    <Button onClick={() => flip("vertical")}>
+                    <Button type="button" onClick={() => flip("vertical")}>
                       <FlipVertical className="mr-2 h-4 w-4" /> 垂直反転
                     </Button>
-                    <Button variant="secondary" onClick={() => flip("both")}>
+                    <Button type="button" variant="secondary" onClick={() => flip("both")}>
                       両方
                     </Button>
                   </div>
@@ -111,7 +111,7 @@ export default function App() {
                   </div>
                   {result && (
                     <div className="flex justify-center">
-                      <Button onClick={download}>
+                      <Button type="button" onClick={download}>
                         <Download className="mr-2 h-4 w-4" /> Download
                       </Button>
                     </div>

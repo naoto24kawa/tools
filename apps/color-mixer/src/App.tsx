@@ -84,6 +84,7 @@ export default function App() {
                 <div className="flex items-center justify-center gap-1 mt-2">
                   <code className="text-lg font-mono font-bold">{mixed}</code>
                   <Button
+                    type="button"
                     size="icon"
                     variant="ghost"
                     onClick={() => copyColor(mixed)}

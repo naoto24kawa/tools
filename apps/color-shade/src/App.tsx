@@ -115,6 +115,7 @@ export default function App() {
           </Card>
 
           <Button
+            type="button"
             variant="outline"
             onClick={() => copyColor(palette.tints.concat(palette.shades).join('\n'))}
           >

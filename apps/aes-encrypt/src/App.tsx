@@ -63,6 +63,7 @@ function App() {
                 <div className="flex gap-2">
                   {MODES.map((m) => (
                     <Button
+                      type="button"
                       key={m}
                       variant={mode === m ? "default" : "outline"}
                       onClick={() => {
@@ -103,7 +104,7 @@ function App() {
                 {mode === "encrypt" ? "Encrypt" : "Decrypt"}
               </Button>
               {error && (
-                <div className="rounded-md bg-red-100 p-3 text-sm text-red-800">{error}</div>
+                <div role="alert" className="rounded-md bg-red-100 p-3 text-sm text-red-800">{error}</div>
               )}
               {output && (
                 <div className="space-y-2">

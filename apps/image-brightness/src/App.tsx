@@ -111,10 +111,10 @@ export default function App() {
                     </div>
                   ))}
                   <div className="flex gap-2">
-                    <Button variant="outline" onClick={reset}>
+                    <Button type="button" variant="outline" onClick={reset}>
                       <RotateCcw className="mr-2 h-4 w-4" /> Reset
                     </Button>
-                    <Button onClick={download}>
+                    <Button type="button" onClick={download}>
                       <Download className="mr-2 h-4 w-4" /> Download
                     </Button>
                   </div>

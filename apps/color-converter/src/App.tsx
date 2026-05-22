@@ -84,6 +84,7 @@ export default function App() {
                         {f.value}
                       </code>
                       <Button
+                        type="button"
                         size="icon"
                         variant="ghost"
                         onClick={() => copyValue(f.value)}

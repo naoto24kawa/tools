@@ -86,7 +86,7 @@ export default function App() {
                   <pre className="bg-muted rounded p-2 text-[4px] leading-[4px] font-mono overflow-auto max-h-[500px] whitespace-pre">
                     {ascii}
                   </pre>
-                  <Button onClick={copyAscii}>
+                  <Button type="button" onClick={copyAscii}>
                     <Copy className="mr-2 h-4 w-4" /> Copy ASCII
                   </Button>
                 </div>

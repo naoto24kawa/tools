@@ -64,7 +64,7 @@ export default function App() {
                   onChange={(e) => setInput(e.target.value)}
                 />
               </div>
-              {error && <p className="text-sm text-destructive">{error}</p>}
+              {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
               {hash && (
                 <div className="space-y-2">
                   <Label>CRC32</Label>
@@ -73,6 +73,7 @@ export default function App() {
                       {hash}
                     </code>
                     <Button
+                      type="button"
                       size="icon"
                       variant="outline"
                       onClick={copyToClipboard}

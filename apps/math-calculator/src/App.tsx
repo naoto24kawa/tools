@@ -97,6 +97,7 @@ export default function App() {
                       </span>
                       {expression && !result.error && (
                         <Button
+                          type="button"
                           size="icon"
                           variant="ghost"
                           onClick={copyResult}
@@ -112,6 +113,7 @@ export default function App() {
               <div className="grid grid-cols-4 gap-2">
                 {buttons.map((btn) => (
                   <Button
+                    type="button"
                     key={btn}
                     variant={btn === "C" ? "destructive" : btn === "=" ? "default" : "outline"}
                     onClick={() => handleButton(btn)}

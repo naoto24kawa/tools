@@ -176,7 +176,7 @@ export default function App() {
                 <code className="block bg-muted rounded p-3 text-sm font-mono break-all">
                   {fullCSS}
                 </code>
-                <Button onClick={copyCSS}>
+                <Button type="button" onClick={copyCSS}>
                   <Copy className="mr-2 h-4 w-4" /> Copy CSS
                 </Button>
               </CardContent>

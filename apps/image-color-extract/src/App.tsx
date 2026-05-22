@@ -107,7 +107,7 @@ export default function App() {
                       </button>
                     ))}
                   </div>
-                  <Button variant="outline" onClick={() => copyColor(colors.join('\n'))}>
+                  <Button type="button" variant="outline" onClick={() => copyColor(colors.join('\n'))}>
                     <Copy className="mr-2 h-4 w-4" /> Copy All
                   </Button>
                 </div>

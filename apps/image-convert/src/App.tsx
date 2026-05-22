@@ -110,7 +110,7 @@ export default function App() {
               )}
               {result && (
                 <div className="flex justify-center">
-                  <Button onClick={download}>
+                  <Button type="button" onClick={download}>
                     <Download className="mr-2 h-4 w-4" /> Download{" "}
                     {FORMATS.find((f) => f.value === format)?.label}
                   </Button>

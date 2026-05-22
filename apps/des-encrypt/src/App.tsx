@@ -66,6 +66,7 @@ function App() {
                 <div className="flex gap-2">
                   {MODES.map((m) => (
                     <Button
+                      type="button"
                       key={m}
                       variant={mode === m ? "default" : "outline"}
                       onClick={() => {
@@ -84,6 +85,7 @@ function App() {
                 <Label>Algorithm</Label>
                 <div className="flex gap-2">
                   <Button
+                    type="button"
                     variant={algorithm === "aes-256" ? "default" : "outline"}
                     onClick={() => {
                       setAlgorithm("aes-256");
@@ -95,6 +97,7 @@ function App() {
                     AES-256-GCM
                   </Button>
                   <Button
+                    type="button"
                     variant={algorithm === "3des" ? "default" : "outline"}
                     onClick={() => {
                       setAlgorithm("3des");
@@ -131,7 +134,7 @@ function App() {
                 {mode === "encrypt" ? "Encrypt" : "Decrypt"}
               </Button>
               {error && (
-                <div className="rounded-md bg-red-100 p-3 text-sm text-red-800">{error}</div>
+                <div role="alert" className="rounded-md bg-red-100 p-3 text-sm text-red-800">{error}</div>
               )}
               {output && (
                 <div className="space-y-2">

@@ -99,6 +99,7 @@ export default function App() {
                       {output}
                     </code>
                     <Button
+                      type="button"
                       size="icon"
                       variant="outline"
                       onClick={copyToClipboard}

@@ -73,6 +73,7 @@ export default function App() {
                 <div className="flex items-center gap-2">
                   <div className="text-2xl font-bold flex-1">{kanji}</div>
                   <Button
+                    type="button"
                     size="icon"
                     variant="ghost"
                     onClick={() => copy(kanji)}
@@ -108,6 +109,7 @@ export default function App() {
                     {parsed.toLocaleString()}
                   </div>
                   <Button
+                    type="button"
                     size="icon"
                     variant="ghost"
                     onClick={() => copy(String(parsed))}

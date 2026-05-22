@@ -136,7 +136,7 @@ export default function App() {
                   <div key={item.label} className="space-y-1">
                     <div className="flex items-center justify-between">
                       <Label className="text-xs">{item.label}</Label>
-                      <Button size="sm" variant="ghost" onClick={() => copyValue(item.value)}>
+                      <Button type="button" size="sm" variant="ghost" onClick={() => copyValue(item.value)}>
                         <Copy className="h-3 w-3 mr-1" /> Copy
                       </Button>
                     </div>

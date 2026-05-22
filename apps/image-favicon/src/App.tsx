@@ -67,6 +67,7 @@ export default function App() {
                         {f.size}x{f.size}
                       </div>
                       <Button
+                        type="button"
                         size="sm"
                         variant="outline"
                         onClick={() => downloadDataUrl(f.dataUrl, `favicon-${f.size}.png`)}

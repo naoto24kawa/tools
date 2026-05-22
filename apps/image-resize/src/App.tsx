@@ -205,6 +205,7 @@ export function App() {
                         <div className="flex flex-wrap gap-2">
                           {FILE_SIZE_PRESETS.map((preset) => (
                             <Button
+                              type="button"
                               key={preset.value}
                               size="sm"
                               variant="outline"
@@ -242,6 +243,7 @@ export function App() {
                   </div>
 
                   <Button
+                    type="button"
                     onClick={handleResize}
                     className="w-full"
                     disabled={status === "processing"}
@@ -250,18 +252,18 @@ export function App() {
                   </Button>
 
                   {resizeResult && (
-                    <Button onClick={handleDownload} className="w-full" variant="outline">
+                    <Button type="button" onClick={handleDownload} className="w-full" variant="outline">
                       ダウンロード
                     </Button>
                   )}
 
-                  <Button onClick={resetImage} variant="outline" className="w-full">
+                  <Button type="button" onClick={resetImage} variant="outline" className="w-full">
                     別の画像を選択
                   </Button>
                 </>
               )}
 
-              {error && <p className="text-sm text-destructive">{error}</p>}
+              {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
             </div>
           </Card>
 

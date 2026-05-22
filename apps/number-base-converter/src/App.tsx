@@ -110,6 +110,7 @@ export default function App() {
                     {output || " "}
                   </code>
                   <Button
+                    type="button"
                     size="icon"
                     variant="outline"
                     onClick={copyToClipboard}
@@ -136,7 +137,7 @@ export default function App() {
               )}
 
               <div className="flex justify-end pt-4 border-t">
-                <Button variant="outline" onClick={() => setInput("")}>
+                <Button type="button" variant="outline" onClick={() => setInput("")}>
                   <Trash2 className="mr-2 h-4 w-4" /> Clear
                 </Button>
               </div>

@@ -112,6 +112,7 @@ export default function App() {
               <div className="flex items-center gap-2 pt-4 border-t">
                 <code className="flex-1 bg-muted rounded px-3 py-2 text-sm font-mono">{css}</code>
                 <Button
+                  type="button"
                   size="icon"
                   variant="outline"
                   onClick={copyCSS}

@@ -139,7 +139,7 @@ export default function App() {
                     alt="圧縮後プレビュー"
                     className="max-h-64 mx-auto rounded border"
                   />
-                  <Button onClick={download} className="w-full">
+                  <Button type="button" onClick={download} className="w-full">
                     <Download className="mr-2 h-4 w-4" /> Download
                   </Button>
                 </div>
