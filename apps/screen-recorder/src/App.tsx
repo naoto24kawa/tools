@@ -145,6 +145,7 @@ export default function App() {
           </p>
         </header>
 
+        <main>
         <Card>
           <CardHeader>
             <CardTitle>Recording Controls</CardTitle>
@@ -229,6 +230,7 @@ export default function App() {
             )}
           </CardContent>
         </Card>
+        </main>
       </div>
       <Toaster />
     </div>

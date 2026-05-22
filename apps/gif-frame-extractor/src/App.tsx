@@ -136,6 +136,7 @@ export default function App() {
           </p>
         </header>
 
+        <main className="space-y-6">
         <Card>
           <CardHeader>
             <CardTitle>Upload GIF</CardTitle>
@@ -236,7 +237,7 @@ export default function App() {
                           variant="secondary"
                           className="h-8 w-8"
                           onClick={() => handleCopyFrame(frame)}
-                          title="Copy frame"
+                          aria-label={`Copy frame ${frame.index}`}
                         >
                           <Image className="h-3 w-3" />
                         </Button>
@@ -246,7 +247,7 @@ export default function App() {
                           variant="secondary"
                           className="h-8 w-8"
                           onClick={() => handleDownloadFrame(frame)}
-                          title="Download frame"
+                          aria-label={`Download frame ${frame.index}`}
                         >
                           <Download className="h-3 w-3" />
                         </Button>
@@ -261,6 +262,7 @@ export default function App() {
             </CardContent>
           </Card>
         )}
+        </main>
       </div>
       <Toaster />
     </div>

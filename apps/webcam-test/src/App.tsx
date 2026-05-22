@@ -59,6 +59,7 @@ export default function App() {
           <h1 className="text-3xl font-bold tracking-tight">Webcam Test</h1>
           <p className="text-muted-foreground">Webカメラの動作確認ツールです。</p>
         </header>
+        <main>
         <Card>
           <CardHeader>
             <CardTitle>Camera</CardTitle>
@@ -70,15 +71,15 @@ export default function App() {
             </div>
             <div className="flex justify-center gap-2">
               {!active ? (
-                <Button onClick={start} size="lg">
+                <Button type="button" onClick={start} size="lg">
                   <Camera className="mr-2 h-5 w-5" /> Start
                 </Button>
               ) : (
                 <>
-                  <Button onClick={stop} variant="destructive" size="lg">
+                  <Button type="button" onClick={stop} variant="destructive" size="lg">
                     Stop
                   </Button>
-                  <Button onClick={snapshot} variant="outline" size="lg">
+                  <Button type="button" onClick={snapshot} variant="outline" size="lg">
                     <Download className="mr-2 h-4 w-4" /> Snapshot
                   </Button>
                 </>
@@ -95,6 +96,7 @@ export default function App() {
             )}
           </CardContent>
         </Card>
+        </main>
       </div>
       <Toaster />
     </div>
