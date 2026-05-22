@@ -1,44 +1,48 @@
-import { useMemo, useState } from 'react';
-import { Button } from './components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './components/ui/card';
-import { Label } from './components/ui/label';
-import { Toaster } from './components/ui/toaster';
-import { useToast } from './hooks/useToast';
-import { uudecode, uuencode } from './utils/uuencode';
+import { useMemo, useState } from "react";
+import { Button } from "./components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./components/ui/card";
+import { Label } from "./components/ui/label";
+import { Toaster } from "./components/ui/toaster";
+import { useToast } from "./hooks/useToast";
+import { uudecode, uuencode } from "./utils/uuencode";
 
-const MODES = ['encode', 'decode'] as const;
+const MODES = ["encode", "decode"] as const;
 type Mode = (typeof MODES)[number];
 
 function App() {
-  const [input, setInput] = useState('');
-  const [mode, setMode] = useState<Mode>('encode');
+  const [input, setInput] = useState("");
+  const [mode, setMode] = useState<Mode>("encode");
   const { toast } = useToast();
 
   const output = useMemo(() => {
-    if (!input) return '';
+    if (!input) return "";
     try {
-      return mode === 'encode' ? uuencode(input) : uudecode(input);
+      return mode === "encode" ? uuencode(input) : uudecode(input);
     } catch {
-      return 'Error: Invalid input';
+      return "Error: Invalid input";
     }
   }, [input, mode]);
 
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(output);
-      toast({ title: 'Copied!' });
+      toast({ title: "Copied!" });
     } catch {
-      toast({ title: 'Copy failed', variant: 'destructive' });
+      toast({ title: "Copy failed", variant: "destructive" });
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-50 p-4">
-      <div className="mx-auto max-w-2xl">
+      <main className="mx-auto max-w-2xl">
+        <header className="mb-4">
+          <h1 className="text-3xl font-bold tracking-tight">UUEncode / UUDecode</h1>
+          <p className="text-muted-foreground">UU encoding/decoding for text data</p>
+        </header>
         <Card>
           <CardHeader>
-            <CardTitle>UUEncode / UUDecode</CardTitle>
-            <CardDescription>UU encoding/decoding for text data</CardDescription>
+            <CardTitle>Converter</CardTitle>
+            <CardDescription>Select mode and enter text to encode or decode.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
@@ -47,11 +51,11 @@ function App() {
                 {MODES.map((m) => (
                   <Button
                     key={m}
-                    variant={mode === m ? 'default' : 'outline'}
+                    variant={mode === m ? "default" : "outline"}
                     onClick={() => setMode(m)}
                     type="button"
                   >
-                    {m === 'encode' ? 'Encode' : 'Decode'}
+                    {m === "encode" ? "Encode" : "Decode"}
                   </Button>
                 ))}
               </div>
@@ -65,7 +69,7 @@ function App() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder={
-                  mode === 'encode' ? 'Enter text to encode...' : 'Enter UU-encoded text...'
+                  mode === "encode" ? "Enter text to encode..." : "Enter UU-encoded text..."
                 }
               />
             </div>
@@ -92,7 +96,7 @@ function App() {
             </div>
           </CardContent>
         </Card>
-      </div>
+      </main>
       <Toaster />
     </div>
   );

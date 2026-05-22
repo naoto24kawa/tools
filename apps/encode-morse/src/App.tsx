@@ -1,47 +1,47 @@
-import { ArrowRight, Copy, Trash2 } from 'lucide-react';
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
-import { Toaster } from '@/components/ui/toaster';
-import { useToast } from '@/hooks/useToast';
-import { morseToText, textToMorse } from '@/utils/morse';
+import { ArrowRight, Copy, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Toaster } from "@/components/ui/toaster";
+import { useToast } from "@/hooks/useToast";
+import { morseToText, textToMorse } from "@/utils/morse";
 
 export default function App() {
-  const [input, setInput] = useState('');
-  const [output, setOutput] = useState('');
+  const [input, setInput] = useState("");
+  const [output, setOutput] = useState("");
   const { toast } = useToast();
 
   const handleEncode = () => {
     try {
       setOutput(textToMorse(input));
-      toast({ title: 'Encoded to Morse' });
+      toast({ title: "Encoded to Morse" });
     } catch {
-      toast({ title: 'Encoding failed', variant: 'destructive' });
+      toast({ title: "Encoding failed", variant: "destructive" });
     }
   };
 
   const handleDecode = () => {
     try {
       setOutput(morseToText(input));
-      toast({ title: 'Decoded from Morse' });
+      toast({ title: "Decoded from Morse" });
     } catch {
-      toast({ title: 'Decoding failed', variant: 'destructive' });
+      toast({ title: "Decoding failed", variant: "destructive" });
     }
   };
 
   const copyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(output);
-      toast({ title: 'Copied to clipboard' });
+      toast({ title: "Copied to clipboard" });
     } catch {
-      toast({ title: 'コピーに失敗しました', variant: 'destructive' });
+      toast({ title: "コピーに失敗しました", variant: "destructive" });
     }
   };
 
   return (
     <div className="min-h-screen bg-background p-8">
-      <div className="max-w-6xl mx-auto space-y-6">
+      <main className="max-w-6xl mx-auto space-y-6">
         <header className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">Morse Code Converter</h1>
           <p className="text-muted-foreground">テキストとモールス符号の相互変換を行います。</p>
@@ -66,10 +66,10 @@ export default function App() {
               </div>
 
               <div className="flex flex-col gap-4 justify-center pt-10">
-                <Button onClick={handleEncode} disabled={!input}>
+                <Button type="button" onClick={handleEncode} disabled={!input}>
                   Text to Morse <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
-                <Button onClick={handleDecode} variant="secondary" disabled={!input}>
+                <Button type="button" onClick={handleDecode} variant="secondary" disabled={!input}>
                   Morse to Text <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </div>
@@ -88,21 +88,22 @@ export default function App() {
 
             <div className="flex justify-end gap-2 pt-4 border-t">
               <Button
+                type="button"
                 variant="outline"
                 onClick={() => {
-                  setInput('');
-                  setOutput('');
+                  setInput("");
+                  setOutput("");
                 }}
               >
                 <Trash2 className="mr-2 h-4 w-4" /> Clear
               </Button>
-              <Button onClick={copyToClipboard} disabled={!output}>
+              <Button type="button" onClick={copyToClipboard} disabled={!output}>
                 <Copy className="mr-2 h-4 w-4" /> Copy
               </Button>
             </div>
           </CardContent>
         </Card>
-      </div>
+      </main>
       <Toaster />
     </div>
   );
