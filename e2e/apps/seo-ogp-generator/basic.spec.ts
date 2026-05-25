@@ -16,12 +16,16 @@ test.describe('OGP Meta Tag Generator', () => {
   });
 
   test('should include og:title tag in output', async ({ page }) => {
+    const titleInput = page.locator('input[placeholder="ページタイトル"]');
+    await titleInput.fill('Test Title');
     const output = page.locator('textarea[readonly]');
     const content = await output.inputValue();
     expect(content).toContain('og:title');
   });
 
   test('should include og:description tag in output', async ({ page }) => {
+    const descInput = page.locator('input[placeholder="ページの説明文"]');
+    await descInput.fill('Test description');
     const output = page.locator('textarea[readonly]');
     const content = await output.inputValue();
     expect(content).toContain('og:description');

@@ -11,13 +11,13 @@ test.describe('Git Commit Message Builder', () => {
   });
 
   test('should show Message Builder section', async ({ page }) => {
-    await expect(page.getByText('Message Builder')).toBeVisible();
+    await expect(page.getByText('Message Builder').first()).toBeVisible();
     await expect(page.locator('#type')).toBeVisible();
     await expect(page.locator('#description')).toBeVisible();
   });
 
   test('should show Preview section', async ({ page }) => {
-    await expect(page.getByText('Preview')).toBeVisible();
+    await expect(page.getByText('Preview').first()).toBeVisible();
     await expect(page.getByText(/enter a description to generate/i)).toBeVisible();
   });
 

@@ -34,9 +34,9 @@ test.describe('Image Filter', () => {
     const fileInput = page.locator('input[type="file"]');
     await fileInput.setInputFiles('e2e/shared/fixtures/test-image.png');
     await expect(page.getByRole('img').first()).toBeVisible({ timeout: 5000 });
-    await expect(page.getByText(/Brightness/i)).toBeVisible();
-    await expect(page.getByText(/Contrast/i)).toBeVisible();
-    await expect(page.getByText(/Grayscale/i)).toBeVisible();
+    await expect(page.getByText(/Brightness:/i)).toBeVisible();
+    await expect(page.getByText(/Contrast:/i)).toBeVisible();
+    await expect(page.getByText(/Grayscale:/i)).toBeVisible();
   });
 
   test('should show preset buttons after upload', async ({ page }) => {

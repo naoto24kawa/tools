@@ -22,8 +22,8 @@ test.describe('Flexbox Playground', () => {
   });
 
   test('should show flex direction option buttons', async ({ page }) => {
-    await expect(page.getByRole('button', { name: 'row' })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'column' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'row', exact: true })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'column', exact: true })).toBeVisible();
   });
 
   test('should show justify-content option buttons', async ({ page }) => {
@@ -48,7 +48,7 @@ test.describe('Flexbox Playground', () => {
   });
 
   test('should update preview when direction changes to column', async ({ page }) => {
-    await page.getByRole('button', { name: 'column' }).click();
+    await page.getByRole('button', { name: 'column', exact: true }).click();
     const cssOutput = page.locator('pre').filter({ hasText: 'flex-direction' });
     await expect(cssOutput).toBeVisible();
     const text = await cssOutput.textContent();

@@ -49,7 +49,7 @@ test.describe('Charset Detector', () => {
 
   test('should show confidence percentage in results', async ({ page }) => {
     await page.getByPlaceholder('Paste text here...').fill('Test input');
-    await expect(page.getByText(/Confidence:/i)).toBeVisible();
+    await expect(page.getByText(/Confidence:/i).first()).toBeVisible();
   });
 
   test('should show Decode button for each detected encoding', async ({ page }) => {

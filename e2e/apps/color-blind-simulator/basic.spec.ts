@@ -15,25 +15,29 @@ test.describe('Color Blind Simulator', () => {
 
   test('should show multiple simulation type cards', async ({ page }) => {
     // The grid shows simulations for different color blindness types
-    const cards = page.locator('[class*="grid"] > div').filter({ has: page.locator('h3, [class*="CardTitle"]') });
+    const cards = page.locator('[class*="grid"] > div');
     const count = await cards.count();
     expect(count).toBeGreaterThan(0);
   });
 
   test('should display Protanopia simulation card', async ({ page }) => {
-    await expect(page.getByText('Protanopia')).toBeVisible();
+    // Japanese: 1型 (P型) - appears in card header and palette comparison
+    await expect(page.getByText('1型 (P型)').first()).toBeVisible();
   });
 
   test('should display Deuteranopia simulation card', async ({ page }) => {
-    await expect(page.getByText('Deuteranopia')).toBeVisible();
+    // Japanese: 2型 (D型) - appears in card header and palette comparison
+    await expect(page.getByText('2型 (D型)').first()).toBeVisible();
   });
 
   test('should display Tritanopia simulation card', async ({ page }) => {
-    await expect(page.getByText('Tritanopia')).toBeVisible();
+    // Japanese: 3型 (T型) - appears in card header and palette comparison
+    await expect(page.getByText('3型 (T型)').first()).toBeVisible();
   });
 
   test('should display Normal Vision card', async ({ page }) => {
-    await expect(page.getByText('Normal')).toBeVisible();
+    // Japanese: 通常
+    await expect(page.getByText('通常').first()).toBeVisible();
   });
 
   test('should show simulated color preview for each type', async ({ page }) => {
@@ -47,6 +51,6 @@ test.describe('Color Blind Simulator', () => {
   });
 
   test('should show default color code #3b82f6', async ({ page }) => {
-    await expect(page.locator('code').filter({ hasText: '#3b82f6' })).toBeVisible();
+    await expect(page.locator('code').filter({ hasText: '#3b82f6' }).first()).toBeVisible();
   });
 });

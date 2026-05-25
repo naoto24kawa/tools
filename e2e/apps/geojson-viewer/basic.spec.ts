@@ -65,7 +65,7 @@ test.describe('GeoJSON Viewer', () => {
     await page.getByPlaceholder(/FeatureCollection/i).fill('{ invalid json }');
     await page.getByRole('button', { name: /render/i }).click();
 
-    await expect(page.getByText(/parse error/i)).toBeVisible();
+    await expect(page.getByText(/parse error/i).first()).toBeVisible();
   });
 
   test('should clear canvas and input when Clear is clicked', async ({ page }) => {

@@ -43,7 +43,8 @@ test.describe('Nginx Config Generator', () => {
   });
 
   test('should update server name in generated config', async ({ page }) => {
-    const serverNameInput = page.getByLabel(/Server Name/i);
+    // Label has no htmlFor, locate the input next to the "Server Name" label
+    const serverNameInput = page.locator('label', { hasText: 'Server Name' }).locator('..').locator('input');
     await serverNameInput.clear();
     await serverNameInput.fill('myapp.example.com');
     const pre = page.locator('pre');

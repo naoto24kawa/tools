@@ -10,8 +10,8 @@ test.describe('TOTP Generator', () => {
   });
 
   test('should show placeholder code when no secret entered', async ({ page }) => {
-    // Default state shows dashes
-    await expect(page.getByText(/------/)).toBeVisible();
+    // Default state shows dashes displayed as "--- ---"
+    await expect(page.getByText(/--- ---/)).toBeVisible();
   });
 
   test('should generate a 6-digit code when valid Base32 secret is entered', async ({ page }) => {
@@ -29,9 +29,9 @@ test.describe('TOTP Generator', () => {
 
   test('should show error for invalid Base32 secret', async ({ page }) => {
     const secretInput = page.locator('input#secret');
-    await secretInput.fill('!!!invalid!!!');
-    await expect(page.getByRole('alert')).toBeVisible();
-    await expect(page.getByText(/Invalid secret key/i)).toBeVisible();
+    // All-symbol input strips to empty, triggering HMAC failure → error message
+    await secretInput.fill('!!!!!!!!!!!!!!!!');
+    await expect(page.getByText(/Invalid secret key/i)).toBeVisible({ timeout: 3000 });
   });
 
   test('should generate a random secret on Generate button click', async ({ page }) => {

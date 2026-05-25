@@ -18,7 +18,8 @@ test.describe('UUID/ULID Generator', () => {
 
   test('should show UUID version and variant info', async ({ page }) => {
     await page.getByRole('button', { name: /generate/i }).click();
-    await expect(page.getByText(/version 4/i)).toBeVisible();
+    // App displays version as "v4" and variant info in the result card
+    await expect(page.getByText(/v4 \/ /i)).toBeVisible();
   });
 
   test('should generate multiple UUIDs when count is set', async ({ page }) => {

@@ -6,7 +6,7 @@ test.describe('npm Package Info', () => {
   });
 
   test('should load page with title', async ({ page }) => {
-    await expect(page.getByText(/npm Package Info/i)).toBeVisible();
+    await expect(page.getByRole('heading', { name: /npm Package Info/i })).toBeVisible();
   });
 
   test('should show search input and button', async ({ page }) => {

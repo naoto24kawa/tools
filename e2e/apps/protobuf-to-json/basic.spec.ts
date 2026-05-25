@@ -25,7 +25,7 @@ test.describe('Protocol Buffers to JSON', () => {
     const input = page.locator('textarea#input');
     await input.fill('message Foo {\n  string bar = 1;\n}');
     await page.getByRole('button', { name: /Convert/i }).click();
-    await expect(page.getByText(/message\(s\) converted/i)).toBeVisible();
+    await expect(page.getByText(/message\(s\) converted/i).first()).toBeVisible();
   });
 
   test('should have Convert button disabled when input is empty', async ({ page }) => {
@@ -49,7 +49,10 @@ test.describe('Protocol Buffers to JSON', () => {
   });
 
   test('should support pretty print and compact format options', async ({ page }) => {
+    // Pretty Print is the default selected value visible in the Select trigger
     await expect(page.getByText('Pretty Print')).toBeVisible();
+    // Open the select dropdown to verify Compact option exists
+    await page.getByRole('combobox').click();
     await expect(page.getByText('Compact')).toBeVisible();
   });
 

@@ -41,17 +41,16 @@ test.describe('ASCII Table Generator', () => {
 
   test('should switch to grid editor mode', async ({ page }) => {
     await page.getByRole('button', { name: /grid editor/i }).click();
-    await expect(page.getByText('Grid Editor')).toBeVisible();
-    await expect(page.locator('#num-rows')).toBeVisible();
-    await expect(page.locator('#num-cols')).toBeVisible();
+    await expect(page.getByRole('spinbutton', { name: 'Rows' })).toBeVisible();
+    await expect(page.getByRole('spinbutton', { name: 'Columns' })).toBeVisible();
   });
 
   test('should generate ASCII table from grid editor', async ({ page }) => {
     await page.getByRole('button', { name: /grid editor/i }).click();
 
     // Set rows and cols
-    await page.locator('#num-rows').fill('2');
-    await page.locator('#num-cols').fill('2');
+    await page.getByRole('spinbutton', { name: 'Rows' }).fill('2');
+    await page.getByRole('spinbutton', { name: 'Columns' }).fill('2');
 
     // Generate
     await page.getByRole('button', { name: /generate ascii table/i }).click();
@@ -64,8 +63,8 @@ test.describe('ASCII Table Generator', () => {
 
   test('should show rows and cols inputs in grid mode', async ({ page }) => {
     await page.getByRole('button', { name: /grid editor/i }).click();
-    const rowsInput = page.locator('#num-rows');
-    const colsInput = page.locator('#num-cols');
+    const rowsInput = page.getByRole('spinbutton', { name: 'Rows' });
+    const colsInput = page.getByRole('spinbutton', { name: 'Columns' });
     await expect(rowsInput).toBeVisible();
     await expect(colsInput).toBeVisible();
     await expect(rowsInput).toHaveValue('3');
@@ -86,6 +85,6 @@ test.describe('ASCII Table Generator', () => {
     await page.getByRole('button', { name: /load into grid/i }).click();
 
     // Should switch to grid mode
-    await expect(page.getByText('Grid Editor')).toBeVisible();
+    await expect(page.getByRole('spinbutton', { name: 'Rows' })).toBeVisible();
   });
 });

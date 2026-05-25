@@ -22,7 +22,7 @@ test.describe('Habit Tracker', () => {
 
   test('should show toast when habit name is empty on add', async ({ page }) => {
     await page.getByRole('button', { name: /^add$/i }).click();
-    await expect(page.getByText(/please enter a habit name/i)).toBeVisible();
+    await expect(page.getByText('Please enter a habit name', { exact: true })).toBeVisible();
   });
 
   test('should add habit with Enter key', async ({ page }) => {
@@ -42,8 +42,8 @@ test.describe('Habit Tracker', () => {
   test('should toggle day checkbox for a habit', async ({ page }) => {
     await page.getByLabel(/habit name/i).fill('Run');
     await page.getByRole('button', { name: /^add$/i }).click();
-    // The 7-day grid buttons are rendered; click the last one (today)
-    const dayButtons = page.locator('table tbody button').filter({ hasNotText: '' });
+    // The 7-day grid buttons have class w-8 h-8
+    const dayButtons = page.locator('table tbody button.w-8');
     const count = await dayButtons.count();
     expect(count).toBeGreaterThan(0);
     await dayButtons.last().click();

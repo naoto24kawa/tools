@@ -32,15 +32,15 @@ test.describe('Math Percentage Calculator', () => {
   });
 
   test('should calculate percent change from 100 to 120 = +20%', async ({ page }) => {
-    await page.getByLabel('元の値').fill('100');
+    await page.getByLabel('元の値', { exact: true }).fill('100');
     await page.getByLabel('新しい値').fill('120');
     // Change from 100 to 120 is +20%
     await expect(page.getByText(/20\.00%/)).toBeVisible();
   });
 
   test('should calculate add and subtract percent: 100 with 20%', async ({ page }) => {
-    await page.getByLabel('値').fill('100');
-    await page.getByLabel('パーセント').fill('20');
+    await page.getByLabel('値', { exact: true }).fill('100');
+    await page.getByLabel('パーセント', { exact: true }).fill('20');
     // 100 + 20% = 120, 100 - 20% = 80
     await expect(page.getByText(/加算/)).toBeVisible();
     await expect(page.getByText(/120\.00/)).toBeVisible();

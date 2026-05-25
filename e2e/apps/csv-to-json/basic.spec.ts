@@ -15,9 +15,9 @@ test.describe('CSV to JSON Converter', () => {
   });
 
   test('should show Options section', async ({ page }) => {
-    await expect(page.getByText('Options')).toBeVisible();
-    await expect(page.getByText('Header Row')).toBeVisible();
-    await expect(page.getByText('Delimiter')).toBeVisible();
+    await expect(page.getByText('Options', { exact: true })).toBeVisible();
+    await expect(page.getByText('Header Row', { exact: true })).toBeVisible();
+    await expect(page.getByText('Delimiter', { exact: true })).toBeVisible();
   });
 
   test('should convert basic CSV to JSON', async ({ page }) => {

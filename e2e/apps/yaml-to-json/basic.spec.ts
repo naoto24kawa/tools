@@ -63,7 +63,9 @@ test.describe('YAML to JSON Converter', () => {
   });
 
   test('should show options card with format selector', async ({ page }) => {
-    await expect(page.getByText('Options')).toBeVisible();
-    await expect(page.getByText('Format')).toBeVisible();
+    // "Options" is a shadcn CardTitle (renders as div.text-2xl, not a heading element)
+    await expect(page.locator('div.text-2xl', { hasText: 'Options' })).toBeVisible();
+    // "Format" appears in description text too; use exact label
+    await expect(page.getByText('Format', { exact: true })).toBeVisible();
   });
 });

@@ -57,7 +57,7 @@ test.describe('Markdown to Slides', () => {
 
     await expect(page.getByText('Slide 1 of 3')).toBeVisible();
     // First slide should show "Slide One"
-    await expect(page.getByText('Slide One')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Slide One' })).toBeVisible();
   });
 
   test('should navigate through all slides with dot indicators', async ({ page }) => {

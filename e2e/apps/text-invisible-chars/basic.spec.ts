@@ -34,7 +34,7 @@ test.describe('Text Invisible Characters Detector', () => {
     const textWithZWS = 'Hello​World';
     await page.locator('textarea#input').fill(textWithZWS);
     await expect(page.getByText(/found \d+ invisible character/i)).toBeVisible();
-    await expect(page.getByText('Zero Width Space')).toBeVisible();
+    await expect(page.getByText('Zero Width Space').first()).toBeVisible();
   });
 
   test('should show Remove All button when invisible chars are found', async ({ page }) => {
@@ -54,8 +54,8 @@ test.describe('Text Invisible Characters Detector', () => {
     page,
   }) => {
     await page.locator('textarea#input').fill('Test​text');
-    await expect(page.getByText('Position')).toBeVisible();
-    await expect(page.getByText('Code Point')).toBeVisible();
-    await expect(page.getByText('Type')).toBeVisible();
+    await expect(page.getByRole('columnheader', { name: 'Position' })).toBeVisible();
+    await expect(page.getByRole('columnheader', { name: 'Code Point' })).toBeVisible();
+    await expect(page.getByRole('columnheader', { name: 'Type' })).toBeVisible();
   });
 });

@@ -19,7 +19,8 @@ test.describe('IP Address Info', () => {
     await page.getByRole('button', { name: 'Analyze' }).click();
 
     await expect(page.getByText('Analysis Result')).toBeVisible();
-    await expect(page.getByText('192.168.1.1')).toBeVisible();
+    // Use exact match to avoid matching the placeholder description text
+    await expect(page.getByText('192.168.1.1', { exact: true })).toBeVisible();
   });
 
   test('should show IPv4 version for private address', async ({ page }) => {
@@ -27,8 +28,8 @@ test.describe('IP Address Info', () => {
     await input.fill('192.168.1.1');
     await page.getByRole('button', { name: 'Analyze' }).click();
 
-    await expect(page.getByText(/IPv4/)).toBeVisible();
-    await expect(page.getByText('Private')).toBeVisible();
+    // The badge shows "IPv4 / Private" - use the span badge
+    await expect(page.locator('span').filter({ hasText: /IPv4 \/ Private/ })).toBeVisible();
   });
 
   test('should show CIDR info for address with subnet mask', async ({ page }) => {
@@ -54,7 +55,8 @@ test.describe('IP Address Info', () => {
     await input.fill('127.0.0.1');
     await page.getByRole('button', { name: 'Analyze' }).click();
 
-    await expect(page.getByText('Loopback')).toBeVisible();
+    // The badge shows "IPv4 / Loopback"
+    await expect(page.locator('span').filter({ hasText: /IPv4 \/ Loopback/ })).toBeVisible();
   });
 
   test('should trigger analysis on Enter key', async ({ page }) => {
@@ -71,8 +73,8 @@ test.describe('IP Address Info', () => {
     await page.getByRole('button', { name: 'Analyze' }).click();
     await expect(page.getByText('Analysis Result')).toBeVisible();
 
-    // Clear button (trash icon)
-    await page.getByRole('button').filter({ has: page.locator('svg') }).last().click();
+    // Clear button has variant="outline" and is in the input row (not the copy ghost buttons)
+    await page.locator('button.border.border-input').click();
     await expect(page.getByText('Analysis Result')).not.toBeVisible();
   });
 });

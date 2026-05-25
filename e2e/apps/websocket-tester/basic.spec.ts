@@ -25,7 +25,8 @@ test.describe('WebSocket Tester', () => {
   });
 
   test('should show message log area', async ({ page }) => {
-    await expect(page.getByText('Messages')).toBeVisible();
+    // CardTitle contains a nested Clear button, so full text is "Messages Clear" — target by CSS class
+    await expect(page.locator('div.text-2xl', { hasText: /^Messages/ })).toBeVisible();
     await expect(page.getByText('No messages yet. Connect and send a message to start.')).toBeVisible();
   });
 
@@ -38,8 +39,8 @@ test.describe('WebSocket Tester', () => {
     const urlInput = page.getByPlaceholder('wss://echo.websocket.org');
     await urlInput.fill('http://invalid-url');
     await page.getByRole('button', { name: /connect/i }).click();
-    // Should show invalid URL error toast
-    await expect(page.getByText(/invalid url/i)).toBeVisible();
+    // Should show invalid URL error toast - use exact text to avoid strict mode violation
+    await expect(page.getByText('Invalid URL', { exact: true })).toBeVisible();
   });
 
   test('should attempt connection and show connecting/error status for unreachable URL', async ({ page }) => {

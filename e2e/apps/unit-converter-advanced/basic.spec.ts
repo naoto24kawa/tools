@@ -10,14 +10,15 @@ test.describe('Unit Converter Advanced', () => {
   });
 
   test('should show category selector', async ({ page }) => {
-    await expect(page.locator('select#category, [id="category"]')).toBeVisible();
-    // Or check via label
-    await expect(page.getByText('Category')).toBeVisible();
+    // shadcn Select uses a button trigger with role="combobox"
+    await expect(page.locator('[id="category"]')).toBeVisible();
+    // Label for category
+    await expect(page.getByText('Category', { exact: true })).toBeVisible();
   });
 
   test('should convert temperature: 0 Celsius to Fahrenheit', async ({ page }) => {
-    // Select Temperature category
-    const categoryTrigger = page.getByRole('combobox').first();
+    // Select Temperature category using shadcn Select
+    const categoryTrigger = page.locator('[id="category"]');
     await categoryTrigger.click();
     await page.getByRole('option', { name: /temperature/i }).click();
 
@@ -27,7 +28,7 @@ test.describe('Unit Converter Advanced', () => {
 
     // Select Celsius as from unit and Fahrenheit as to unit
     const selects = page.getByRole('combobox');
-    // From unit select (second combobox)
+    // From unit select (second combobox - after category)
     await selects.nth(1).click();
     await page.getByRole('option', { name: /celsius/i }).first().click();
 
@@ -36,7 +37,8 @@ test.describe('Unit Converter Advanced', () => {
     await page.getByRole('option', { name: /fahrenheit/i }).first().click();
 
     await page.getByRole('button', { name: /convert/i }).click();
-    await expect(page.getByText(/32/)).toBeVisible();
+    // Result "32" appears in multiple elements; use the result display div
+    await expect(page.getByText('32', { exact: true })).toBeVisible();
   });
 
   test('should show Convert button', async ({ page }) => {
@@ -45,9 +47,13 @@ test.describe('Unit Converter Advanced', () => {
 
   test('should show error for invalid number input', async ({ page }) => {
     const valueInput = page.locator('input#from-value');
-    await valueInput.fill('abc');
+    // input[type=number] can't accept text, use JS to set value and dispatch event
+    await valueInput.evaluate((el: HTMLInputElement) => {
+      Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!.call(el, 'abc');
+      el.dispatchEvent(new Event('input', { bubbles: true }));
+    });
     await page.getByRole('button', { name: /convert/i }).click();
-    await expect(page.getByText(/invalid input/i)).toBeVisible();
+    await expect(page.getByText('Invalid input', { exact: true })).toBeVisible();
   });
 
   test('should swap units on swap button click', async ({ page }) => {

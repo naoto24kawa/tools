@@ -21,16 +21,16 @@ test.describe('Text Readability', () => {
     const text =
       'The quick brown fox jumps over the lazy dog. The dog barked loudly at the fox.';
     await page.locator('textarea#input').fill(text);
-    await expect(page.getByText('Words')).toBeVisible();
-    await expect(page.getByText('Sentences')).toBeVisible();
+    await expect(page.getByText('Words', { exact: true })).toBeVisible();
+    await expect(page.getByText('Sentences', { exact: true })).toBeVisible();
   });
 
   test('should display Flesch Reading Ease score for English text', async ({ page }) => {
     const text =
       'The quick brown fox jumps over the lazy dog. Simple sentences are easy to read. Short words help too.';
     await page.locator('textarea#input').fill(text);
-    await expect(page.getByText('Flesch Reading Ease')).toBeVisible();
-    await expect(page.getByText('Readability Scores')).toBeVisible();
+    await expect(page.getByText('Flesch Reading Ease', { exact: true })).toBeVisible();
+    await expect(page.getByText('Readability Scores', { exact: true })).toBeVisible();
   });
 
   test('should display Flesch-Kincaid Grade Level for English text', async ({ page }) => {
@@ -44,7 +44,7 @@ test.describe('Text Readability', () => {
     const text = 'This is a test sentence. Another sentence here. And one more.';
     await page.locator('textarea#input').fill(text);
     await expect(page.getByText(/avg sentence length/i)).toBeVisible();
-    await expect(page.getByText(/words$/i)).toBeVisible();
+    await expect(page.getByText(/\d+\.?\d* words$/i).first()).toBeVisible();
   });
 
   test('should show improvement tips', async ({ page }) => {
@@ -57,6 +57,6 @@ test.describe('Text Readability', () => {
   test('should show syllable count for English text', async ({ page }) => {
     const text = 'Simple text with multiple syllables in each sentence here today.';
     await page.locator('textarea#input').fill(text);
-    await expect(page.getByText('Syllables')).toBeVisible();
+    await expect(page.getByText('Syllables', { exact: true })).toBeVisible();
   });
 });

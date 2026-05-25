@@ -14,16 +14,17 @@ test.describe('URL Parser', () => {
     await input.fill('https://example.com:8080/path?key=value#section');
     await page.getByRole('button', { name: /^parse$/i }).click();
 
-    await expect(page.getByText(/example\.com/)).toBeVisible();
-    await expect(page.getByText(/8080/)).toBeVisible();
-    await expect(page.getByText(/\/path/)).toBeVisible();
+    // Multiple code elements show hostname; use first match
+    await expect(page.getByText(/example\.com/).first()).toBeVisible();
+    await expect(page.getByText(/8080/).first()).toBeVisible();
+    await expect(page.getByText(/\/path/).first()).toBeVisible();
   });
 
   test('should show protocol component after parsing', async ({ page }) => {
     const input = page.getByPlaceholder(/https:\/\/example\.com/i);
     await input.fill('https://example.com/');
     await page.getByRole('button', { name: /^parse$/i }).click();
-    await expect(page.getByText('https:')).toBeVisible();
+    await expect(page.getByText('https:', { exact: true })).toBeVisible();
   });
 
   test('should show query parameters table', async ({ page }) => {
@@ -31,10 +32,11 @@ test.describe('URL Parser', () => {
     await input.fill('https://example.com/search?q=hello&lang=en');
     await page.getByRole('button', { name: /^parse$/i }).click();
     await expect(page.getByText('Query Parameters')).toBeVisible();
-    await expect(page.getByText('q')).toBeVisible();
-    await expect(page.getByText('hello')).toBeVisible();
-    await expect(page.getByText('lang')).toBeVisible();
-    await expect(page.getByText('en')).toBeVisible();
+    // Query params appear in a table - use cell role for unique matching
+    await expect(page.getByRole('cell', { name: 'q', exact: true })).toBeVisible();
+    await expect(page.getByRole('cell', { name: 'hello', exact: true })).toBeVisible();
+    await expect(page.getByRole('cell', { name: 'lang', exact: true })).toBeVisible();
+    await expect(page.getByRole('cell', { name: 'en', exact: true })).toBeVisible();
   });
 
   test('should show error for invalid URL', async ({ page }) => {
@@ -49,7 +51,8 @@ test.describe('URL Parser', () => {
     const input = page.getByPlaceholder(/https:\/\/example\.com/i);
     await input.fill('https://test.example.org/');
     await input.press('Enter');
-    await expect(page.getByText(/test\.example\.org/)).toBeVisible();
+    // Multiple elements show the hostname; use first match
+    await expect(page.getByText(/test\.example\.org/).first()).toBeVisible();
   });
 
   test('should switch to Build Mode', async ({ page }) => {

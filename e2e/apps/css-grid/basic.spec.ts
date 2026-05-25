@@ -22,11 +22,11 @@ test.describe('CSS Grid Playground', () => {
   });
 
   test('should show grid-template-columns input', async ({ page }) => {
-    await expect(page.getByText('grid-template-columns')).toBeVisible();
+    await expect(page.getByText('grid-template-columns').first()).toBeVisible();
   });
 
   test('should show grid-template-rows input', async ({ page }) => {
-    await expect(page.getByText('grid-template-rows')).toBeVisible();
+    await expect(page.getByText('grid-template-rows').first()).toBeVisible();
   });
 
   test('should show gap slider', async ({ page }) => {

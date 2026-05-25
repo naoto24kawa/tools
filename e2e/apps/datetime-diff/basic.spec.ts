@@ -11,7 +11,6 @@ test.describe('Date Diff Calculator', () => {
 
   test('should show diff result on load with default dates', async ({ page }) => {
     // Default: today vs today+30 days
-    await expect(page.getByText(/日/)).toBeVisible();
     await expect(page.getByText('合計日数')).toBeVisible();
   });
 

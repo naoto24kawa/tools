@@ -28,23 +28,22 @@ test.describe('Matrix Calculator', () => {
   });
 
   test('should add two 2x2 matrices', async ({ page }) => {
-    // Matrix A: [[1,2],[3,4]]
-    const cellsA = page.locator('[id^="Matrix A-rows"]').locator('..').locator('..').locator('input[type="number"]:not([id])');
-    // Use the grid approach: find cell inputs within Matrix A section
-    const matrixASection = page.locator('div').filter({ hasText: /^Matrix A$/ }).first().locator('..').locator('input[type="number"]');
+    // Cell inputs are in a .grid.gap-1 div; use the rows input ID as anchor
+    const matrixASection = page.locator('[id="Matrix A-rows"]').locator('../../../..');
+    const cellsA = matrixASection.locator('.grid.gap-1 input[type="number"]');
 
     // Set Matrix A to [[1,2],[3,4]]
-    await matrixASection.nth(0).fill('1');
-    await matrixASection.nth(1).fill('2');
-    await matrixASection.nth(2).fill('3');
-    await matrixASection.nth(3).fill('4');
+    await cellsA.nth(0).fill('1');
+    await cellsA.nth(1).fill('2');
+    await cellsA.nth(2).fill('3');
+    await cellsA.nth(3).fill('4');
 
-    // Matrix B is [[5,6],[7,8]] by default zeros, fill it
-    const matrixBSection = page.locator('div').filter({ hasText: /^Matrix B$/ }).first().locator('..').locator('input[type="number"]');
-    await matrixBSection.nth(0).fill('5');
-    await matrixBSection.nth(1).fill('6');
-    await matrixBSection.nth(2).fill('7');
-    await matrixBSection.nth(3).fill('8');
+    const matrixBSection = page.locator('[id="Matrix B-rows"]').locator('../../../..');
+    const cellsB = matrixBSection.locator('.grid.gap-1 input[type="number"]');
+    await cellsB.nth(0).fill('5');
+    await cellsB.nth(1).fill('6');
+    await cellsB.nth(2).fill('7');
+    await cellsB.nth(3).fill('8');
 
     await page.getByRole('button', { name: 'Calculate' }).click();
 
@@ -60,12 +59,13 @@ test.describe('Matrix Calculator', () => {
     // Matrix B should be hidden for determinant
     await expect(page.getByText('Matrix B')).not.toBeVisible();
 
-    const matrixASection = page.locator('div').filter({ hasText: /^Matrix A$/ }).first().locator('..').locator('input[type="number"]');
+    const matrixASection = page.locator('[id="Matrix A-rows"]').locator('../../../..');
+    const cellsA = matrixASection.locator('.grid.gap-1 input[type="number"]');
     // [[1,2],[3,4]] → det = 1*4 - 2*3 = -2
-    await matrixASection.nth(0).fill('1');
-    await matrixASection.nth(1).fill('2');
-    await matrixASection.nth(2).fill('3');
-    await matrixASection.nth(3).fill('4');
+    await cellsA.nth(0).fill('1');
+    await cellsA.nth(1).fill('2');
+    await cellsA.nth(2).fill('3');
+    await cellsA.nth(3).fill('4');
 
     await page.getByRole('button', { name: 'Calculate' }).click();
 
@@ -79,12 +79,13 @@ test.describe('Matrix Calculator', () => {
     // Matrix B should be hidden
     await expect(page.getByText('Matrix B')).not.toBeVisible();
 
-    const matrixASection = page.locator('div').filter({ hasText: /^Matrix A$/ }).first().locator('..').locator('input[type="number"]');
+    const matrixASection = page.locator('[id="Matrix A-rows"]').locator('../../../..');
+    const cellsA = matrixASection.locator('.grid.gap-1 input[type="number"]');
     // [[1,2],[3,4]] → transpose = [[1,3],[2,4]]
-    await matrixASection.nth(0).fill('1');
-    await matrixASection.nth(1).fill('2');
-    await matrixASection.nth(2).fill('3');
-    await matrixASection.nth(3).fill('4');
+    await cellsA.nth(0).fill('1');
+    await cellsA.nth(1).fill('2');
+    await cellsA.nth(2).fill('3');
+    await cellsA.nth(3).fill('4');
 
     await page.getByRole('button', { name: 'Calculate' }).click();
 
@@ -95,19 +96,21 @@ test.describe('Matrix Calculator', () => {
   });
 
   test('should clear matrices', async ({ page }) => {
-    const matrixASection = page.locator('div').filter({ hasText: /^Matrix A$/ }).first().locator('..').locator('input[type="number"]');
-    await matrixASection.nth(0).fill('99');
+    const matrixASection = page.locator('[id="Matrix A-rows"]').locator('../../../..');
+    const cellsA = matrixASection.locator('.grid.gap-1 input[type="number"]');
+    await cellsA.nth(0).fill('99');
 
     await page.getByRole('button', { name: 'Calculate' }).click();
     await page.getByRole('button', { name: /Clear/ }).click();
 
     // After clear, cell values should be 0
-    await expect(matrixASection.nth(0)).toHaveValue('0');
+    await expect(cellsA.nth(0)).toHaveValue('0');
   });
 
   test('should show copy result button after calculation', async ({ page }) => {
-    const matrixASection = page.locator('div').filter({ hasText: /^Matrix A$/ }).first().locator('..').locator('input[type="number"]');
-    await matrixASection.nth(0).fill('1');
+    const matrixASection = page.locator('[id="Matrix A-rows"]').locator('../../../..');
+    const cellsA = matrixASection.locator('.grid.gap-1 input[type="number"]');
+    await cellsA.nth(0).fill('1');
     await page.getByRole('button', { name: 'Calculate' }).click();
 
     await expect(page.getByRole('button', { name: /Copy Result/ })).toBeVisible();

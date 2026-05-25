@@ -6,7 +6,7 @@ test.describe('Braille Converter', () => {
   });
 
   test('should load page with title', async ({ page }) => {
-    await expect(page.getByText('Braille Converter')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Braille Converter' })).toBeVisible();
   });
 
   test('should show mode buttons (Text to Braille and Braille to Text)', async ({ page }) => {
@@ -27,8 +27,8 @@ test.describe('Braille Converter', () => {
   test('should convert braille back to text', async ({ page }) => {
     // Switch to Braille to Text mode
     await page.getByRole('button', { name: /braille to text/i }).click();
-    // ⠓⠑⠇⠇⠕ is "hello" in braille
-    await page.locator('textarea#input').fill('⠓⠑⠌⠌⠝');
+    // ⠓⠑⠇⠇⠕ is "hello" in braille (h=⠓, e=⠑, l=⠇, l=⠇, o=⠕)
+    await page.locator('textarea#input').fill('⠓⠑⠇⠇⠕');
     const output = page.locator('textarea#output');
     await expect(output).not.toBeEmpty();
     const content = await output.inputValue();

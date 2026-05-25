@@ -42,8 +42,8 @@ test.describe('HTTP Request Builder', () => {
 
   test('should show textarea when JSON body type is selected', async ({ page }) => {
     await page.getByRole('button', { name: /^body$/i }).click();
-    // Open the body type select
-    const bodyTypeCombobox = page.locator('[data-slot="select-trigger"]').last();
+    // Open the body type select (second combobox after method selector)
+    const bodyTypeCombobox = page.getByRole('combobox').last();
     await bodyTypeCombobox.click();
     await page.getByRole('option', { name: /^json$/i }).click();
     await expect(page.locator('textarea')).toBeVisible();

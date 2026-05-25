@@ -34,13 +34,13 @@ test.describe('iCalendar Parser', () => {
   test('should parse ICS content and display event', async ({ page }) => {
     await page.locator('textarea').fill(SAMPLE_ICS);
     await page.getByRole('button', { name: /^parse$/i }).click();
-    await expect(page.getByText('Team Meeting')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Team Meeting' })).toBeVisible();
   });
 
   test('should show parsed count in toast', async ({ page }) => {
     await page.locator('textarea').fill(SAMPLE_ICS);
     await page.getByRole('button', { name: /^parse$/i }).click();
-    await expect(page.getByText(/1 item.*parsed/i)).toBeVisible();
+    await expect(page.getByText('1 item(s) parsed', { exact: true })).toBeVisible();
   });
 
   test('should show Event type badge', async ({ page }) => {
@@ -68,9 +68,9 @@ test.describe('iCalendar Parser', () => {
   test('should clear input and events when clicking Clear', async ({ page }) => {
     await page.locator('textarea').fill(SAMPLE_ICS);
     await page.getByRole('button', { name: /^parse$/i }).click();
-    await expect(page.getByText('Team Meeting')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Team Meeting' })).toBeVisible();
     await page.getByRole('button', { name: /clear/i }).click();
     await expect(page.locator('textarea')).toHaveValue('');
-    await expect(page.getByText('Team Meeting')).not.toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Team Meeting' })).not.toBeVisible();
   });
 });

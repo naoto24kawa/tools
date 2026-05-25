@@ -11,27 +11,27 @@ test.describe('Mermaid Preview', () => {
 
   test('should render SVG diagram from default flowchart syntax', async ({ page }) => {
     // Default example is loaded on mount — SVG should appear immediately
-    await expect(page.locator('svg')).toBeVisible();
+    // Target the diagram SVG inside the preview panel (not icon SVGs)
+    await expect(page.locator('.border.rounded-md svg').first()).toBeVisible();
   });
 
   test('should update diagram when syntax is changed', async ({ page }) => {
     const textarea = page.getByRole('textbox').first();
     await textarea.fill('graph LR\n  X --> Y');
     // SVG should still be visible after change
-    await expect(page.locator('svg')).toBeVisible();
+    await expect(page.locator('.border.rounded-md svg').first()).toBeVisible();
     // Node/edge count reflects updated diagram
-    await expect(page.getByText(/Nodes:/)).toBeVisible();
+    await expect(page.getByText(/Nodes:.*Edges:/)).toBeVisible();
   });
 
   test('should show node and edge counts', async ({ page }) => {
-    await expect(page.getByText(/Nodes:/)).toBeVisible();
-    await expect(page.getByText(/Edges:/)).toBeVisible();
+    await expect(page.getByText(/Nodes:.*Edges:/)).toBeVisible();
   });
 
   test('should load example template via select', async ({ page }) => {
     await page.getByRole('combobox').click();
     await page.getByRole('option', { name: /Sequence/i }).click();
-    await expect(page.locator('svg')).toBeVisible();
+    await expect(page.locator('.border.rounded-md svg').first()).toBeVisible();
   });
 
   test('should display Copy SVG button', async ({ page }) => {

@@ -11,8 +11,8 @@ test.describe('Random Dice Roller', () => {
   });
 
   test('should show dice face selector buttons', async ({ page }) => {
-    await expect(page.getByRole('button', { name: 'd6' })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'd20' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'd6', exact: true })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'd20', exact: true })).toBeVisible();
   });
 
   test('should show count input and Roll button', async ({ page }) => {
@@ -42,9 +42,9 @@ test.describe('Random Dice Roller', () => {
   });
 
   test('should switch to d20 dice', async ({ page }) => {
-    await page.getByRole('button', { name: 'd20' }).click();
-    // Roll button label should update to reflect d20
-    await expect(page.getByRole('button', { name: /1d20/i })).toBeVisible();
+    await page.getByRole('button', { name: 'd20', exact: true }).click();
+    // Roll button label should update to reflect d20 (e.g. "Roll 2d20")
+    await expect(page.getByRole('button', { name: /Roll \d+d20/i })).toBeVisible();
   });
 
   test('should roll multiple dice and show individual values', async ({ page }) => {

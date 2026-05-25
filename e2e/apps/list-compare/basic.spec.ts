@@ -13,15 +13,15 @@ test.describe('List Compare', () => {
     await page.locator('textarea#list-a').fill('apple\nbanana\ncherry');
     await page.locator('textarea#list-b').fill('banana\ncherry\ndate');
     // Default view is "共通" (common)
-    await expect(page.getByText('banana')).toBeVisible();
-    await expect(page.getByText('cherry')).toBeVisible();
+    await expect(page.locator('.text-sm.font-mono', { hasText: 'banana' }).first()).toBeVisible();
+    await expect(page.locator('.text-sm.font-mono', { hasText: 'cherry' }).first()).toBeVisible();
   });
 
   test('should show items only in list A', async ({ page }) => {
     await page.locator('textarea#list-a').fill('apple\nbanana\ncherry');
     await page.locator('textarea#list-b').fill('banana\ncherry\ndate');
     await page.getByRole('button', { name: /Aのみ/i }).click();
-    await expect(page.getByText('apple')).toBeVisible();
+    await expect(page.locator('.text-sm.font-mono', { hasText: 'apple' }).first()).toBeVisible();
     // "banana" and "cherry" should NOT appear in the result area
   });
 
@@ -29,16 +29,16 @@ test.describe('List Compare', () => {
     await page.locator('textarea#list-a').fill('apple\nbanana');
     await page.locator('textarea#list-b').fill('banana\ndate\nfig');
     await page.getByRole('button', { name: /Bのみ/i }).click();
-    await expect(page.getByText('date')).toBeVisible();
-    await expect(page.getByText('fig')).toBeVisible();
+    await expect(page.locator('.text-sm.font-mono', { hasText: 'date' }).first()).toBeVisible();
+    await expect(page.locator('.text-sm.font-mono', { hasText: 'fig' }).first()).toBeVisible();
   });
 
   test('should show union of both lists', async ({ page }) => {
     await page.locator('textarea#list-a').fill('apple\nbanana');
     await page.locator('textarea#list-b').fill('cherry\ndate');
     await page.getByRole('button', { name: /和集合/i }).click();
-    await expect(page.getByText('apple')).toBeVisible();
-    await expect(page.getByText('cherry')).toBeVisible();
+    await expect(page.locator('.text-sm.font-mono', { hasText: 'apple' }).first()).toBeVisible();
+    await expect(page.locator('.text-sm.font-mono', { hasText: 'cherry' }).first()).toBeVisible();
   });
 
   test('should show item count in view mode buttons', async ({ page }) => {

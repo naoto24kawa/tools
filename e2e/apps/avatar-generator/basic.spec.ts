@@ -43,13 +43,13 @@ test.describe('Avatar Generator', () => {
   test('should switch avatar style to Pixel Art', async ({ page }) => {
     await page.getByText('Style').locator('..').locator('[role="combobox"]').click();
     await page.getByRole('option', { name: 'Pixel Art' }).click();
-    await expect(page.getByText(/pixel/i)).toBeVisible();
+    await expect(page.getByRole('combobox').filter({ hasText: /pixel/i })).toBeVisible();
   });
 
   test('should switch avatar style to Geometric', async ({ page }) => {
     await page.getByText('Style').locator('..').locator('[role="combobox"]').click();
     await page.getByRole('option', { name: 'Geometric Patterns' }).click();
-    await expect(page.getByText(/geometric/i)).toBeVisible();
+    await expect(page.getByRole('combobox').filter({ hasText: /geometric/i })).toBeVisible();
   });
 
   test('should change size to 512px', async ({ page }) => {

@@ -17,7 +17,7 @@ test.describe('Regex Builder', () => {
   test('should switch to Manual Input mode and enter a pattern', async ({ page }) => {
     const manualRadio = page.locator('input[type="radio"]').nth(1);
     await manualRadio.click();
-    const patternInput = page.getByLabel('Regex Pattern');
+    const patternInput = page.getByPlaceholder('Enter regex pattern...');
     await patternInput.fill('hello');
     await expect(page.locator('code').filter({ hasText: 'hello' })).toBeVisible();
   });
@@ -26,7 +26,7 @@ test.describe('Regex Builder', () => {
     // Switch to manual mode
     const manualRadio = page.locator('input[type="radio"]').nth(1);
     await manualRadio.click();
-    await page.getByLabel('Regex Pattern').fill('o');
+    await page.getByPlaceholder('Enter regex pattern...').fill('o');
     await page.getByLabel('Test string').fill('hello world');
     // Description shows "2 match(es) found"
     await expect(page.getByText(/2 match\(es\) found/i)).toBeVisible();
@@ -35,7 +35,7 @@ test.describe('Regex Builder', () => {
   test('should highlight matches in the test string', async ({ page }) => {
     const manualRadio = page.locator('input[type="radio"]').nth(1);
     await manualRadio.click();
-    await page.getByLabel('Regex Pattern').fill('world');
+    await page.getByPlaceholder('Enter regex pattern...').fill('world');
     await page.getByLabel('Test string').fill('hello world');
     await expect(page.getByText('Highlighted Matches')).toBeVisible();
     await expect(page.locator('mark').filter({ hasText: 'world' })).toBeVisible();
@@ -44,7 +44,7 @@ test.describe('Regex Builder', () => {
   test('should show match details table when matches found', async ({ page }) => {
     const manualRadio = page.locator('input[type="radio"]').nth(1);
     await manualRadio.click();
-    await page.getByLabel('Regex Pattern').fill('\\d+');
+    await page.getByPlaceholder('Enter regex pattern...').fill('\\d+');
     await page.getByLabel('Test string').fill('abc 123 def 456');
     await expect(page.getByText('Match Details')).toBeVisible();
     await expect(page.getByRole('columnheader', { name: 'Match' })).toBeVisible();

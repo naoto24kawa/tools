@@ -20,7 +20,8 @@ test.describe('Video Mute', () => {
   });
 
   test('should not show Remove Audio section before file upload', async ({ page }) => {
-    await expect(page.getByText(/Remove Audio/i)).not.toBeVisible();
+    // The card section heading "Remove Audio" (shadcn CardTitle = div) should not be visible before upload
+    await expect(page.locator('div.text-2xl', { hasText: 'Remove Audio' })).not.toBeVisible();
   });
 
   test('should show Remove Audio section after file upload', async ({ page }) => {
@@ -34,7 +35,8 @@ test.describe('Video Mute', () => {
       input.dispatchEvent(new Event('change', { bubbles: true }));
     });
 
-    await expect(page.getByText(/Remove Audio/i)).toBeVisible({ timeout: 3000 });
+    // After upload, the Remove Audio card section appears (shadcn CardTitle = div.text-2xl)
+    await expect(page.locator('div.text-2xl', { hasText: 'Remove Audio' })).toBeVisible({ timeout: 3000 });
     await expect(page.getByRole('button', { name: /remove audio/i })).toBeVisible();
   });
 

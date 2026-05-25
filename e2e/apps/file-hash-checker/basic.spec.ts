@@ -34,20 +34,12 @@ test.describe('File Hash Checker', () => {
   });
 
   test('should compute hash from uploaded file', async ({ page }) => {
-    // Create a small test file buffer and upload it
-    const fileContent = 'Hello, World!';
-    const fileBuffer = Buffer.from(fileContent);
-
-    // Use page.evaluate to create a file and trigger upload
-    const dataTransfer = await page.evaluateHandle((content) => {
-      const file = new File([content], 'test.txt', { type: 'text/plain' });
-      const dt = new DataTransfer();
-      dt.items.add(file);
-      return dt;
-    }, fileContent);
-
     const fileInput = page.locator('input[type="file"]');
-    await fileInput.dispatchEvent('change', { dataTransfer });
+    await fileInput.setInputFiles({
+      name: 'test.txt',
+      mimeType: 'text/plain',
+      buffer: Buffer.from('Hello, World!'),
+    });
 
     await expect(page.getByText('Hash Result')).toBeVisible({ timeout: 10000 });
     const hashDisplay = page.locator('pre');
@@ -55,31 +47,23 @@ test.describe('File Hash Checker', () => {
   });
 
   test('should show Compare Hash input after computing hash', async ({ page }) => {
-    const fileContent = 'test data';
-    const dataTransfer = await page.evaluateHandle((content) => {
-      const file = new File([content], 'test.txt', { type: 'text/plain' });
-      const dt = new DataTransfer();
-      dt.items.add(file);
-      return dt;
-    }, fileContent);
-
     const fileInput = page.locator('input[type="file"]');
-    await fileInput.dispatchEvent('change', { dataTransfer });
+    await fileInput.setInputFiles({
+      name: 'test.txt',
+      mimeType: 'text/plain',
+      buffer: Buffer.from('test data'),
+    });
 
     await expect(page.getByText('Compare Hash (optional)')).toBeVisible({ timeout: 10000 });
   });
 
   test('should show hash match indicator when correct hash is pasted', async ({ page }) => {
-    const fileContent = 'test';
-    const dataTransfer = await page.evaluateHandle((content) => {
-      const file = new File([content], 'test.txt', { type: 'text/plain' });
-      const dt = new DataTransfer();
-      dt.items.add(file);
-      return dt;
-    }, fileContent);
-
     const fileInput = page.locator('input[type="file"]');
-    await fileInput.dispatchEvent('change', { dataTransfer });
+    await fileInput.setInputFiles({
+      name: 'test.txt',
+      mimeType: 'text/plain',
+      buffer: Buffer.from('test'),
+    });
 
     // Wait for hash to appear
     await expect(page.getByText('Hash Result')).toBeVisible({ timeout: 10000 });
@@ -94,16 +78,12 @@ test.describe('File Hash Checker', () => {
   });
 
   test('should show hash mismatch when wrong hash is pasted', async ({ page }) => {
-    const fileContent = 'test';
-    const dataTransfer = await page.evaluateHandle((content) => {
-      const file = new File([content], 'test.txt', { type: 'text/plain' });
-      const dt = new DataTransfer();
-      dt.items.add(file);
-      return dt;
-    }, fileContent);
-
     const fileInput = page.locator('input[type="file"]');
-    await fileInput.dispatchEvent('change', { dataTransfer });
+    await fileInput.setInputFiles({
+      name: 'test.txt',
+      mimeType: 'text/plain',
+      buffer: Buffer.from('test'),
+    });
 
     await expect(page.getByText('Hash Result')).toBeVisible({ timeout: 10000 });
     const compareInput = page.getByPlaceholder('Paste expected hash to compare...');

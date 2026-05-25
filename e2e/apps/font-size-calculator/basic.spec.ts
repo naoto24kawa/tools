@@ -11,7 +11,7 @@ test.describe('Font Size Calculator', () => {
   });
 
   test('should show Convert section with inputs', async ({ page }) => {
-    await expect(page.getByText('Convert')).toBeVisible();
+    await expect(page.getByText('Convert').first()).toBeVisible();
     await expect(page.locator('#value')).toBeVisible();
     await expect(page.locator('#unit')).toBeVisible();
     await expect(page.locator('#basePx')).toBeVisible();
@@ -58,7 +58,8 @@ test.describe('Font Size Calculator', () => {
     // Table should have px, rem, em, pt headers
     await expect(page.locator('th', { hasText: 'px' })).toBeVisible();
     await expect(page.locator('th', { hasText: 'rem' })).toBeVisible();
-    await expect(page.locator('th', { hasText: 'em' })).toBeVisible();
+    // Use exact match for 'em' to avoid matching 'rem'
+    await expect(page.locator('th').getByText('em', { exact: true })).toBeVisible();
     await expect(page.locator('th', { hasText: 'pt' })).toBeVisible();
   });
 

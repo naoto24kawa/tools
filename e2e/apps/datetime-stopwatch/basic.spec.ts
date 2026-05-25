@@ -9,8 +9,8 @@ test.describe('Stopwatch', () => {
     await expect(page.getByRole('heading', { name: /Stopwatch/i })).toBeVisible();
   });
 
-  test('should show initial display of 00:00.000', async ({ page }) => {
-    await expect(page.getByText('00:00.000')).toBeVisible();
+  test('should show initial display of 00:00.00', async ({ page }) => {
+    await expect(page.getByText('00:00.00')).toBeVisible();
   });
 
   test('should start stopwatch when Start is clicked', async ({ page }) => {
@@ -31,12 +31,12 @@ test.describe('Stopwatch', () => {
     await expect(page.getByRole('button', { name: /Start/i })).toBeVisible();
   });
 
-  test('should reset stopwatch to 00:00.000 when Reset is clicked', async ({ page }) => {
+  test('should reset stopwatch to 00:00.00 when Reset is clicked', async ({ page }) => {
     await page.getByRole('button', { name: /Start/i }).click();
     await page.waitForTimeout(600);
     await page.getByRole('button', { name: /Pause/i }).click();
     await page.getByRole('button', { name: /Reset/i }).click();
-    await expect(page.getByText('00:00.000')).toBeVisible();
+    await expect(page.getByText('00:00.00')).toBeVisible();
   });
 
   test('should record lap time when Lap is clicked while running', async ({ page }) => {

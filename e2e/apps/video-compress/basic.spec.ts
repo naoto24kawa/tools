@@ -37,8 +37,9 @@ test.describe('Video Compress', () => {
     });
 
     await expect(page.getByText(/Compression Settings/i)).toBeVisible({ timeout: 3000 });
-    await expect(page.getByText(/Quality/i)).toBeVisible();
-    await expect(page.getByText(/Resolution/i)).toBeVisible();
+    // Use label role to avoid strict mode violation with multiple Quality/Resolution text occurrences
+    await expect(page.getByText('Quality', { exact: true })).toBeVisible();
+    await expect(page.getByText('Resolution', { exact: true })).toBeVisible();
   });
 
   test('should show Compress Video button after file upload', async ({ page }) => {

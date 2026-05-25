@@ -19,7 +19,7 @@ test.describe('EXIF Editor', () => {
   });
 
   test('should show upload prompt before file is chosen', async ({ page }) => {
-    await expect(page.getByText('Upload a JPEG file')).toBeVisible();
+    await expect(page.getByText('Upload a JPEG file', { exact: true })).toBeVisible();
   });
 
   test('should hide EXIF info and preview before file is uploaded', async ({ page }) => {

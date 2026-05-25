@@ -27,7 +27,7 @@ test.describe('Text Columns', () => {
   });
 
   test('should show settings panel with column count slider', async ({ page }) => {
-    await expect(page.getByText('Settings')).toBeVisible();
+    await expect(page.getByText('Settings', { exact: true })).toBeVisible();
     await expect(page.getByText(/Columns:/)).toBeVisible();
   });
 

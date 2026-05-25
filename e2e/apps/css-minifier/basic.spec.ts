@@ -36,9 +36,9 @@ test.describe('CSS Minifier', () => {
     const input = page.locator('#input');
     await input.fill('body {\n  color: red;\n  font-size: 14px;\n}');
     await page.getByRole('button', { name: /minify/i }).click();
-    await expect(page.getByText(/original/i)).toBeVisible();
-    await expect(page.getByText(/minified/i)).toBeVisible();
-    await expect(page.getByText(/saved/i)).toBeVisible();
+    await expect(page.getByText(/Original:/i)).toBeVisible();
+    await expect(page.getByText(/Minified:/i)).toBeVisible();
+    await expect(page.getByText(/Saved:/i)).toBeVisible();
   });
 
   test('should produce shorter output than input', async ({ page }) => {

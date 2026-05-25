@@ -17,7 +17,7 @@ test.describe('JWT Decoder', () => {
 
   test('should decode a valid JWT and show header section', async ({ page }) => {
     await page.getByLabel('JWT token input').fill(VALID_JWT);
-    await expect(page.getByRole('heading', { name: /Header/i })).toBeVisible();
+    await expect(page.getByText('Header').first()).toBeVisible();
   });
 
   test('should show alg and typ in decoded header', async ({ page }) => {
@@ -30,7 +30,7 @@ test.describe('JWT Decoder', () => {
 
   test('should decode JWT payload with sub and name fields', async ({ page }) => {
     await page.getByLabel('JWT token input').fill(VALID_JWT);
-    await expect(page.getByRole('heading', { name: /Payload/i })).toBeVisible();
+    await expect(page.getByText('Payload').first()).toBeVisible();
     // Payload pre block
     const payloadPre = page.locator('pre').nth(1);
     await expect(payloadPre).toContainText('"sub"');
@@ -41,7 +41,7 @@ test.describe('JWT Decoder', () => {
 
   test('should show signature section', async ({ page }) => {
     await page.getByLabel('JWT token input').fill(VALID_JWT);
-    await expect(page.getByRole('heading', { name: /Signature/i })).toBeVisible();
+    await expect(page.getByText('Signature').first()).toBeVisible();
   });
 
   test('should show error alert for invalid JWT', async ({ page }) => {

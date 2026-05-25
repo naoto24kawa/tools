@@ -30,21 +30,24 @@ test.describe('Systemd Unit Generator', () => {
   });
 
   test('should update Description in output when changed', async ({ page }) => {
-    const descInput = page.getByLabel('Description');
+    // Description label has no htmlFor - find input inside same div as Description label
+    const descInput = page.locator('div.space-y-2').filter({ hasText: /^Description$/ }).locator('input').first();
     await descInput.clear();
     await descInput.fill('My Custom Service');
     await expect(page.locator('pre').getByText('My Custom Service')).toBeVisible();
   });
 
   test('should update ExecStart in output when changed', async ({ page }) => {
-    const execInput = page.getByLabel('ExecStart');
+    // ExecStart label has no htmlFor - find input inside same div as ExecStart label
+    const execInput = page.locator('div.space-y-2').filter({ hasText: /^ExecStart$/ }).locator('input');
     await execInput.clear();
     await execInput.fill('/usr/bin/myapp --config /etc/myapp.conf');
     await expect(page.locator('pre').getByText('/usr/bin/myapp')).toBeVisible();
   });
 
   test('should switch to Timer unit type', async ({ page }) => {
-    const typeSelect = page.getByRole('combobox');
+    // Use filter to target the unit type combobox (has 'Service' text)
+    const typeSelect = page.getByRole('combobox').filter({ hasText: /Service/ });
     await typeSelect.click();
     await page.getByRole('option', { name: 'Timer (.timer)' }).click();
     await expect(page.getByText('Timer Configuration')).toBeVisible();
@@ -52,10 +55,11 @@ test.describe('Systemd Unit Generator', () => {
   });
 
   test('should show OnCalendar field for Timer type', async ({ page }) => {
-    const typeSelect = page.getByRole('combobox');
+    const typeSelect = page.getByRole('combobox').filter({ hasText: /Service/ });
     await typeSelect.click();
     await page.getByRole('option', { name: 'Timer (.timer)' }).click();
-    await expect(page.getByLabel('OnCalendar (cron-like schedule)')).toBeVisible();
+    // OnCalendar label has no htmlFor - check the label text is visible
+    await expect(page.getByText('OnCalendar (cron-like schedule)')).toBeVisible();
   });
 
   test('should have Copy button for generated unit', async ({ page }) => {

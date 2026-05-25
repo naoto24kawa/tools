@@ -11,7 +11,7 @@ test.describe('Flashcard', () => {
   });
 
   test('should show Create Deck section', async ({ page }) => {
-    await expect(page.getByText('Create Deck')).toBeVisible();
+    await expect(page.getByText('Create Deck').first()).toBeVisible();
     await expect(page.getByPlaceholder(/deck name/i)).toBeVisible();
     await expect(page.getByRole('button', { name: /create/i })).toBeVisible();
   });
@@ -53,7 +53,7 @@ test.describe('Flashcard', () => {
 
     await page.getByText('My Deck').click();
 
-    await expect(page.getByText('Add Card')).toBeVisible();
+    await expect(page.getByText('Add Card').first()).toBeVisible();
     await expect(page.getByLabel('Front')).toBeVisible();
     await expect(page.getByLabel('Back')).toBeVisible();
   });
@@ -107,7 +107,7 @@ test.describe('Flashcard', () => {
 
     // Click to flip
     await page.getByText(/click to flip/i).click();
-    await expect(page.getByText(/BACK/i)).toBeVisible();
+    await expect(page.getByText(/BACK/i).first()).toBeVisible();
     await expect(page.getByText('Back Side')).toBeVisible();
   });
 

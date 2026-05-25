@@ -13,7 +13,7 @@ test.describe('Image Assets - Comprehensive E2E Tests', () => {
 
   test('should have file input', async ({ page }) => {
     const fileInput = page.locator('input[type="file"]');
-    await expect(fileInput).toBeVisible();
+    await expect(fileInput).toBeAttached();
   });
 
   test('should upload and generate assets', async ({ page }) => {

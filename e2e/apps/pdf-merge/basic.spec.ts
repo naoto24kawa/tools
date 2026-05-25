@@ -10,8 +10,8 @@ test.describe('PDF Merge', () => {
   });
 
   test('should show file upload drop zone', async ({ page }) => {
-    // Drop zone button with text
-    await expect(page.getByText(/Drop PDF files here/i)).toBeVisible();
+    // Drop zone has two elements matching; target the paragraph inside the drop zone
+    await expect(page.getByText(/Drop PDF files here/i).first()).toBeVisible();
   });
 
   test('should have hidden file input accepting PDF', async ({ page }) => {

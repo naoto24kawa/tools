@@ -11,21 +11,21 @@ test.describe('Prime Checker', () => {
 
   test('should identify 7 as prime', async ({ page }) => {
     await page.locator('input#check-input').fill('7');
-    await page.getByRole('button', { name: 'Check' }).click();
-    await expect(page.getByText(/Prime/i)).toBeVisible();
+    await page.getByRole('button', { name: 'Check', exact: true }).click();
+    await expect(page.getByText('Prime', { exact: true })).toBeVisible();
     // Should NOT show "Not Prime"
     await expect(page.getByText('Not Prime')).not.toBeVisible();
   });
 
   test('should identify 8 as not prime', async ({ page }) => {
     await page.locator('input#check-input').fill('8');
-    await page.getByRole('button', { name: 'Check' }).click();
+    await page.getByRole('button', { name: 'Check', exact: true }).click();
     await expect(page.getByText('Not Prime')).toBeVisible();
   });
 
   test('should show prime factorization for composite numbers', async ({ page }) => {
     await page.locator('input#check-input').fill('12');
-    await page.getByRole('button', { name: 'Check' }).click();
+    await page.getByRole('button', { name: 'Check', exact: true }).click();
     await expect(page.getByText('Prime Factorization')).toBeVisible();
     // 12 = 2^2 × 3
     await expect(page.getByText(/12 =/)).toBeVisible();
@@ -33,7 +33,7 @@ test.describe('Prime Checker', () => {
 
   test('should show error for out-of-range input', async ({ page }) => {
     await page.locator('input#check-input').fill('1');
-    await page.getByRole('button', { name: 'Check' }).click();
+    await page.getByRole('button', { name: 'Check', exact: true }).click();
     await expect(page.getByRole('alert')).toBeVisible();
   });
 

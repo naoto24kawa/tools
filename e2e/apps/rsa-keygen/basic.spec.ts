@@ -6,7 +6,7 @@ test.describe('RSA Key Pair Generator', () => {
   });
 
   test('should load page with title', async ({ page }) => {
-    await expect(page.getByText(/RSA Key Pair Generator/i)).toBeVisible();
+    await expect(page.getByRole('heading', { name: /RSA Key Pair Generator/i })).toBeVisible();
   });
 
   test('should generate RSA 1024-bit key pair', async ({ page }) => {

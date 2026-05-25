@@ -29,15 +29,8 @@ test.describe('Kana Converter - Basic Functionality', () => {
   });
 
   test('should convert katakana to hiragana when mode is switched', async ({ page }) => {
-    // Click the "to hiragana" option
-    const modeButtons = page.locator('button[type="button"]');
-    const buttonTexts = await modeButtons.allTextContents();
-    const toHiraganaIndex = buttonTexts.findIndex(
-      (t) => t.includes('ひらがな') || t.includes('カタカナ→ひらがな') || t.includes('toHiragana'),
-    );
-    if (toHiraganaIndex >= 0) {
-      await modeButtons.nth(toHiraganaIndex).click();
-    }
+    // Click the "ひらがなに変換" mode button
+    await page.locator('button[type="button"]').filter({ hasText: 'ひらがなに変換' }).click();
     const input = page.locator('#input');
     await input.fill('アイウエオ');
     const output = page.locator('#output');

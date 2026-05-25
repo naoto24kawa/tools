@@ -38,10 +38,10 @@ test.describe('Hash HMAC', () => {
     const secret = page.locator('input#secret');
     await message.fill('hello');
     await secret.fill('secret');
-    await page.getByRole('button', { name: 'SHA-1' }).click();
+    await page.getByRole('button', { name: 'HMAC-SHA1' }).click();
     await page.getByRole('button', { name: /generate hmac/i }).click();
-    // HMAC-SHA1("hello", "secret") = fbdb1d1b18aa6c08324b7d64b71fb76370690e1d
-    await expect(page.getByText('fbdb1d1b18aa6c08324b7d64b71fb76370690e1d')).toBeVisible();
+    // HMAC-SHA1("hello", "secret") = 5112055c05f944f85755efc5cd8970e194e9f45b
+    await expect(page.getByText('5112055c05f944f85755efc5cd8970e194e9f45b')).toBeVisible();
   });
 
   test('should show copy button after HMAC is generated', async ({ page }) => {

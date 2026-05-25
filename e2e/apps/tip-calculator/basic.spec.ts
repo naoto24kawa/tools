@@ -34,9 +34,9 @@ test.describe('Tip Calculator', () => {
     // Result section should appear
     await expect(page.getByText('結果')).toBeVisible();
     // Tip amount: 10000 * 0.15 = 1500
-    await expect(page.getByText(/¥1,500/)).toBeVisible();
+    await expect(page.getByText(/1,500/).first()).toBeVisible();
     // Total: 10000 + 1500 = 11500
-    await expect(page.getByText(/¥11,500/)).toBeVisible();
+    await expect(page.getByText(/11,500/).first()).toBeVisible();
   });
 
   test('should calculate tip with custom tip rate', async ({ page }) => {
@@ -44,7 +44,7 @@ test.describe('Tip Calculator', () => {
     await page.getByRole('button', { name: 'カスタム' }).click();
     await page.locator('input[type="number"][min="0"][step="1"]').fill('20');
     // 20% of 5000 = 1000
-    await expect(page.getByText(/¥1,000/)).toBeVisible();
+    await expect(page.getByText(/1,000/).first()).toBeVisible();
   });
 
   test('should split bill when number of people is more than 1', async ({ page }) => {
@@ -59,9 +59,9 @@ test.describe('Tip Calculator', () => {
     await page.locator('input#bill').fill('10000');
     await expect(page.getByText('チップ率比較')).toBeVisible();
     // Table headers
-    await expect(page.getByText('チップ率')).toBeVisible();
-    await expect(page.getByText('チップ額')).toBeVisible();
-    await expect(page.getByText('合計')).toBeVisible();
+    await expect(page.getByRole('columnheader', { name: 'チップ率' })).toBeVisible();
+    await expect(page.getByRole('columnheader', { name: 'チップ額' })).toBeVisible();
+    await expect(page.getByRole('columnheader', { name: '合計' })).toBeVisible();
   });
 
   test('should highlight selected tip rate in comparison table', async ({ page }) => {

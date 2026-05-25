@@ -2,8 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test.describe('URL Encoder - Basic Functionality', () => {
   test.beforeEach(async ({ page }) => {
-    // Navigate to the URL Encoder app
-    await page.goto('/');
+    await page.goto('/url-encoder');
   });
 
   test('should load the page successfully', async ({ page }) => {
@@ -19,7 +18,7 @@ test.describe('URL Encoder - Basic Functionality', () => {
 
   test('should display the description', async ({ page }) => {
     // Check if the description is visible
-    const description = page.getByText(/URLのエンコード・デコードを行うツール/i);
+    const description = page.getByText(/Encode or decode URL components/i);
     await expect(description).toBeVisible();
   });
 
@@ -30,19 +29,18 @@ test.describe('URL Encoder - Basic Functionality', () => {
   });
 
   test('should have encode/decode buttons', async ({ page }) => {
-    // Check if encode button exists
-    const encodeButton = page.getByRole('button', { name: /エンコード/i });
+    // Check if encode button exists (English label)
+    const encodeButton = page.getByRole('button', { name: /^Encode/i });
     await expect(encodeButton).toBeVisible();
 
-    // Check if decode button exists
-    const decodeButton = page.getByRole('button', { name: /デコード/i });
+    // Check if decode button exists (English label)
+    const decodeButton = page.getByRole('button', { name: /^Decode/i });
     await expect(decodeButton).toBeVisible();
   });
 
-  test('should have "Tools トップに戻る" link', async ({ page }) => {
-    // Check if the back to tools link exists
-    const backLink = page.getByRole('link', { name: /Tools トップに戻る/i });
-    await expect(backLink).toBeVisible();
-    await expect(backLink).toHaveAttribute('href', '/');
+  test('should have clear button', async ({ page }) => {
+    // App has a Clear button instead of a back link
+    const clearButton = page.getByRole('button', { name: /clear/i });
+    await expect(clearButton).toBeVisible();
   });
 });

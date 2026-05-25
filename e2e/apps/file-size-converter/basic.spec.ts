@@ -22,24 +22,25 @@ test.describe('File Size Converter', () => {
   });
 
   test('should convert 1 MB to 1048576 bytes (IEC)', async ({ page }) => {
-    // Change unit to MB
-    await page.getByText('GB').first().click();
-    await page.getByRole('option', { name: 'MB' }).click();
+    // Change unit to MB - click the Unit combobox (first combobox)
+    await page.getByRole('combobox').first().click();
+    await page.getByRole('option', { name: /^(MiB|MB)$/ }).click();
 
     await page.locator('#size-value').fill('1');
 
-    // 1 MiB = 1,048,576 B
-    await expect(page.getByText(/1,048,576/)).toBeVisible();
+    // 1 MiB = 1048576 B (displayed without comma separators)
+    await expect(page.getByText(/1048576/)).toBeVisible();
   });
 
   test('should have unit selector and standard selector', async ({ page }) => {
-    await expect(page.getByText('Unit')).toBeVisible();
-    await expect(page.getByText('Standard')).toBeVisible();
+    await expect(page.getByText('Unit').first()).toBeVisible();
+    await expect(page.getByText('Standard', { exact: true })).toBeVisible();
   });
 
   test('should switch between SI and IEC standards', async ({ page }) => {
-    // IEC is default, switch to SI
-    await page.getByText('IEC (1024)').click();
+    // IEC is default, switch to SI - click the Standard combobox trigger
+    const standardCombobox = page.getByRole('combobox').last();
+    await standardCombobox.click();
     await page.getByRole('option', { name: 'SI (1000)' }).click();
 
     await expect(page.getByText(/SI: 1 KB = 1,000 B/)).toBeVisible();
@@ -56,9 +57,10 @@ test.describe('File Size Converter', () => {
   });
 
   test('should have B, KB, MB, GB, TB, PB unit options', async ({ page }) => {
-    await page.getByText('GB').first().click();
-    await expect(page.getByRole('option', { name: 'B' })).toBeVisible();
-    await expect(page.getByRole('option', { name: 'MB' })).toBeVisible();
-    await expect(page.getByRole('option', { name: 'TB' })).toBeVisible();
+    // Click the Unit combobox (first combobox on the page)
+    await page.getByRole('combobox').first().click();
+    await expect(page.getByRole('option', { name: 'B', exact: true })).toBeVisible();
+    await expect(page.getByRole('option', { name: /^(MiB|MB)$/ })).toBeVisible();
+    await expect(page.getByRole('option', { name: /^(TiB|TB)$/ })).toBeVisible();
   });
 });

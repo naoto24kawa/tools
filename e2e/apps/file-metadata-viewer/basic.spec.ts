@@ -24,9 +24,9 @@ test.describe('File Metadata Viewer', () => {
       buffer: Buffer.from('Hello, World!'),
     });
 
-    await expect(page.getByText('File Metadata')).toBeVisible();
+    await expect(page.getByRole('button', { name: /clear/i })).toBeVisible();
     await expect(page.getByText('hello.txt')).toBeVisible();
-    await expect(page.getByText(/\.txt/)).toBeVisible();
+    await expect(page.getByText('.txt', { exact: true })).toBeVisible();
     await expect(page.getByText(/text\/plain/)).toBeVisible();
   });
 
@@ -60,9 +60,10 @@ test.describe('File Metadata Viewer', () => {
       buffer: Buffer.from('test'),
     });
 
-    await expect(page.getByText('File Metadata')).toBeVisible();
+    await expect(page.getByRole('button', { name: /clear/i })).toBeVisible();
     await page.getByRole('button', { name: /clear/i }).click();
-    await expect(page.getByText('File Metadata')).not.toBeVisible();
+    // After clearing, the metadata card (with Clear button) should be gone
+    await expect(page.getByRole('button', { name: /clear/i })).not.toBeVisible();
   });
 
   test('should show last modified date after upload', async ({ page }) => {

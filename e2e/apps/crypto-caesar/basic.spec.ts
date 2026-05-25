@@ -48,7 +48,7 @@ test.describe('Caesar Cipher', () => {
     const input = page.locator('textarea#input');
     await input.fill('KHOOR');
     // Should show 26 shift results
-    await expect(page.getByText(/shift \d+:/i)).toBeVisible();
+    await expect(page.getByText(/shift \d+:/i).first()).toBeVisible();
   });
 
   test('should clear input with Clear button', async ({ page }) => {

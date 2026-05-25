@@ -12,7 +12,7 @@ test.describe('Unicode Escape Converter', () => {
   test('should escape ASCII text to Unicode escape sequences', async ({ page }) => {
     const input = page.getByRole('textbox').first();
     await input.fill('Hi');
-    await page.getByRole('button', { name: /escape/i }).click();
+    await page.getByRole('button', { name: 'Escape', exact: true }).click();
     const output = page.getByRole('textbox').nth(1);
     // 'H' = H, 'i' = i
     await expect(output).toHaveValue('\\u0048\\u0069');
@@ -29,7 +29,7 @@ test.describe('Unicode Escape Converter', () => {
   test('should escape Japanese characters to Unicode sequences', async ({ page }) => {
     const input = page.getByRole('textbox').first();
     await input.fill('あ');
-    await page.getByRole('button', { name: /escape/i }).click();
+    await page.getByRole('button', { name: 'Escape', exact: true }).click();
     const output = page.getByRole('textbox').nth(1);
     // 'あ' = U+3042
     await expect(output).toHaveValue('\\u3042');
@@ -47,14 +47,14 @@ test.describe('Unicode Escape Converter', () => {
     const original = 'Hello 世界';
     const input = page.getByRole('textbox').first();
     await input.fill(original);
-    await page.getByRole('button', { name: /escape/i }).click();
+    await page.getByRole('button', { name: 'Escape', exact: true }).click();
 
     const output = page.getByRole('textbox').nth(1);
     const escaped = await output.inputValue();
     expect(escaped).not.toBe(original);
 
     await input.fill(escaped);
-    await page.getByRole('button', { name: /unescape/i }).click();
+    await page.getByRole('button', { name: 'Unescape', exact: true }).click();
     await expect(output).toHaveValue(original);
   });
 
@@ -69,7 +69,7 @@ test.describe('Unicode Escape Converter', () => {
   test('should clear input and output when Clear is clicked', async ({ page }) => {
     const input = page.getByRole('textbox').first();
     await input.fill('Hi');
-    await page.getByRole('button', { name: /escape/i }).click();
+    await page.getByRole('button', { name: 'Escape', exact: true }).click();
     await page.getByRole('button', { name: /clear/i }).click();
     await expect(input).toHaveValue('');
     const output = page.getByRole('textbox').nth(1);
@@ -77,7 +77,7 @@ test.describe('Unicode Escape Converter', () => {
   });
 
   test('should disable Escape and Unescape buttons when input is empty', async ({ page }) => {
-    await expect(page.getByRole('button', { name: /escape/i })).toBeDisabled();
-    await expect(page.getByRole('button', { name: /unescape/i })).toBeDisabled();
+    await expect(page.getByRole('button', { name: 'Escape', exact: true })).toBeDisabled();
+    await expect(page.getByRole('button', { name: 'Unescape', exact: true })).toBeDisabled();
   });
 });

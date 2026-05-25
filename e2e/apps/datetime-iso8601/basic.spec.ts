@@ -19,7 +19,8 @@ test.describe('ISO 8601 Converter', () => {
     await input.fill('1970-01-01T00:00:00.000Z');
     // Should show variant labels
     await expect(page.getByText('UTC')).toBeVisible();
-    await expect(page.getByText(/1970/)).toBeVisible();
+    // "1970" appears in multiple code elements and the input; use first()
+    await expect(page.getByText(/1970/).first()).toBeVisible();
   });
 
   test('should show error message for invalid date string', async ({ page }) => {
@@ -32,7 +33,8 @@ test.describe('ISO 8601 Converter', () => {
   test('should update to current time when Now button is clicked', async ({ page }) => {
     const currentYear = new Date().getFullYear().toString();
     await page.getByRole('button', { name: /Now/i }).click();
-    await expect(page.getByText(new RegExp(currentYear))).toBeVisible();
+    // currentYear appears in multiple code elements and input; use first()
+    await expect(page.getByText(new RegExp(currentYear)).first()).toBeVisible();
   });
 
   test('should show multiple format variants for a valid date', async ({ page }) => {

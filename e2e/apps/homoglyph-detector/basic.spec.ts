@@ -20,15 +20,15 @@ test.describe('Homoglyph Detector', () => {
 
   test('should detect safe text with no homoglyphs', async ({ page }) => {
     await page.getByPlaceholder(/enter text to analyze/i).fill('Hello World');
-    // "No suspicious characters found" or similar safe message
-    await expect(page.getByText(/safe|no suspicious/i)).toBeVisible();
+    // "No confusable characters detected." is the safe message
+    await expect(page.getByText(/no confusable/i)).toBeVisible();
   });
 
   test('should detect homoglyphs in Cyrillic lookalike text', async ({ page }) => {
     // Cyrillic 'а' (U+0430) looks like Latin 'a'
     await page.getByPlaceholder(/enter text to analyze/i).fill('аpple');
     await expect(page.getByText(/detected issues/i)).toBeVisible();
-    await expect(page.getByText(/Cyrillic/i)).toBeVisible();
+    await expect(page.getByRole('cell', { name: 'Cyrillic' })).toBeVisible();
   });
 
   test('should show detected issues table with columns', async ({ page }) => {

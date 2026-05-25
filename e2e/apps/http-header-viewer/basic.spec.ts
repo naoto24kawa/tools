@@ -18,7 +18,8 @@ test.describe('HTTP Header Viewer', () => {
   });
 
   test('should display headers list on load', async ({ page }) => {
-    const countText = page.locator('p.text-sm.text-muted-foreground').filter({ hasText: /header.*found/i });
+    // CardDescription renders as div.text-sm.text-muted-foreground
+    const countText = page.locator('div.text-sm.text-muted-foreground').filter({ hasText: /header.*found/i });
     await expect(countText).toBeVisible();
     const text = await countText.textContent();
     const match = text?.match(/(\d+)/);
@@ -27,7 +28,8 @@ test.describe('HTTP Header Viewer', () => {
 
   test('should filter headers by search query', async ({ page }) => {
     await page.getByPlaceholder(/header name or keyword/i).fill('Content-Type');
-    await expect(page.getByText('Content-Type')).toBeVisible();
+    // Use code element to match the header name exactly
+    await expect(page.locator('code').filter({ hasText: 'Content-Type' }).first()).toBeVisible();
   });
 
   test('should show no results message for unknown header search', async ({ page }) => {
@@ -36,24 +38,26 @@ test.describe('HTTP Header Viewer', () => {
   });
 
   test('should expand header detail when clicked', async ({ page }) => {
-    // Click the first header entry to expand it
-    const firstHeader = page.locator('button[class*="w-full"]').first();
+    // Click the first header entry to expand it (buttons inside border rounded-md containers)
+    const firstHeader = page.locator('button[class*="px-4 py-3"]').first();
     await firstHeader.click();
-    await expect(page.getByText(/example/i).first()).toBeVisible();
+    await expect(page.getByText('Example').first()).toBeVisible();
   });
 
   test('should collapse header detail on second click', async ({ page }) => {
-    const firstHeader = page.locator('button[class*="w-full"]').first();
+    const firstHeader = page.locator('button[class*="px-4 py-3"]').first();
     await firstHeader.click();
     await firstHeader.click();
     // After collapse, the detail area (border-t section) should be hidden
-    await expect(page.locator('.border-t.bg-muted\\/10')).not.toBeVisible();
+    await expect(page.locator('.border-t.bg-muted\\/10').first()).not.toBeVisible();
   });
 
   test('should filter by Response category', async ({ page }) => {
     await page.getByRole('combobox').click();
     await page.getByRole('option', { name: /^response$/i }).click();
-    const countText = page.locator('p.text-sm.text-muted-foreground').filter({ hasText: /header.*found/i });
+    // CardDescription renders as div.text-sm.text-muted-foreground
+    const countText = page.locator('div.text-sm.text-muted-foreground').filter({ hasText: /header.*found/i });
+    await expect(countText).toBeVisible();
     const text = await countText.textContent();
     const match = text?.match(/(\d+)/);
     expect(Number(match?.[1])).toBeGreaterThan(0);

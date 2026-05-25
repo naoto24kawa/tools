@@ -31,14 +31,14 @@ test.describe('JSON to Table', () => {
   test('should show row count in table heading', async ({ page }) => {
     const input = page.locator('#json-input');
     await input.fill('[{"a":1},{"a":2},{"a":3}]');
-    await expect(page.getByRole('heading', { name: /Table \(3 rows\)/ })).toBeVisible();
+    await expect(page.getByText(/Table \(3 rows\)/)).toBeVisible();
   });
 
   test('should handle single-row JSON array', async ({ page }) => {
     const input = page.locator('#json-input');
     await input.fill('[{"id": 1, "label": "test"}]');
     await expect(page.getByRole('table')).toBeVisible();
-    await expect(page.getByRole('heading', { name: /Table \(1 rows?\)/ })).toBeVisible();
+    await expect(page.getByText(/Table \(1 rows?\)/)).toBeVisible();
   });
 
   test('should show error for non-array JSON', async ({ page }) => {

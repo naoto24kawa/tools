@@ -33,9 +33,9 @@ test.describe('Fibonacci Generator', () => {
     const input = page.locator('#seq-count');
     await input.fill('6');
     await page.getByRole('button', { name: 'Generate' }).click();
-    // Verify some known values are present
-    await expect(page.locator('span.font-mono', { hasText: /^0$/ }).first()).toBeVisible();
-    await expect(page.locator('span.font-mono', { hasText: /^5$/ }).first()).toBeVisible();
+    // Verify some known values are present (F(0)=0, F(5)=5)
+    await expect(page.locator('.rounded.bg-muted').filter({ hasText: 'F(0)' })).toBeVisible();
+    await expect(page.locator('.rounded.bg-muted').filter({ hasText: 'F(5)' })).toBeVisible();
   });
 
   test('should show error for count > 1000', async ({ page }) => {
@@ -67,23 +67,23 @@ test.describe('Fibonacci Generator', () => {
   });
 
   test('should check if number is fibonacci', async ({ page }) => {
-    await page.getByRole('button', { name: 'Check' }).click();
+    await page.getByRole('button', { name: 'Check' }).first().click();
     await page.locator('#check-input').fill('144');
-    await page.getByRole('button', { name: 'Check' }).click();
+    await page.getByRole('button', { name: 'Check' }).nth(1).click();
     await expect(page.getByText('a Fibonacci number')).toBeVisible();
   });
 
   test('should correctly identify non-fibonacci number', async ({ page }) => {
-    await page.getByRole('button', { name: 'Check' }).click();
+    await page.getByRole('button', { name: 'Check' }).first().click();
     await page.locator('#check-input').fill('100');
-    await page.getByRole('button', { name: 'Check' }).click();
+    await page.getByRole('button', { name: 'Check' }).nth(1).click();
     await expect(page.getByText('NOT a Fibonacci number')).toBeVisible();
   });
 
   test('should show index for fibonacci number in check tab', async ({ page }) => {
-    await page.getByRole('button', { name: 'Check' }).click();
+    await page.getByRole('button', { name: 'Check' }).first().click();
     await page.locator('#check-input').fill('55');
-    await page.getByRole('button', { name: 'Check' }).click();
+    await page.getByRole('button', { name: 'Check' }).nth(1).click();
     // 55 is F(10)
     await expect(page.getByText(/F\(10\)/)).toBeVisible();
   });

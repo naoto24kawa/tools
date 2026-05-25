@@ -30,7 +30,7 @@ test.describe('SVG Optimizer', () => {
     await page.getByRole('button', { name: /optimize svg/i }).click();
     await expect(page.getByText('Size Comparison')).toBeVisible();
     await expect(page.getByText('Original')).toBeVisible();
-    await expect(page.getByText('Optimized')).toBeVisible();
+    await expect(page.getByText('Optimized', { exact: true }).first()).toBeVisible();
   });
 
   test('should show savings percentage after optimization', async ({ page }) => {

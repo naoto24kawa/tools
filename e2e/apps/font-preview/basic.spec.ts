@@ -11,12 +11,12 @@ test.describe('Font Preview', () => {
   });
 
   test('should show preview area with default text', async ({ page }) => {
-    await expect(page.getByText('Preview')).toBeVisible();
-    await expect(page.getByText(/The quick brown fox/)).toBeVisible();
+    await expect(page.getByText('Preview').first()).toBeVisible();
+    await expect(page.getByText(/The quick brown fox/).first()).toBeVisible();
   });
 
   test('should show custom text area', async ({ page }) => {
-    await expect(page.getByText('Custom Text')).toBeVisible();
+    await expect(page.getByText('Custom Text').first()).toBeVisible();
     await expect(page.getByPlaceholder(/enter custom text/i)).toBeVisible();
   });
 
@@ -54,6 +54,6 @@ test.describe('Font Preview', () => {
   });
 
   test('should show font weight selector', async ({ page }) => {
-    await expect(page.getByText('Weight')).toBeVisible();
+    await expect(page.getByText('Weight').first()).toBeVisible();
   });
 });

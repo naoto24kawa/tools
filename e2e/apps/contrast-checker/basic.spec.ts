@@ -12,7 +12,7 @@ test.describe('Contrast Checker', () => {
   test('should show contrast ratio for default colors', async ({ page }) => {
     // Default state: fgHex = #333333, bgHex = #ffffff
     // Ratio should be visible (computed from defaults)
-    await expect(page.getByText(/:1/)).toBeVisible();
+    await expect(page.getByText(/:1/).first()).toBeVisible();
   });
 
   test('should show WCAG Pass for black on white (21:1)', async ({ page }) => {
@@ -53,7 +53,7 @@ test.describe('Contrast Checker', () => {
   });
 
   test('should display WCAG AA and AAA sections', async ({ page }) => {
-    await expect(page.getByText('WCAG AA')).toBeVisible();
-    await expect(page.getByText('WCAG AAA')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'WCAG AA', exact: true })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'WCAG AAA', exact: true })).toBeVisible();
   });
 });

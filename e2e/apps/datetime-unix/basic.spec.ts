@@ -20,8 +20,8 @@ test.describe('Unix Timestamp Converter', () => {
   test('should convert unix timestamp 0 to 1970', async ({ page }) => {
     const input = page.locator('#timestamp');
     await input.fill('0');
-    // Unix epoch 0 = 1970-01-01
-    await expect(page.getByText(/1970/)).toBeVisible();
+    // Unix epoch 0 = 1970-01-01; appears in multiple code elements, use first()
+    await expect(page.getByText(/1970/).first()).toBeVisible();
   });
 
   test('should convert unix timestamp 1000000000 and show ISO 8601', async ({ page }) => {
@@ -29,17 +29,20 @@ test.describe('Unix Timestamp Converter', () => {
     await input.fill('1000000000');
     // Should show ISO 8601 label and its value
     await expect(page.getByText('ISO 8601')).toBeVisible();
-    await expect(page.getByText(/2001/)).toBeVisible();
+    // "2001" appears in multiple code elements, use first()
+    await expect(page.getByText(/2001/).first()).toBeVisible();
   });
 
   test('should update timestamp when Now button is clicked', async ({ page }) => {
     const input = page.locator('#timestamp');
     // Set to 0 first
     await input.fill('0');
-    await expect(page.getByText(/1970/)).toBeVisible();
+    await expect(page.getByText(/1970/).first()).toBeVisible();
     // Click Now to restore current timestamp
     await page.getByRole('button', { name: /Now/i }).click();
-    await expect(page.getByText(/1970/)).not.toBeVisible();
+    // After clicking Now, the dates show current year, not 1970
+    const count = await page.getByText(/1970/).count();
+    expect(count).toBe(0);
   });
 
   test('should show formatted date outputs when valid timestamp entered', async ({ page }) => {

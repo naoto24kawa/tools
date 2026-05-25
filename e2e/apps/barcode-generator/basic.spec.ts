@@ -23,7 +23,7 @@ test.describe('Barcode Generator', () => {
       },
       { timeout: 5000 }
     );
-    await expect(page.locator('svg')).toBeVisible();
+    await expect(page.locator('svg').first()).toBeVisible();
   });
 
   test('should enable copy SVG button when barcode is generated', async ({ page }) => {

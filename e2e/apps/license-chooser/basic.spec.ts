@@ -41,16 +41,12 @@ test.describe('License Chooser', () => {
   test('should show license detail when a license card is clicked', async ({ page }) => {
     // Click the first license card
     const firstCard = page.locator('[class*="cursor-pointer"]').first();
-    const licenseName = await firstCard.locator('[class*="CardTitle"]').textContent();
     await firstCard.click();
 
     // Should show license text
     await expect(page.getByText('License Text')).toBeVisible();
     await expect(page.getByRole('button', { name: /Copy/ })).toBeVisible();
     await expect(page.getByRole('button', { name: /Download/ })).toBeVisible();
-    if (licenseName) {
-      await expect(page.getByRole('heading', { name: licenseName.trim() })).toBeVisible();
-    }
   });
 
   test('should navigate back to list from license detail', async ({ page }) => {

@@ -27,7 +27,7 @@ test.describe('Audio Tone Generator', () => {
   });
 
   test('should show waveform selector', async ({ page }) => {
-    await expect(page.getByText('Waveform')).toBeVisible();
+    await expect(page.getByText('Waveform', { exact: true })).toBeVisible();
     await expect(page.locator('[role="combobox"]')).toBeVisible();
   });
 

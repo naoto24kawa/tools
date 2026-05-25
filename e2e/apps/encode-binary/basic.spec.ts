@@ -10,9 +10,9 @@ test.describe('Binary / Hex / Decimal Converter', () => {
   });
 
   test('should show format tabs: Binary, Hex, Decimal', async ({ page }) => {
-    await expect(page.getByRole('button', { name: /Binary/i })).toBeVisible();
-    await expect(page.getByRole('button', { name: /Hex/i })).toBeVisible();
-    await expect(page.getByRole('button', { name: /Decimal/i })).toBeVisible();
+    await expect(page.getByRole('button', { name: /Binary \(2進\)/i })).toBeVisible();
+    await expect(page.getByRole('button', { name: /Hex \(16進\)/i })).toBeVisible();
+    await expect(page.getByRole('button', { name: /Decimal \(10進\)/i })).toBeVisible();
   });
 
   // Binary format tests

@@ -37,9 +37,9 @@ test.describe('HTML Minifier', () => {
     const input = page.locator('#input');
     await input.fill('<div>\n  <p>hello world</p>\n</div>');
     await page.getByRole('button', { name: /minify/i }).click();
-    await expect(page.getByText(/original/i)).toBeVisible();
-    await expect(page.getByText(/minified/i)).toBeVisible();
-    await expect(page.getByText(/saved/i)).toBeVisible();
+    await expect(page.getByText(/original:/i)).toBeVisible();
+    await expect(page.getByText(/minified:/i)).toBeVisible();
+    await expect(page.getByText(/saved:/i)).toBeVisible();
   });
 
   test('should clear input and output on clear button click', async ({ page }) => {

@@ -10,8 +10,9 @@ test.describe('XML to JSON Converter', () => {
   });
 
   test('should show options card', async ({ page }) => {
-    await expect(page.getByText('Options')).toBeVisible();
-    await expect(page.getByText('Include Attributes')).toBeVisible();
+    // "Options" is a shadcn CardTitle (renders as div.text-2xl, not a heading element)
+    await expect(page.locator('div.text-2xl', { hasText: 'Options' })).toBeVisible();
+    await expect(page.getByText('Include Attributes', { exact: true })).toBeVisible();
   });
 
   test('should show XML input and JSON output areas', async ({ page }) => {
@@ -54,7 +55,8 @@ test.describe('XML to JSON Converter', () => {
   test('should show error when XML is invalid', async ({ page }) => {
     await page.locator('textarea#input').fill('<unclosed>');
     await page.getByRole('button', { name: /convert/i }).click();
-    await expect(page.getByText(/conversion failed/i)).toBeVisible({ timeout: 3000 });
+    // Toast title exact text to avoid strict mode with notification aria element
+    await expect(page.getByText('Conversion failed', { exact: true })).toBeVisible({ timeout: 3000 });
   });
 
   test('should have convert button disabled when input is empty', async ({ page }) => {

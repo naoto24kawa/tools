@@ -12,8 +12,8 @@ test.describe('Typing Speed Test', () => {
   test('should show WPM, CPM, Accuracy and Time cards', async ({ page }) => {
     await expect(page.getByText(/WPM/i)).toBeVisible();
     await expect(page.getByText(/CPM/i)).toBeVisible();
-    await expect(page.getByText(/Accuracy/i)).toBeVisible();
-    await expect(page.getByText(/Time/i)).toBeVisible();
+    await expect(page.getByText('Accuracy', { exact: true })).toBeVisible();
+    await expect(page.getByText('Time', { exact: true })).toBeVisible();
   });
 
   test('should start timer when typing begins', async ({ page }) => {

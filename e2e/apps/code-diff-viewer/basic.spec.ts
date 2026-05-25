@@ -54,7 +54,7 @@ test.describe('Diff Viewer', () => {
 
   test('should show diff panel when only text A has content', async ({ page }) => {
     await page.getByLabel('Text A - original text').fill('only in A');
-    await expect(page.getByRole('heading', { name: /^Diff$/i })).toBeVisible();
+    await expect(page.getByText('Diff').first()).toBeVisible();
   });
 
   test('should show unchanged lines when texts are identical', async ({ page }) => {

@@ -15,17 +15,17 @@ test.describe('Tailwind to CSS', () => {
 
   test('should convert flex to display:flex', async ({ page }) => {
     await page.getByLabel('Tailwind classes input').fill('flex');
-    await expect(page.getByText(/display.*flex/i)).toBeVisible();
+    await expect(page.getByText(/display.*flex/i).first()).toBeVisible();
   });
 
   test('should convert items-center to align-items:center', async ({ page }) => {
     await page.getByLabel('Tailwind classes input').fill('items-center');
-    await expect(page.getByText(/align-items.*center/i)).toBeVisible();
+    await expect(page.getByText(/align-items.*center/i).first()).toBeVisible();
   });
 
   test('should convert justify-between to justify-content:space-between', async ({ page }) => {
     await page.getByLabel('Tailwind classes input').fill('justify-between');
-    await expect(page.getByText(/justify-content.*space-between/i)).toBeVisible();
+    await expect(page.getByText(/justify-content.*space-between/i).first()).toBeVisible();
   });
 
   test('should convert multiple classes and show Class Mapping', async ({ page }) => {
@@ -51,7 +51,7 @@ test.describe('Tailwind to CSS', () => {
   test('should mark unknown class with X indicator', async ({ page }) => {
     await page.getByLabel('Tailwind classes input').fill('not-a-real-class');
     // Unknown class should show in list
-    await expect(page.getByText('not-a-real-class')).toBeVisible();
+    await expect(page.getByText('not-a-real-class').first()).toBeVisible();
     // Should show 0 of 1 converted
     await expect(page.getByText(/0 of 1 classes converted/i)).toBeVisible();
   });
@@ -64,6 +64,6 @@ test.describe('Tailwind to CSS', () => {
 
   test('should convert p-4 to padding', async ({ page }) => {
     await page.getByLabel('Tailwind classes input').fill('p-4');
-    await expect(page.getByText(/padding/)).toBeVisible();
+    await expect(page.getByText(/padding/).first()).toBeVisible();
   });
 });

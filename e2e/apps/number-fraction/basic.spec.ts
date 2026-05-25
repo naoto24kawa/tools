@@ -41,8 +41,8 @@ test.describe('Number Fraction Calculator', () => {
     await page.getByLabel('分数1の分母').fill('2');
     await page.getByLabel('分数2の分子').fill('1');
     await page.getByLabel('分数2の分母').fill('3');
-    // 1/2 + 1/3 = 5/6
-    await expect(page.getByText(/加算/)).toBeVisible();
+    // 1/2 + 1/3 = 5/6; use first() since 加算 also appears in the description text
+    await expect(page.getByText(/加算/).first()).toBeVisible();
     await expect(page.getByText(/5\/6/)).toBeVisible();
   });
 
@@ -51,8 +51,8 @@ test.describe('Number Fraction Calculator', () => {
     await page.getByLabel('分数1の分母').fill('2');
     await page.getByLabel('分数2の分子').fill('1');
     await page.getByLabel('分数2の分母').fill('3');
-    // 1/2 * 1/3 = 1/6
-    await expect(page.getByText(/乗算/)).toBeVisible();
+    // 1/2 * 1/3 = 1/6; use first() since 乗算 also appears in the description text
+    await expect(page.getByText(/乗算/).first()).toBeVisible();
     await expect(page.getByText(/1\/6/)).toBeVisible();
   });
 });

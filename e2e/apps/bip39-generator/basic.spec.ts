@@ -6,7 +6,7 @@ test.describe('BIP39 Mnemonic Generator', () => {
   });
 
   test('should load page with title', async ({ page }) => {
-    await expect(page.getByText('BIP39 Mnemonic Generator')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'BIP39 Mnemonic Generator' })).toBeVisible();
   });
 
   test('should show word count buttons (12, 15, 18, 21, 24)', async ({ page }) => {

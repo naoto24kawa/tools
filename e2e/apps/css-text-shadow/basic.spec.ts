@@ -10,12 +10,12 @@ test.describe('CSS Text Shadow Generator', () => {
   });
 
   test('should show Preview section with default preview text', async ({ page }) => {
-    await expect(page.getByText('Preview')).toBeVisible();
+    await expect(page.getByText('Preview').first()).toBeVisible();
     await expect(page.getByText('Text Shadow Preview')).toBeVisible();
   });
 
   test('should show Shadow Layers section with Layer 1', async ({ page }) => {
-    await expect(page.getByText('Shadow Layers')).toBeVisible();
+    await expect(page.getByText('Shadow Layers', { exact: true })).toBeVisible();
     await expect(page.getByText('Layer 1')).toBeVisible();
   });
 

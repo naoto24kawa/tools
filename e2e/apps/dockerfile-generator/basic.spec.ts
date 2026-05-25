@@ -67,6 +67,7 @@ test.describe('Dockerfile Generator', () => {
   test('should support custom CMD', async ({ page }) => {
     await page.locator('#cmd').fill('npm start');
     const preview = page.locator('pre');
-    await expect(preview).toContainText('npm start');
+    // CMD is displayed as JSON array: CMD ["npm","start"]
+    await expect(preview).toContainText('"npm"');
   });
 });

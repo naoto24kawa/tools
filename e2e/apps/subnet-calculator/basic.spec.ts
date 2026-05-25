@@ -23,7 +23,7 @@ test.describe('IPv4 Subnet Calculator', () => {
     await page.locator('input#ip-address').fill('10.0.0.0');
     await page.locator('input#cidr-input').fill('8');
     await page.getByRole('button', { name: /Calculate/i }).click();
-    await expect(page.getByText('10.0.0.0')).toBeVisible();
+    await expect(page.getByRole('cell', { name: '10.0.0.0', exact: true })).toBeVisible();
     await expect(page.getByText('10.255.255.255')).toBeVisible();
   });
 
@@ -31,7 +31,7 @@ test.describe('IPv4 Subnet Calculator', () => {
     await page.locator('input#ip-address').fill('192.168.0.0');
     await page.locator('input#cidr-input').fill('24');
     await page.getByRole('button', { name: /Calculate/i }).click();
-    await expect(page.getByText('254')).toBeVisible();
+    await expect(page.getByRole('cell', { name: '254', exact: true })).toBeVisible();
   });
 
   test('should identify private address', async ({ page }) => {

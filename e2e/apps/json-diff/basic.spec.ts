@@ -14,8 +14,8 @@ test.describe('JSON Diff', () => {
   });
 
   test('should show two input panels', async ({ page }) => {
-    await expect(page.getByRole('heading', { name: 'JSON A' })).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'JSON B' })).toBeVisible();
+    await expect(page.locator('#json-a')).toBeVisible();
+    await expect(page.locator('#json-b')).toBeVisible();
   });
 
   test('should show no differences for identical JSON', async ({ page }) => {
@@ -32,8 +32,7 @@ test.describe('JSON Diff', () => {
     await jsonA.fill('{"name": "Alice"}');
     await jsonB.fill('{"name": "Bob"}');
     // Should show the changed path
-    await expect(page.getByText(/name/)).toBeVisible();
-    await expect(page.getByText(/~/)).toBeVisible();
+    await expect(page.getByText('~ name')).toBeVisible();
   });
 
   test('should detect added key', async ({ page }) => {

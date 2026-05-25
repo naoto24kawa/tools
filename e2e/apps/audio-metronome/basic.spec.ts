@@ -11,33 +11,34 @@ test.describe('Audio Metronome', () => {
   });
 
   test('should show BPM display', async ({ page }) => {
-    await expect(page.locator('text=BPM')).toBeVisible();
+    await expect(page.locator('label[for="bpm"]')).toBeVisible();
   });
 
   test('should show default BPM value', async ({ page }) => {
     // DEFAULT_BPM is likely 120
-    const bpmDisplay = page.locator('.text-6xl');
+    const bpmDisplay = page.locator('span.text-2xl.text-muted-foreground');
     await expect(bpmDisplay).toBeVisible();
-    const bpmValue = await bpmDisplay.textContent();
+    const bpmLabel = page.getByRole('slider', { name: 'BPM' });
+    const bpmValue = await bpmLabel.inputValue();
     const bpm = parseInt(bpmValue ?? '0');
     expect(bpm).toBeGreaterThan(0);
   });
 
   test('should show BPM slider', async ({ page }) => {
-    await expect(page.locator('#bpm[type="range"]')).toBeVisible();
+    await expect(page.getByRole('slider', { name: 'BPM' })).toBeVisible();
   });
 
   test('should show BPM number input', async ({ page }) => {
-    await expect(page.locator('input[type="number"]').first()).toBeVisible();
+    await expect(page.getByRole('spinbutton').first()).toBeVisible();
   });
 
   test('should show BPM preset buttons', async ({ page }) => {
-    await expect(page.getByRole('button', { name: '120' })).toBeVisible();
-    await expect(page.getByRole('button', { name: '60' })).toBeVisible();
+    await expect(page.getByRole('button', { name: '120', exact: true })).toBeVisible();
+    await expect(page.getByRole('button', { name: '60', exact: true })).toBeVisible();
   });
 
   test('should show time signature selector', async ({ page }) => {
-    await expect(page.getByText('Time Signature')).toBeVisible();
+    await expect(page.locator('label').filter({ hasText: 'Time Signature' })).toBeVisible();
   });
 
   test('should show beat indicator circles', async ({ page }) => {
@@ -52,16 +53,16 @@ test.describe('Audio Metronome', () => {
   });
 
   test('should change BPM when preset button is clicked', async ({ page }) => {
-    await page.getByRole('button', { name: '80' }).click();
-    const bpmDisplay = page.locator('.text-6xl');
-    await expect(bpmDisplay).toHaveText('80');
+    await page.getByRole('button', { name: '80', exact: true }).click();
+    const bpmSlider = page.getByRole('slider', { name: 'BPM' });
+    await expect(bpmSlider).toHaveValue('80');
   });
 
   test('should update BPM via number input', async ({ page }) => {
-    const bpmInput = page.locator('input[type="number"]').first();
+    const bpmInput = page.getByRole('spinbutton').first();
     await bpmInput.fill('100');
     await bpmInput.press('Enter');
-    await expect(page.locator('.text-6xl')).toHaveText('100');
+    await expect(page.getByRole('slider', { name: 'BPM' })).toHaveValue('100');
   });
 
   test('should change time signature', async ({ page }) => {

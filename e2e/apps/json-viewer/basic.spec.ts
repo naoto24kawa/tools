@@ -14,21 +14,21 @@ test.describe('JSON Viewer', () => {
   });
 
   test('should show Tree View panel', async ({ page }) => {
-    await expect(page.getByRole('heading', { name: 'Tree View' })).toBeVisible();
+    await expect(page.getByText('Tree View')).toBeVisible();
   });
 
   test('should render tree for valid JSON object', async ({ page }) => {
     const input = page.locator('#json-input');
     await input.fill('{"name": "Alice", "age": 30}');
     // The tree renders keys as text in the tree view
-    await expect(page.getByText('name')).toBeVisible();
-    await expect(page.getByText('age')).toBeVisible();
+    await expect(page.getByText('name:')).toBeVisible();
+    await expect(page.getByText('age:')).toBeVisible();
   });
 
   test('should render tree for nested JSON', async ({ page }) => {
     const input = page.locator('#json-input');
     await input.fill('{"user": {"id": 1, "role": "admin"}}');
-    await expect(page.getByText('user')).toBeVisible();
+    await expect(page.getByRole('button', { name: /collapse user/i })).toBeVisible();
   });
 
   test('should show expand/collapse toggle buttons for objects', async ({ page }) => {
@@ -42,18 +42,23 @@ test.describe('JSON Viewer', () => {
     const input = page.locator('#json-input');
     await input.fill('{"data": {"x": 1, "y": 2}}');
     const collapseBtn = page.getByRole('button', { name: /collapse data/i });
+    await expect(collapseBtn).toBeVisible();
     await collapseBtn.click();
-    await expect(collapseBtn).toHaveAttribute('aria-expanded', 'false');
+    // After collapsing, button label changes to "Expand data"
+    await expect(page.getByRole('button', { name: /expand data/i })).toBeVisible();
   });
 
   test('should expand a collapsed node', async ({ page }) => {
     const input = page.locator('#json-input');
     await input.fill('{"data": {"x": 1}}');
-    const btn = page.getByRole('button', { name: /collapse data/i });
-    await btn.click();
-    await expect(btn).toHaveAttribute('aria-expanded', 'false');
-    await btn.click();
-    await expect(btn).toHaveAttribute('aria-expanded', 'true');
+    const collapseBtn = page.getByRole('button', { name: /collapse data/i });
+    await collapseBtn.click();
+    // After collapsing, button label changes to "Expand data"
+    const expandBtn = page.getByRole('button', { name: /expand data/i });
+    await expect(expandBtn).toBeVisible();
+    await expandBtn.click();
+    // After expanding, button label changes back to "Collapse data"
+    await expect(page.getByRole('button', { name: /collapse data/i })).toBeVisible();
   });
 
   test('should show error for invalid JSON', async ({ page }) => {

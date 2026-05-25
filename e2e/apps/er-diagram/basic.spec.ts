@@ -17,8 +17,8 @@ test.describe('ER Diagram', () => {
   });
 
   test('should show Table Definitions and Diagram sections', async ({ page }) => {
-    await expect(page.getByText('Table Definitions')).toBeVisible();
-    await expect(page.getByText('Diagram')).toBeVisible();
+    await expect(page.getByText('Table Definitions', { exact: true })).toBeVisible();
+    await expect(page.getByText('Diagram', { exact: true })).toBeVisible();
   });
 
   test('should generate SVG diagram from sample data', async ({ page }) => {
@@ -48,7 +48,7 @@ test.describe('ER Diagram', () => {
   });
 
   test('should show SVG download button', async ({ page }) => {
-    await expect(page.getByRole('button', { name: 'SVG' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'SVG', exact: true })).toBeVisible();
   });
 
   test('should show PNG download button', async ({ page }) => {

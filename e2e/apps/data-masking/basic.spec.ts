@@ -57,13 +57,14 @@ test.describe('Data Masking Tool', () => {
   test('should show Custom Rule panel', async ({ page }) => {
     await expect(page.getByText('Custom Rule')).toBeVisible();
     await expect(page.getByPlaceholder(/e\.g\. SSN/i)).toBeVisible();
-    await expect(page.getByPlaceholder(/regex pattern/i)).toBeVisible();
+    // Regex pattern placeholder is e.g. \d{3}-\d{2}-\d{4}
+    await expect(page.getByPlaceholder(/e\.g\. \\d/)).toBeVisible();
   });
 
   test('should add a custom rule and apply it', async ({ page }) => {
     // Add a custom rule to mask "ACME"
     await page.getByPlaceholder(/e\.g\. SSN/i).fill('Company Name');
-    await page.getByPlaceholder(/regex pattern/i).fill('ACME');
+    await page.getByPlaceholder(/e\.g\. \\d/).fill('ACME');
     await page.getByPlaceholder('***').fill('[COMPANY]');
     await page.getByRole('button', { name: /add rule/i }).click();
     // Custom rule should appear in the list

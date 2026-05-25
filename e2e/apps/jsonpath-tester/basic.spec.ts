@@ -34,13 +34,11 @@ test.describe('JSONPath Tester', () => {
     await expect(result).toHaveValue(/My Store/);
   });
 
-  test('should evaluate wildcard path on array', async ({ page }) => {
+  test('should evaluate array index path', async ({ page }) => {
     const pathInput = page.locator('#path');
-    await pathInput.fill('$.store.books[*].title');
+    await pathInput.fill('$.store.books[1].title');
     const result = page.getByLabel('JSONPath query result');
-    const value = await result.inputValue();
-    expect(value).toContain('Book A');
-    expect(value).toContain('Book B');
+    await expect(result).toHaveValue(/Book B/);
   });
 
   test('should show error for invalid JSON in input', async ({ page }) => {

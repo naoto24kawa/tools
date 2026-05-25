@@ -28,7 +28,8 @@ test.describe('UUEncode / UUDecode', () => {
     // Switch to decode mode
     await page.getByRole('button', { name: /^Decode$/i }).click();
 
-    const uuencoded = 'begin 644 data\n%:&5L;&`\n`\nend';
+    // Correct UUEncoded form of 'hello': begin 644 data / %:&5L;&\ (space) / ` / end
+    const uuencoded = 'begin 644 data\n%:&5L;&\\ \n`\nend';
     const input = page.locator('#input');
     await input.fill(uuencoded);
     const output = page.locator('#output');

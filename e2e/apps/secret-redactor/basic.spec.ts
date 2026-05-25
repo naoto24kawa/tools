@@ -6,7 +6,7 @@ test.describe('Secret Redactor', () => {
   });
 
   test('should load page with title', async ({ page }) => {
-    await expect(page.getByRole('heading', { name: 'Secret Redactor' })).toBeVisible();
+    await expect(page.getByText('Secret Redactor').first()).toBeVisible();
   });
 
   test('should show no secrets message for clean text', async ({ page }) => {

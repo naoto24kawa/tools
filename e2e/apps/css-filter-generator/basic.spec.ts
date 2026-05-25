@@ -14,7 +14,7 @@ test.describe('CSS Filter Generator', () => {
   });
 
   test('should show Filters section with sliders', async ({ page }) => {
-    await expect(page.getByText('Filters')).toBeVisible();
+    await expect(page.getByText('Filters').first()).toBeVisible();
     // Should have multiple range sliders
     const sliders = page.locator('input[type="range"]');
     await expect(sliders.first()).toBeVisible();
@@ -30,7 +30,7 @@ test.describe('CSS Filter Generator', () => {
   test('should show filter labels (Brightness, Contrast, etc.)', async ({ page }) => {
     await expect(page.getByText('Brightness')).toBeVisible();
     await expect(page.getByText('Contrast')).toBeVisible();
-    await expect(page.getByText('Saturation')).toBeVisible();
+    await expect(page.getByText('Saturate')).toBeVisible();
   });
 
   test('should show Reset button (disabled at defaults)', async ({ page }) => {

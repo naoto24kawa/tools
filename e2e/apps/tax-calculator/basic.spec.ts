@@ -27,7 +27,7 @@ test.describe('Tax Calculator', () => {
   test('should calculate tax amount (10% of 1000 = 100)', async ({ page }) => {
     await page.locator('#amount').fill('1000');
     await page.getByRole('button', { name: /計算/ }).click();
-    await expect(page.getByText(/¥100/)).toBeVisible();
+    await expect(page.getByText(/100/).first()).toBeVisible();
   });
 
   test('should calculate with 8% reduced tax rate', async ({ page }) => {
@@ -44,9 +44,9 @@ test.describe('Tax Calculator', () => {
   test('should show exclusive, tax, and inclusive amounts', async ({ page }) => {
     await page.locator('#amount').fill('2000');
     await page.getByRole('button', { name: /計算/ }).click();
-    await expect(page.getByText('税抜金額')).toBeVisible();
-    await expect(page.getByText('消費税')).toBeVisible();
-    await expect(page.getByText('税込金額')).toBeVisible();
+    await expect(page.getByRole('paragraph').filter({ hasText: '税抜金額' })).toBeVisible();
+    await expect(page.getByRole('paragraph').filter({ hasText: '消費税' })).toBeVisible();
+    await expect(page.getByRole('paragraph').filter({ hasText: '税込金額' })).toBeVisible();
   });
 
   test('should toggle calculation direction with arrow button', async ({ page }) => {

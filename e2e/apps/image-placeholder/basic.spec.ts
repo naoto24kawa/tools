@@ -45,7 +45,7 @@ test.describe('Image Placeholder Generator', () => {
       // Verify preview description was updated to include the preset dimension
       const match = presetText?.match(/(\d+)/);
       if (match) {
-        await expect(page.getByText(new RegExp(match[1]))).toBeVisible();
+        await expect(page.getByText(new RegExp(match[1])).first()).toBeVisible();
       }
     }
   });
@@ -62,11 +62,12 @@ test.describe('Image Placeholder Generator', () => {
 
   test('should show toast after clicking Download PNG', async ({ page }) => {
     await page.getByRole('button', { name: /download png/i }).click();
-    await expect(page.getByText(/png downloaded/i)).toBeVisible();
+    await expect(page.getByText('PNG downloaded', { exact: true })).toBeVisible();
   });
 
   test('should allow custom text input and update preview', async ({ page }) => {
-    const textInput = page.getByLabel(/custom text/i);
+    // Custom Text label is not linked via htmlFor; use placeholder which shows dimensions
+    const textInput = page.locator('input[placeholder*=" x "]');
     await textInput.fill('My Preview');
     // After filling, the preview should reflect changes (img re-renders)
     const preview = page.locator('img[alt*="Placeholder"]');

@@ -33,7 +33,7 @@ test.describe('Loan Calculator', () => {
 
     await page.getByRole('button', { name: /シミュレーション実行/ }).click();
 
-    await expect(page.getByText('返済スケジュール')).toBeVisible();
+    await expect(page.getByText('返済スケジュール', { exact: true })).toBeVisible();
     await expect(page.getByRole('columnheader', { name: '回' })).toBeVisible();
     await expect(page.getByRole('columnheader', { name: '返済額' })).toBeVisible();
   });
@@ -58,7 +58,7 @@ test.describe('Loan Calculator', () => {
 
     await page.getByRole('button', { name: /シミュレーション実行/ }).click();
 
-    await expect(page.getByText(/借入額/)).toBeVisible();
+    await expect(page.getByText('借入額を正の数で入力してください', { exact: true })).toBeVisible();
   });
 
   test('should show error for missing repayment period', async ({ page }) => {
@@ -67,7 +67,7 @@ test.describe('Loan Calculator', () => {
 
     await page.getByRole('button', { name: /シミュレーション実行/ }).click();
 
-    await expect(page.getByText(/返済期間/)).toBeVisible();
+    await expect(page.getByText('返済期間を入力してください', { exact: true })).toBeVisible();
   });
 
   test('should handle months field for partial year', async ({ page }) => {

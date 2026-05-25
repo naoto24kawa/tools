@@ -193,7 +193,8 @@ test.describe('ZIP Extractor', () => {
   });
 
   test('should show default placeholder text in upload area', async ({ page }) => {
-    await expect(page.getByText('Upload a ZIP file')).toBeVisible();
+    // Exact match to avoid matching the longer subtitle sentence
+    await expect(page.getByText('Upload a ZIP file', { exact: true })).toBeVisible();
   });
 
   test('should accept .zip file input', async ({ page }) => {
@@ -215,8 +216,8 @@ test.describe('ZIP Extractor', () => {
       const input = page.locator('input[type="file"]');
       await input.setInputFiles(tmpPath);
 
-      // Contents card heading
-      await expect(page.getByText(/1 entries/i)).toBeVisible({ timeout: 5000 });
+      // Contents card heading text - use exact text to avoid strict mode with toast
+      await expect(page.getByText('Contents (1 entries)', { exact: true })).toBeVisible({ timeout: 5000 });
       // File name appears in the list
       await expect(page.getByText('hello.txt')).toBeVisible();
     } finally {
@@ -234,8 +235,8 @@ test.describe('ZIP Extractor', () => {
       await input.setInputFiles(tmpPath);
 
       await expect(page.getByText('hello.txt')).toBeVisible({ timeout: 5000 });
-      // formatSize(11) → "11.0 B"
-      await expect(page.getByText('11.0 B')).toBeVisible();
+      // formatSize(11) → "11.0 B" - exact match to avoid strict mode violation
+      await expect(page.getByText('11.0 B', { exact: true })).toBeVisible();
     } finally {
       fs.unlinkSync(tmpPath);
     }
@@ -268,7 +269,8 @@ test.describe('ZIP Extractor', () => {
       const input = page.locator('input[type="file"]');
       await input.setInputFiles(tmpPath);
 
-      await expect(page.getByText('my-archive.zip')).toBeVisible({ timeout: 5000 });
+      // Zip name shown in placeholder; exact match to avoid matching toast
+      await expect(page.getByText('my-archive.zip', { exact: true })).toBeVisible({ timeout: 5000 });
     } finally {
       fs.unlinkSync(tmpPath);
     }
@@ -283,9 +285,11 @@ test.describe('ZIP Extractor', () => {
       const input = page.locator('input[type="file"]');
       await input.setInputFiles(tmpPath);
 
-      await expect(page.getByText(/2 entries/i)).toBeVisible({ timeout: 5000 });
-      await expect(page.getByText('mydir/')).toBeVisible();
-      await expect(page.getByText('mydir/readme.txt')).toBeVisible();
+      // Use exact text to avoid strict mode with toast having "2 entries found in..."
+      await expect(page.getByText('Contents (2 entries)', { exact: true })).toBeVisible({ timeout: 5000 });
+      // 'mydir/' is a prefix of 'mydir/readme.txt', so use exact match to avoid strict mode
+      await expect(page.getByText('mydir/', { exact: true })).toBeVisible();
+      await expect(page.getByText('mydir/readme.txt', { exact: true })).toBeVisible();
     } finally {
       fs.unlinkSync(tmpPath);
     }

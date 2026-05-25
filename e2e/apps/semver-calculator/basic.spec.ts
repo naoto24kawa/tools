@@ -11,9 +11,9 @@ test.describe('SemVer Calculator', () => {
 
   test('should display parsed major, minor, patch for default version 1.0.0', async ({ page }) => {
     // Default version is 1.0.0
-    await expect(page.getByText('Major')).toBeVisible();
-    await expect(page.getByText('Minor')).toBeVisible();
-    await expect(page.getByText('Patch')).toBeVisible();
+    await expect(page.getByText('Major').first()).toBeVisible();
+    await expect(page.getByText('Minor').first()).toBeVisible();
+    await expect(page.getByText('Patch').first()).toBeVisible();
   });
 
   test('should bump major version', async ({ page }) => {
@@ -56,7 +56,6 @@ test.describe('SemVer Calculator', () => {
   test('should check range matching: 1.2.3 satisfies ^1.0.0', async ({ page }) => {
     await page.locator('input#range-version').fill('1.2.3');
     await page.locator('input#range-expr').fill('^1.0.0');
-    await expect(page.getByText(/satisfies/)).toBeVisible();
     // Result should be green (satisfies)
     await expect(page.locator('.bg-green-50').filter({ hasText: 'satisfies' })).toBeVisible();
   });

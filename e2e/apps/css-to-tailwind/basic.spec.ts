@@ -15,7 +15,7 @@ test.describe('CSS to Tailwind', () => {
 
   test('should convert display:flex to Tailwind flex class', async ({ page }) => {
     await page.getByLabel('CSS Input').fill('display: flex;');
-    await expect(page.getByText('flex')).toBeVisible();
+    await expect(page.locator('code').filter({ hasText: /^flex$/ }).first()).toBeVisible();
   });
 
   test('should convert multiple CSS properties', async ({ page }) => {
@@ -29,7 +29,7 @@ test.describe('CSS to Tailwind', () => {
   test('should show exact match indicator for known properties', async ({ page }) => {
     await page.getByLabel('CSS Input').fill('display: flex;');
     // Should show conversion result
-    await expect(page.getByText(/flex/)).toBeVisible();
+    await expect(page.locator('code').filter({ hasText: /^flex$/ }).first()).toBeVisible();
   });
 
   test('should show Copy Classes button after conversion', async ({ page }) => {
@@ -45,7 +45,7 @@ test.describe('CSS to Tailwind', () => {
 
   test('should convert padding-based class correctly', async ({ page }) => {
     await page.getByLabel('CSS Input').fill('padding: 1rem;');
-    await expect(page.getByText(/p-4|padding/i)).toBeVisible();
+    await expect(page.locator('code').filter({ hasText: /^p-4$/ }).first()).toBeVisible();
   });
 
   test('should show match count summary', async ({ page }) => {

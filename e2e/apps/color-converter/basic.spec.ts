@@ -14,16 +14,18 @@ test.describe('Color Converter', () => {
   });
 
   test('should show color format outputs on load', async ({ page }) => {
-    await expect(page.getByText('HEX')).toBeVisible();
-    await expect(page.getByText('RGB')).toBeVisible();
-    await expect(page.getByText('HSL')).toBeVisible();
+    // Format labels appear in the results grid (multiple HEX elements exist - use first)
+    await expect(page.getByText('HEX').first()).toBeVisible();
+    await expect(page.getByText('RGB').first()).toBeVisible();
+    await expect(page.getByText('HSL').first()).toBeVisible();
   });
 
   test('should show RGB values for default color #3b82f6', async ({ page }) => {
     // Default color is #3b82f6 which is rgb(59, 130, 246)
-    await expect(page.getByText('59')).toBeVisible();
-    await expect(page.getByText('130')).toBeVisible();
-    await expect(page.getByText('246')).toBeVisible();
+    // Values appear in code elements in the format grid
+    await expect(page.locator('code').filter({ hasText: /^59$/ }).first()).toBeVisible();
+    await expect(page.locator('code').filter({ hasText: /^130$/ }).first()).toBeVisible();
+    await expect(page.locator('code').filter({ hasText: /^246$/ }).first()).toBeVisible();
   });
 
   test('should update color output when HEX input changes', async ({ page }) => {

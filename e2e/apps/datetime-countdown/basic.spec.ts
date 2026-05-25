@@ -11,12 +11,12 @@ test.describe('Countdown Timer', () => {
 
   test('should show countdown display on load with default New Year target', async ({ page }) => {
     // The default title is "New Year"
-    await expect(page.getByText(/New Year/i)).toBeVisible();
+    await expect(page.getByText(/New Year/i).first()).toBeVisible();
     // Should show day/hour/min/sec labels
-    await expect(page.getByText('日')).toBeVisible();
-    await expect(page.getByText('時間')).toBeVisible();
-    await expect(page.getByText('分')).toBeVisible();
-    await expect(page.getByText('秒')).toBeVisible();
+    await expect(page.getByText('日').first()).toBeVisible();
+    await expect(page.getByText('時間').first()).toBeVisible();
+    await expect(page.getByText('分').first()).toBeVisible();
+    await expect(page.getByText('秒').first()).toBeVisible();
   });
 
   test('should update title when changed', async ({ page }) => {
@@ -36,7 +36,7 @@ test.describe('Countdown Timer', () => {
     const targetInput = page.locator('#countdown-target');
     // Set target far in the future
     await targetInput.fill('2099-12-31T23:59');
-    await expect(page.getByText(/まで/)).toBeVisible();
+    await expect(page.getByText(/まで/).first()).toBeVisible();
   });
 
   test('should show zero or positive countdown values', async ({ page }) => {

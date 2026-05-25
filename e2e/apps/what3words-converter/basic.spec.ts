@@ -10,7 +10,8 @@ test.describe('Grid Reference Converter (what3words-converter)', () => {
   });
 
   test('should show resolution selector', async ({ page }) => {
-    await expect(page.getByText('Resolution')).toBeVisible();
+    // "Resolution" is a shadcn CardTitle (renders as div.text-2xl, not a heading element)
+    await expect(page.locator('div.text-2xl', { hasText: 'Resolution' })).toBeVisible();
     await expect(page.getByText('Select grid cell size')).toBeVisible();
   });
 

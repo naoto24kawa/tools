@@ -34,9 +34,9 @@ test.describe('Image Brightness/Contrast', () => {
     const fileInput = page.locator('input[type="file"]');
     await fileInput.setInputFiles('e2e/shared/fixtures/test-image.png');
     await expect(page.getByRole('img').first()).toBeVisible({ timeout: 5000 });
-    await expect(page.getByText(/Brightness/i)).toBeVisible();
-    await expect(page.getByText(/Contrast/i)).toBeVisible();
-    await expect(page.getByText(/Saturate/i)).toBeVisible();
+    await expect(page.getByText(/Brightness:/i)).toBeVisible();
+    await expect(page.getByText(/Contrast:/i)).toBeVisible();
+    await expect(page.getByText(/Saturate:/i)).toBeVisible();
   });
 
   test('should show Reset and Download buttons after upload', async ({ page }) => {

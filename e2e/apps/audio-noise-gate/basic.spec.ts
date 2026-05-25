@@ -55,7 +55,7 @@ test.describe('Audio Noise Gate', () => {
 
   test('should show lowpass filter input', async ({ page }) => {
     // Japanese: ローパスフィルタ
-    await expect(page.locator('text=ローパスフィルタ')).toBeVisible();
+    await expect(page.getByText('ローパスフィルタ (Hz)')).toBeVisible();
   });
 
   test('should have process button disabled without file', async ({ page }) => {

@@ -36,13 +36,13 @@ test.describe('Roman Numeral Converter', () => {
   test('should show error toast for out-of-range arabic number', async ({ page }) => {
     await page.locator('input#arabic-input').fill('4000');
     await page.getByRole('button', { name: /Convert to Roman/i }).click();
-    await expect(page.getByText(/Invalid input/i)).toBeVisible();
+    await expect(page.getByText('Invalid input', { exact: true })).toBeVisible();
   });
 
   test('should show error toast for invalid Roman numeral', async ({ page }) => {
     await page.locator('input#roman-input').fill('IIII');
     await page.getByRole('button', { name: /Convert to Arabic/i }).click();
-    await expect(page.getByText(/Invalid input/i)).toBeVisible();
+    await expect(page.getByText('Invalid input', { exact: true })).toBeVisible();
   });
 
   test('should have Convert to Roman button disabled when arabic input is empty', async ({ page }) => {
@@ -51,8 +51,10 @@ test.describe('Roman Numeral Converter', () => {
 
   test('should display reference table with Roman numeral symbols', async ({ page }) => {
     await expect(page.getByText('Reference Table')).toBeVisible();
-    await expect(page.getByText('M')).toBeVisible();
-    await expect(page.getByText('CM')).toBeVisible();
-    await expect(page.getByText('D')).toBeVisible();
+    // Scope to the reference table grid which uses font-mono font-bold for roman numerals
+    const refTable = page.locator('.font-mono.font-bold');
+    await expect(refTable.getByText('M', { exact: true })).toBeVisible();
+    await expect(refTable.getByText('CM', { exact: true })).toBeVisible();
+    await expect(refTable.getByText('D', { exact: true })).toBeVisible();
   });
 });

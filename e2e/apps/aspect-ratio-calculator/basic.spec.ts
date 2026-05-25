@@ -23,14 +23,14 @@ test.describe('Aspect Ratio Calculator', () => {
 
   test('should calculate 16:9 ratio for 1920x1080', async ({ page }) => {
     // Default values should already show 16:9
-    await expect(page.locator('text=16:9')).toBeVisible();
+    await expect(page.locator('span.font-mono.font-medium').filter({ hasText: '16:9' })).toBeVisible();
   });
 
   test('should update ratio when dimensions change', async ({ page }) => {
     await page.locator('#calc-width').fill('800');
     await page.locator('#calc-height').fill('600');
     // 800:600 = 4:3
-    await expect(page.locator('text=4:3')).toBeVisible();
+    await expect(page.locator('span.font-mono.font-medium').filter({ hasText: '4:3' })).toBeVisible();
   });
 
   test('should show decimal ratio', async ({ page }) => {

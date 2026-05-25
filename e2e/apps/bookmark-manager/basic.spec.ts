@@ -110,6 +110,6 @@ test.describe('Bookmark Manager', () => {
     await page.getByRole('button', { name: /^Add$/ }).click();
 
     // Tag button should appear
-    await expect(page.getByText('work')).toBeVisible();
+    await expect(page.getByRole('button', { name: 'work' })).toBeVisible();
   });
 });

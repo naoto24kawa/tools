@@ -36,10 +36,10 @@ test.describe('Geo Distance Calculator', () => {
 
     await page.getByRole('button', { name: /calculate distance/i }).click();
 
-    await expect(page.getByText('Result')).toBeVisible();
+    await expect(page.getByText('Result').first()).toBeVisible();
     // Distance Tokyo - New York is approximately 10,838 km
-    await expect(page.getByText(/km/)).toBeVisible();
-    await expect(page.getByText(/mi/)).toBeVisible();
+    await expect(page.getByText(/km/).first()).toBeVisible();
+    await expect(page.getByText(/mi/).first()).toBeVisible();
   });
 
   test('should show bearing information in result', async ({ page }) => {
@@ -50,8 +50,8 @@ test.describe('Geo Distance Calculator', () => {
 
     await page.getByRole('button', { name: /calculate distance/i }).click();
 
-    await expect(page.getByText(/Bearing/i)).toBeVisible();
-    await expect(page.getByText(/°/)).toBeVisible();
+    await expect(page.getByText(/Bearing/i).first()).toBeVisible();
+    await expect(page.getByText(/°/).first()).toBeVisible();
   });
 
   test('should show distance in both km and miles', async ({ page }) => {
@@ -86,7 +86,7 @@ test.describe('Geo Distance Calculator', () => {
 
     await page.getByRole('button', { name: /calculate distance/i }).click();
 
-    await expect(page.getByText(/invalid latitude/i)).toBeVisible();
+    await expect(page.getByText(/invalid latitude/i).first()).toBeVisible();
   });
 
   test('should have Copy Result button after calculation', async ({ page }) => {

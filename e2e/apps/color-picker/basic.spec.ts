@@ -18,9 +18,10 @@ test.describe('Color Picker', () => {
   });
 
   test('should show format labels HEX, RGB, HSL', async ({ page }) => {
-    await expect(page.getByText('HEX')).toBeVisible();
-    await expect(page.getByText('RGB')).toBeVisible();
-    await expect(page.getByText('HSL')).toBeVisible();
+    // Format labels appear in spans; multiple HEX elements exist - use first
+    await expect(page.getByText('HEX', { exact: true }).first()).toBeVisible();
+    await expect(page.locator('span').filter({ hasText: /^RGB$/ })).toBeVisible();
+    await expect(page.locator('span').filter({ hasText: /^HSL$/ })).toBeVisible();
   });
 
   test('should show color preview swatch', async ({ page }) => {

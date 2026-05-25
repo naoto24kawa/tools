@@ -35,8 +35,8 @@ test.describe('.gitignore Generator', () => {
   });
 
   test('should select a template and generate output', async ({ page }) => {
-    // Click on Node checkbox
-    const nodeLabel = page.getByText('Node', { exact: true });
+    // Click on Node.js checkbox
+    const nodeLabel = page.getByText('Node.js', { exact: true });
     await nodeLabel.click();
 
     await expect(page.getByText('1 selected')).toBeVisible();
@@ -60,14 +60,14 @@ test.describe('.gitignore Generator', () => {
   });
 
   test('should enable Copy button when template is selected', async ({ page }) => {
-    const nodeLabel = page.getByText('Node', { exact: true });
+    const nodeLabel = page.getByText('Node.js', { exact: true });
     await nodeLabel.click();
 
     await expect(page.getByRole('button', { name: /copy/i })).toBeEnabled();
   });
 
   test('should enable Download button when template is selected', async ({ page }) => {
-    const nodeLabel = page.getByText('Node', { exact: true });
+    const nodeLabel = page.getByText('Node.js', { exact: true });
     await nodeLabel.click();
 
     await expect(page.getByRole('button', { name: /download/i })).toBeEnabled();
@@ -79,7 +79,7 @@ test.describe('.gitignore Generator', () => {
   });
 
   test('should show combined output for multiple templates', async ({ page }) => {
-    const nodeLabel = page.getByText('Node', { exact: true });
+    const nodeLabel = page.getByText('Node.js', { exact: true });
     await nodeLabel.click();
 
     // Select Python if available

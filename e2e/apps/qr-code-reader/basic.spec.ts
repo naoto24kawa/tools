@@ -14,7 +14,7 @@ test.describe('QR Code Reader', () => {
   });
 
   test('should show instruction to click to select file', async ({ page }) => {
-    await expect(page.getByText(/or click to select a file/i)).toBeVisible();
+    await expect(page.getByText('or click to select a file', { exact: true })).toBeVisible();
   });
 
   test('should have hidden file input accepting images', async ({ page }) => {

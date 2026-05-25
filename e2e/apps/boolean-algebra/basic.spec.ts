@@ -75,13 +75,13 @@ test.describe('Boolean Algebra Calculator', () => {
     await page.getByLabel('Boolean Expression').fill('A & B');
     await page.getByRole('button', { name: /Generate Truth Table/i }).click();
     await expect(page.getByText('Logic Gate Diagram')).toBeVisible();
-    await expect(page.locator('svg')).toBeVisible();
+    await expect(page.locator('svg').last()).toBeVisible();
   });
 
   test('should show error for invalid expression', async ({ page }) => {
     await page.getByLabel('Boolean Expression').fill('A &&& B');
     await page.getByRole('button', { name: /Generate Truth Table/i }).click();
-    await expect(page.getByText(/Invalid expression|Parse error/i)).toBeVisible();
+    await expect(page.getByText('Invalid expression', { exact: true })).toBeVisible();
   });
 
   test('should show copy table button after evaluation', async ({ page }) => {

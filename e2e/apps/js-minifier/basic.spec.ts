@@ -36,9 +36,9 @@ test.describe('JavaScript Minifier', () => {
     const input = page.locator('#input');
     await input.fill('function hello() {\n  const x = 1;\n  return x;\n}');
     await page.getByRole('button', { name: /minify/i }).click();
-    await expect(page.getByText(/original/i)).toBeVisible();
-    await expect(page.getByText(/minified/i)).toBeVisible();
-    await expect(page.getByText(/saved/i)).toBeVisible();
+    await expect(page.getByText(/original:/i)).toBeVisible();
+    await expect(page.getByText(/minified:/i)).toBeVisible();
+    await expect(page.getByText(/saved:/i)).toBeVisible();
   });
 
   test('should produce shorter output than input', async ({ page }) => {

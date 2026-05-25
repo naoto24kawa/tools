@@ -6,7 +6,7 @@ test.describe('Data Anonymizer', () => {
   });
 
   test('should load page with heading', async ({ page }) => {
-    await expect(page.getByRole('heading', { name: /data anonymizer/i })).toBeVisible();
+    await expect(page.getByText('Data Anonymizer').first()).toBeVisible();
   });
 
   test('should show Input Text textarea', async ({ page }) => {

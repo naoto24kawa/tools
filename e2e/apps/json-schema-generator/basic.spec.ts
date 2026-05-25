@@ -49,7 +49,7 @@ test.describe('JSON Schema Generator', () => {
     await page.getByRole('button', { name: /Generate/ }).click();
 
     // Toast or error should appear
-    await expect(page.getByText(/failed|error|invalid/i)).toBeVisible();
+    await expect(page.getByText('Generation failed', { exact: true })).toBeVisible();
   });
 
   test('should disable Generate button for empty input', async ({ page }) => {

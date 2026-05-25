@@ -14,7 +14,7 @@ test.describe('Text Vertical', () => {
   });
 
   test('should show preview panel', async ({ page }) => {
-    await expect(page.getByText('Preview')).toBeVisible();
+    await expect(page.getByText('Preview', { exact: true })).toBeVisible();
   });
 
   test('should show placeholder in preview when input is empty', async ({ page }) => {
@@ -23,7 +23,7 @@ test.describe('Text Vertical', () => {
 
   test('should display entered text in preview area', async ({ page }) => {
     await page.locator('textarea#input').fill('縦書きテスト');
-    await expect(page.getByText('縦書きテスト')).toBeVisible();
+    await expect(page.getByText('縦書きテスト').nth(1)).toBeVisible();
   });
 
   test('should show font size slider', async ({ page }) => {

@@ -11,7 +11,8 @@ test.describe('HTML Validator', () => {
 
   test('should show "Valid HTML" for well-formed HTML', async ({ page }) => {
     const textarea = page.locator('textarea#html-input');
-    await textarea.fill('<html><body><p>Hello</p></body></html>');
+    // Include DOCTYPE to avoid "Missing DOCTYPE" warning so "Valid HTML" is shown
+    await textarea.fill('<!DOCTYPE html><html><body><p>Hello</p></body></html>');
     await expect(page.getByText(/Valid HTML/i)).toBeVisible();
   });
 
@@ -30,7 +31,8 @@ test.describe('HTML Validator', () => {
 
   test('should validate a minimal valid document', async ({ page }) => {
     const textarea = page.locator('textarea#html-input');
-    await textarea.fill('<p>Simple paragraph</p>');
+    // Include DOCTYPE to ensure "Valid HTML" shows (without DOCTYPE, shows warning)
+    await textarea.fill('<!DOCTYPE html><p>Simple paragraph</p>');
     // No errors = valid
     await expect(page.getByText(/Valid HTML/i)).toBeVisible();
   });
@@ -40,8 +42,8 @@ test.describe('HTML Validator', () => {
     await textarea.fill('<div>');
     // First shows errors
     await expect(page.getByText(/error/i)).toBeVisible();
-    // Fix it
-    await textarea.fill('<div></div>');
+    // Fix it with DOCTYPE to show "Valid HTML"
+    await textarea.fill('<!DOCTYPE html><div></div>');
     await expect(page.getByText(/Valid HTML/i)).toBeVisible();
   });
 

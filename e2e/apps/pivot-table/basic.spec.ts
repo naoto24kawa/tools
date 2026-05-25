@@ -18,10 +18,12 @@ test.describe('Pivot Table', () => {
 
   test('should render row and column headers from CSV', async ({ page }) => {
     // Default sample has Region as row, Product as column
-    await expect(page.getByText('East')).toBeVisible();
-    await expect(page.getByText('West')).toBeVisible();
-    await expect(page.getByText('Widget')).toBeVisible();
-    await expect(page.getByText('Gadget')).toBeVisible();
+    // Row values are in <td> cells, column headers are in <th> columnheaders
+    await expect(page.getByRole('cell', { name: 'East' })).toBeVisible();
+    await expect(page.getByRole('cell', { name: 'West' })).toBeVisible();
+    // Column headers (Product values) are in <th> elements
+    await expect(page.getByRole('columnheader', { name: 'Widget' })).toBeVisible();
+    await expect(page.getByRole('columnheader', { name: 'Gadget' })).toBeVisible();
   });
 
   test('should show grand total row in pivot output', async ({ page }) => {
@@ -33,9 +35,9 @@ test.describe('Pivot Table', () => {
   test('should update pivot when CSV data is changed', async ({ page }) => {
     const textarea = page.getByLabel('CSV data input');
     await textarea.fill('Category,Item,Amount\nFood,Apple,10\nFood,Banana,20\nDrink,Water,5');
-    // New row labels should appear
-    await expect(page.getByText('Food')).toBeVisible();
-    await expect(page.getByText('Drink')).toBeVisible();
+    // New row labels should appear in the table cells
+    await expect(page.getByRole('cell', { name: 'Food' })).toBeVisible();
+    await expect(page.getByRole('cell', { name: 'Drink' })).toBeVisible();
   });
 
   test('should show row count and column count in description', async ({ page }) => {

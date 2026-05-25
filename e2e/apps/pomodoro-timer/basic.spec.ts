@@ -15,7 +15,7 @@ test.describe('Pomodoro Timer', () => {
   });
 
   test('should show Work phase label by default', async ({ page }) => {
-    await expect(page.getByText(/Work/i)).toBeVisible();
+    await expect(page.getByText('Work', { exact: true })).toBeVisible();
   });
 
   test('should have Start and Reset buttons', async ({ page }) => {
@@ -55,7 +55,7 @@ test.describe('Pomodoro Timer', () => {
 
   test('should open Statistics panel', async ({ page }) => {
     await page.getByRole('button', { name: /Statistics/i }).click();
-    await expect(page.getByText('Statistics')).toBeVisible();
+    // After panel opens, Today and This Week stats should appear
     await expect(page.getByText(/Today/i)).toBeVisible();
     await expect(page.getByText(/This Week/i)).toBeVisible();
   });

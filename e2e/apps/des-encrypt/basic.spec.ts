@@ -6,7 +6,7 @@ test.describe('DES Encrypt / Decrypt', () => {
   });
 
   test('should load page with title', async ({ page }) => {
-    await expect(page.getByText(/DES Encrypt \/ Decrypt/i)).toBeVisible();
+    await expect(page.getByRole('heading', { name: /DES Encrypt \/ Decrypt/i })).toBeVisible();
   });
 
   test('should encrypt plaintext with 3DES and produce non-empty output', async ({ page }) => {

@@ -56,8 +56,9 @@ test.describe('ZIP Creator', () => {
 
     await expect(page.getByText('remove-me.txt')).toBeVisible({ timeout: 3000 });
 
-    // Click the remove button (ghost button inside the file row)
-    await page.getByRole('button', { name: '' }).filter({ has: page.locator('svg') }).last().click();
+    // Click the remove button (ghost button in the file row - locate by file name row)
+    const fileRow = page.locator('.space-y-2 > div').filter({ hasText: 'remove-me.txt' });
+    await fileRow.getByRole('button').click();
     await expect(page.getByText('remove-me.txt')).not.toBeVisible({ timeout: 2000 });
   });
 

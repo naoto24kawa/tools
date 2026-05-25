@@ -18,8 +18,9 @@ test.describe('TOML Validator', () => {
   test('should show JSON output for valid TOML', async ({ page }) => {
     const textarea = page.getByLabel('TOML input');
     await textarea.fill('name = "test"\nvalue = 42');
-    await expect(page.getByText(/"name"/)).toBeVisible();
-    await expect(page.getByText(/"test"/)).toBeVisible();
+    const pre = page.locator('pre');
+    await expect(pre).toContainText('"name"');
+    await expect(pre).toContainText('"test"');
   });
 
   test('should show error for invalid TOML', async ({ page }) => {
@@ -41,8 +42,8 @@ test.describe('TOML Validator', () => {
   test('should clear input on trash button click', async ({ page }) => {
     const textarea = page.getByLabel('TOML input');
     await textarea.fill('[section]\nkey = "value"');
-    // Click the trash icon button (Trash2)
-    await page.getByRole('button').filter({ has: page.locator('svg') }).nth(1).click();
+    // Click the trash icon button (Trash2) - icon-only button after Sample button
+    await page.getByRole('button').filter({ has: page.locator('svg') }).first().click();
     await expect(textarea).toHaveValue('');
   });
 });

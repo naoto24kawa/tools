@@ -19,13 +19,13 @@ test.describe('Text Ruby Generator', () => {
 
   test('should show preview and HTML output when text is entered', async ({ page }) => {
     await page.locator('textarea#input').fill('こんにちは');
-    await expect(page.getByText('Preview')).toBeVisible();
+    await expect(page.getByText('Preview', { exact: true })).toBeVisible();
     await expect(page.getByText('Generated HTML')).toBeVisible();
   });
 
   test('should generate ruby HTML from {kanji|reading} notation', async ({ page }) => {
     await page.locator('textarea#input').fill('{漢字|かんじ}');
-    await expect(page.getByText('Preview')).toBeVisible();
+    await expect(page.getByText('Preview', { exact: true })).toBeVisible();
     // HTML output should contain <ruby> tag
     const htmlPre = page.locator('pre');
     await expect(htmlPre).toContainText('<ruby>');
@@ -50,7 +50,7 @@ test.describe('Text Ruby Generator', () => {
 
   test('should show Clear button and clear input when clicked', async ({ page }) => {
     await page.locator('textarea#input').fill('{テスト|てすと}');
-    await expect(page.getByText('Preview')).toBeVisible();
+    await expect(page.getByText('Preview', { exact: true })).toBeVisible();
     await page.getByRole('button', { name: /clear/i }).click();
     await expect(page.locator('textarea#input')).toHaveValue('');
     await expect(page.getByText('Preview')).not.toBeVisible();

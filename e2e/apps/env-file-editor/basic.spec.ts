@@ -27,7 +27,7 @@ test.describe('.env File Editor', () => {
     const textarea = page.getByPlaceholder(/Paste .env content here/i);
     await textarea.fill('DATABASE_URL=postgres://localhost:5432/mydb\nAPI_KEY=secret123\nPORT=3000');
     await page.getByRole('button', { name: 'Parse' }).click();
-    await expect(page.getByText('Parsed 3 entries')).toBeVisible();
+    await expect(page.getByText('Parsed 3 entries', { exact: true })).toBeVisible();
   });
 
   test('should show key-value entries after parsing', async ({ page }) => {

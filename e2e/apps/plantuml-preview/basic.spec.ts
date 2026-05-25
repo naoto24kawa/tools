@@ -16,10 +16,11 @@ test.describe('PlantUML Preview', () => {
   });
 
   test('should show class names from default Animal example', async ({ page }) => {
-    // Default sample defines Animal, Dog, Cat classes
-    await expect(page.getByText('Animal')).toBeVisible();
-    await expect(page.getByText('Dog')).toBeVisible();
-    await expect(page.getByText('Cat')).toBeVisible();
+    // Default sample defines Animal, Dog, Cat classes rendered in the SVG output
+    // Use first() since the textarea also contains the source text with these names
+    await expect(page.getByText('Animal').first()).toBeVisible();
+    await expect(page.getByText('Dog').first()).toBeVisible();
+    await expect(page.getByText('Cat').first()).toBeVisible();
   });
 
   test('should show class and relation count in footer', async ({ page }) => {
@@ -31,12 +32,14 @@ test.describe('PlantUML Preview', () => {
   test('should update diagram when input changes', async ({ page }) => {
     const textarea = page.locator('textarea').first();
     await textarea.fill('@startuml\nclass Foo {\n  +bar(): void\n}\n@enduml');
-    await expect(page.getByText('Foo')).toBeVisible();
+    // Use first() since the textarea also contains the source text
+    await expect(page.getByText('Foo').first()).toBeVisible();
   });
 
   test('should have Copy SVG, SVG, and PNG export buttons', async ({ page }) => {
     await expect(page.getByRole('button', { name: 'Copy SVG' })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'SVG' })).toBeVisible();
+    // Use exact: true to avoid matching "Copy SVG" when looking for "SVG"
+    await expect(page.getByRole('button', { name: 'SVG', exact: true })).toBeVisible();
     await expect(page.getByRole('button', { name: 'PNG' })).toBeVisible();
   });
 
@@ -44,7 +47,7 @@ test.describe('PlantUML Preview', () => {
     const select = page.getByRole('combobox');
     await select.click();
     await page.getByRole('option', { name: 'Observer Pattern' }).click();
-    // Observer pattern includes Subject class
-    await expect(page.getByText('Subject')).toBeVisible();
+    // Observer pattern includes Subject class; use first() since textarea also has source text
+    await expect(page.getByText('Subject').first()).toBeVisible();
   });
 });

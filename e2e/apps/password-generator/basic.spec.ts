@@ -24,8 +24,8 @@ test.describe('Password Generator', () => {
 
   test('should show strength indicator after generation', async ({ page }) => {
     await page.getByRole('button', { name: /generate passwords/i }).click();
-    // Strength label text (Weak/Fair/Good/Strong/Very Strong)
-    await expect(page.getByText(/weak|fair|good|strong/i).first()).toBeVisible();
+    // Strength label text (Very Weak/Weak/Fair/Good/Strong/Very Strong/Excellent/Maximum)
+    await expect(page.getByText(/very weak|weak|fair|good|very strong|strong|excellent|maximum/i).first()).toBeVisible();
   });
 
   test('should show copy and clear buttons after generation', async ({ page }) => {

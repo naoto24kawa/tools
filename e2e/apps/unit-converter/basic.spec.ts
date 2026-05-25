@@ -26,14 +26,16 @@ test.describe('Unit Converter', () => {
     await page.getByLabel('変換元').selectOption('m');
     await page.getByLabel('変換先').selectOption('cm');
     await page.getByLabel('値').fill('1');
-    await expect(page.getByText('100')).toBeVisible();
+    // Result appears in the large display div
+    await expect(page.locator('div.text-3xl.font-bold.font-mono')).toContainText('100');
   });
 
   test('should convert 1 km to meters = 1000', async ({ page }) => {
     await page.getByLabel('変換元').selectOption('km');
     await page.getByLabel('変換先').selectOption('m');
     await page.getByLabel('値').fill('1');
-    await expect(page.getByText('1,000')).toBeVisible();
+    // Result appears in the large display div
+    await expect(page.locator('div.text-3xl.font-bold.font-mono')).toContainText('1,000');
   });
 
   test('should show all units display after conversion', async ({ page }) => {

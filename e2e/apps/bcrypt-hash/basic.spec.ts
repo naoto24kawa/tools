@@ -6,7 +6,7 @@ test.describe('Bcrypt Hash Generator', () => {
   });
 
   test('should load page with title', async ({ page }) => {
-    await expect(page.getByText(/Bcrypt Hash Generator/i)).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Bcrypt Hash Generator/i })).toBeVisible();
   });
 
   test('should generate a non-empty bcrypt hash', async ({ page }) => {

@@ -6,7 +6,7 @@ test.describe('DNS Lookup', () => {
   });
 
   test('should load page with title', async ({ page }) => {
-    await expect(page.getByText('DNS Lookup')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'DNS Lookup' })).toBeVisible();
   });
 
   test('should show domain input field', async ({ page }) => {
@@ -27,7 +27,7 @@ test.describe('DNS Lookup', () => {
   });
 
   test('should show record type selector defaulting to A', async ({ page }) => {
-    await expect(page.getByText('Record Type')).toBeVisible();
+    await expect(page.getByText('Record Type', { exact: true })).toBeVisible();
     // A type should be selected by default - look for it in the combobox
     const combobox = page.getByRole('combobox');
     await expect(combobox).toBeVisible();
@@ -35,10 +35,10 @@ test.describe('DNS Lookup', () => {
 
   test('should show DNS Record Types Reference table', async ({ page }) => {
     await expect(page.getByText('DNS Record Types Reference')).toBeVisible();
-    await expect(page.getByText('A')).toBeVisible();
-    await expect(page.getByText('AAAA')).toBeVisible();
-    await expect(page.getByText('MX')).toBeVisible();
-    await expect(page.getByText('TXT')).toBeVisible();
+    await expect(page.getByRole('cell', { name: 'A', exact: true })).toBeVisible();
+    await expect(page.getByRole('cell', { name: 'AAAA', exact: true })).toBeVisible();
+    await expect(page.getByRole('cell', { name: 'MX', exact: true })).toBeVisible();
+    await expect(page.getByRole('cell', { name: 'TXT', exact: true })).toBeVisible();
   });
 
   test('should show selected record type info panel', async ({ page }) => {
@@ -47,7 +47,7 @@ test.describe('DNS Lookup', () => {
   });
 
   test('should show domain lookup form', async ({ page }) => {
-    await expect(page.getByText('Domain')).toBeVisible();
+    await expect(page.getByText('Domain', { exact: true })).toBeVisible();
   });
 
   test('should trigger lookup on Enter key press', async ({ page }) => {

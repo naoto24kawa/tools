@@ -28,9 +28,9 @@ test.describe('Decision Wheel', () => {
   test('should allow adding custom choices', async ({ page }) => {
     const textarea = page.locator('textarea#choices');
     await textarea.fill('Pizza\nSushi\nBurger');
-    await expect(page.getByText('Pizza')).toBeVisible();
-    await expect(page.getByText('Sushi')).toBeVisible();
-    await expect(page.getByText('Burger')).toBeVisible();
+    await expect(page.getByText('Pizza', { exact: true })).toBeVisible();
+    await expect(page.getByText('Sushi', { exact: true })).toBeVisible();
+    await expect(page.getByText('Burger', { exact: true })).toBeVisible();
   });
 
   test('should show color pickers for each segment', async ({ page }) => {

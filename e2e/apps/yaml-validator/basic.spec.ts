@@ -15,7 +15,8 @@ test.describe('YAML Validator', () => {
   });
 
   test('should show JSON output section', async ({ page }) => {
-    await expect(page.getByText('JSON Output')).toBeVisible();
+    // "JSON Output" is a shadcn CardTitle (renders as div.text-2xl, not a heading element)
+    await expect(page.locator('div.text-2xl', { hasText: 'JSON Output' })).toBeVisible();
   });
 
   test('should validate valid YAML and show JSON output', async ({ page }) => {
@@ -29,7 +30,8 @@ test.describe('YAML Validator', () => {
 
   test('should show error icon and message for invalid YAML', async ({ page }) => {
     const textarea = page.getByRole('textbox', { name: /yaml input/i });
-    await textarea.fill('key: : invalid');
+    // Use input that causes the custom parser to throw (mapping line without colon)
+    await textarea.fill('key:\n  invalid line no colon');
     // Error alert should appear
     await expect(page.getByRole('alert')).toBeVisible({ timeout: 3000 });
   });

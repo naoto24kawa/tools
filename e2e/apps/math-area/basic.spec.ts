@@ -11,7 +11,7 @@ test.describe('Math Area Calculator', () => {
   });
 
   test('should show shape selector buttons', async ({ page }) => {
-    await expect(page.getByRole('button', { name: '円' })).toBeVisible();
+    await expect(page.getByRole('button', { name: '円', exact: true })).toBeVisible();
     await expect(page.getByRole('button', { name: '長方形' })).toBeVisible();
     await expect(page.getByRole('button', { name: '三角形' })).toBeVisible();
     await expect(page.getByRole('button', { name: '台形' })).toBeVisible();
@@ -48,7 +48,7 @@ test.describe('Math Area Calculator', () => {
   });
 
   test('should show 面積 label', async ({ page }) => {
-    await expect(page.getByText('面積')).toBeVisible();
+    await expect(page.getByText('面積', { exact: true })).toBeVisible();
   });
 
   test('should switch shape and reset fields', async ({ page }) => {

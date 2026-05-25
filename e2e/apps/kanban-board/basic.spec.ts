@@ -14,7 +14,7 @@ test.describe('Kanban Board', () => {
   });
 
   test('should display three columns: Todo, In Progress, Done', async ({ page }) => {
-    await expect(page.getByRole('heading', { name: /Todo/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /To Do/i })).toBeVisible();
     await expect(page.getByRole('heading', { name: /In Progress/i })).toBeVisible();
     await expect(page.getByRole('heading', { name: /Done/i })).toBeVisible();
   });

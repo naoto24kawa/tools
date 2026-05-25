@@ -43,8 +43,8 @@ test.describe('Image to Base64', () => {
     const fileInput = page.locator('input[type="file"]');
     await fileInput.setInputFiles('e2e/shared/fixtures/test-image.png');
     await expect(page.getByRole('img').first()).toBeVisible({ timeout: 5000 });
-    // Should show mime type like "image/png"
-    await expect(page.getByText(/image\/png/i)).toBeVisible({ timeout: 5000 });
+    // Should show mime type like "image/png" in info div (not in textarea)
+    await expect(page.locator('div.text-xs.text-muted-foreground').filter({ hasText: /image\/png/i })).toBeVisible({ timeout: 5000 });
   });
 
   test('should show Copy buttons for Data URI and Base64 Only', async ({ page }) => {

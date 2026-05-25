@@ -12,14 +12,15 @@ test.describe('Regex Tester', () => {
   test('should match a simple pattern and show match count', async ({ page }) => {
     await page.getByLabel('Regular expression pattern').fill('hello');
     await page.getByLabel('Test string input').fill('say hello world');
-    // "Matches (1)" heading should appear
-    await expect(page.getByRole('heading', { name: /Matches \(1\)/i })).toBeVisible();
+    // "Matches (1)" CardTitle should appear
+    await expect(page.getByText(/Matches \(1\)/i)).toBeVisible();
   });
 
   test('should show multiple matches with global flag', async ({ page }) => {
     await page.getByLabel('Regular expression pattern').fill('o');
     await page.getByLabel('Test string input').fill('foo bar boo');
-    await expect(page.getByRole('heading', { name: /Matches \(3\)/i })).toBeVisible();
+    // 'o' appears 4 times in 'foo bar boo': f(o)(o) bar b(o)(o)
+    await expect(page.getByText(/Matches \(4\)/i)).toBeVisible();
   });
 
   test('should show no match when pattern does not match', async ({ page }) => {
@@ -38,7 +39,7 @@ test.describe('Regex Tester', () => {
     // Toggle 'i' flag on (it should not be in default 'g' flags)
     await page.getByRole('button', { name: 'i', exact: true }).click();
     await page.getByLabel('Test string input').fill('say hello world');
-    await expect(page.getByRole('heading', { name: /Matches \(1\)/i })).toBeVisible();
+    await expect(page.getByText(/Matches \(1\)/i)).toBeVisible();
   });
 
   test('should toggle flags with flag buttons', async ({ page }) => {

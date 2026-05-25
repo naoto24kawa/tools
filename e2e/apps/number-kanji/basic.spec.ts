@@ -33,8 +33,8 @@ test.describe('Number Kanji Converter', () => {
     await checkbox.check();
     const input = page.getByLabel('数値');
     await input.fill('1');
-    // 壱 is the daiji for 1
-    await expect(page.getByText(/壱/)).toBeVisible();
+    // 壱 is the daiji for 1; use exact match to avoid matching the checkbox label "大字(壱弐参)を使用"
+    await expect(page.getByText('壱', { exact: true })).toBeVisible();
   });
 
   test('should show kanji to number section', async ({ page }) => {

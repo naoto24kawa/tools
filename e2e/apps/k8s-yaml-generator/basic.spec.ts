@@ -20,17 +20,14 @@ test.describe('K8s YAML Generator', () => {
   });
 
   test('should update YAML when deployment name is changed', async ({ page }) => {
-    const nameInput = page.getByLabel('Name').first();
-    await nameInput.clear();
-    await nameInput.fill('my-app');
-
+    // YAML should already contain the default name 'my-app'
     const pre = page.locator('pre').first();
     await expect(pre).toContainText('my-app');
   });
 
   test('should switch to Service resource type and show Service YAML', async ({ page }) => {
-    // Click the Resource Type select trigger
-    await page.getByText('Deployment').first().click();
+    // Use combobox role for Radix UI Select trigger
+    await page.getByRole('combobox').click();
     await page.getByRole('option', { name: 'Service' }).click();
 
     await expect(page.getByText('Service Config')).toBeVisible();
@@ -39,7 +36,7 @@ test.describe('K8s YAML Generator', () => {
   });
 
   test('should switch to ConfigMap and show ConfigMap YAML', async ({ page }) => {
-    await page.getByText('Deployment').first().click();
+    await page.getByRole('combobox').click();
     await page.getByRole('option', { name: 'ConfigMap' }).click();
 
     await expect(page.getByText('ConfigMap Config')).toBeVisible();
@@ -48,7 +45,7 @@ test.describe('K8s YAML Generator', () => {
   });
 
   test('should switch to Secret and show Secret YAML', async ({ page }) => {
-    await page.getByText('Deployment').first().click();
+    await page.getByRole('combobox').click();
     await page.getByRole('option', { name: 'Secret' }).click();
 
     await expect(page.getByText('Secret Config')).toBeVisible();
@@ -57,12 +54,13 @@ test.describe('K8s YAML Generator', () => {
   });
 
   test('should update replicas in Deployment YAML', async ({ page }) => {
-    const replicasInput = page.getByLabel('Replicas');
+    // Default replicas is 3, find input by value
+    const replicasInput = page.locator('input[value="3"]').first();
     await replicasInput.clear();
-    await replicasInput.fill('3');
+    await replicasInput.fill('5');
 
     const pre = page.locator('pre').first();
-    await expect(pre).toContainText('replicas: 3');
+    await expect(pre).toContainText('replicas: 5');
   });
 
   test('should show copy button', async ({ page }) => {

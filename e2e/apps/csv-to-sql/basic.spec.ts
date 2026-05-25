@@ -39,8 +39,8 @@ test.describe('CSV to SQL', () => {
     await input.fill('id,name\n1,Test');
     const output = page.locator('textarea#output');
     const outputValue = await output.inputValue();
-    // Default table name should appear in INSERT INTO statement
-    expect(outputValue).toMatch(/INSERT INTO\s+\w+/i);
+    // Default table name should appear in INSERT INTO statement (may use backtick quoting)
+    expect(outputValue).toMatch(/INSERT INTO\s+[`\w]/i);
   });
 
   test('should use custom table name from settings', async ({ page }) => {

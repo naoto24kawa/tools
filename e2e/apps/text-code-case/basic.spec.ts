@@ -17,11 +17,11 @@ test.describe('Code Case Converter - Basic Functionality', () => {
   });
 
   test('should display code case type options', async ({ page }) => {
-    await expect(page.getByText('camelCase')).toBeVisible();
-    await expect(page.getByText('PascalCase')).toBeVisible();
-    await expect(page.getByText('snake_case')).toBeVisible();
-    await expect(page.getByText('kebab-case')).toBeVisible();
-    await expect(page.getByText('CONSTANT_CASE')).toBeVisible();
+    await expect(page.getByRole('button', { name: 'camelCase' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'PascalCase' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'snake_case' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'kebab-case' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'CONSTANT_CASE' })).toBeVisible();
   });
 
   test('should convert to camelCase by default', async ({ page }) => {
@@ -32,7 +32,7 @@ test.describe('Code Case Converter - Basic Functionality', () => {
   });
 
   test('should convert to snake_case when selected', async ({ page }) => {
-    await page.getByText('snake_case').click();
+    await page.getByRole('button', { name: 'snake_case' }).click();
     const input = page.locator('#input');
     await input.fill('hello world');
     const output = page.locator('#output');
@@ -64,7 +64,7 @@ test.describe('Code Case Converter - Basic Functionality', () => {
   });
 
   test('should convert camelCase input to snake_case', async ({ page }) => {
-    await page.getByText('snake_case').click();
+    await page.getByRole('button', { name: 'snake_case' }).click();
     const input = page.locator('#input');
     await input.fill('helloWorld');
     const output = page.locator('#output');

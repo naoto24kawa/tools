@@ -19,9 +19,9 @@ test.describe('Responsive Preview', () => {
   });
 
   test('should show error toast for invalid URL', async ({ page }) => {
-    await page.getByPlaceholder(/Enter URL/i).fill('not-a-url');
+    await page.getByPlaceholder(/Enter URL/i).fill('http://[invalid');
     await page.getByRole('button', { name: 'Load' }).click();
-    await expect(page.getByText('Invalid URL')).toBeVisible();
+    await expect(page.getByText('Invalid URL', { exact: true })).toBeVisible();
   });
 
   test('should show Single and Side-by-side view mode buttons', async ({ page }) => {
@@ -42,7 +42,7 @@ test.describe('Responsive Preview', () => {
   });
 
   test('should show custom width and height inputs', async ({ page }) => {
-    await expect(page.getByPlaceholder('W')).toBeVisible();
-    await expect(page.getByPlaceholder('H')).toBeVisible();
+    await expect(page.getByPlaceholder('W', { exact: true })).toBeVisible();
+    await expect(page.getByPlaceholder('H', { exact: true })).toBeVisible();
   });
 });

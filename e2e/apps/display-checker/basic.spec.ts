@@ -10,8 +10,8 @@ test.describe('Display Checker', () => {
   });
 
   test('should automatically show screen resolution', async ({ page }) => {
-    // Resolution is shown as "WIDTHxHEIGHT" or "WIDTH x HEIGHT"
-    await expect(page.getByText(/\d+\s*x\s*\d+/)).toBeVisible();
+    // Resolution is shown as "WIDTH x HEIGHT" in a code element
+    await expect(page.locator('code').filter({ hasText: /\d+ x \d+/ }).first()).toBeVisible();
   });
 
   test('should show viewport size', async ({ page }) => {
@@ -41,7 +41,7 @@ test.describe('Display Checker', () => {
   });
 
   test('should show language information', async ({ page }) => {
-    await expect(page.getByText('Language')).toBeVisible();
+    await expect(page.getByText('Language', { exact: true })).toBeVisible();
     // Language code like "en-US" or "ja"
     await expect(page.locator('code').filter({ hasText: /[a-z]{2}/i }).first()).toBeVisible();
   });

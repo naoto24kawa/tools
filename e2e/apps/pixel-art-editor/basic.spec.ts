@@ -29,8 +29,8 @@ test.describe('Pixel Art Editor', () => {
   });
 
   test('should show grid size selector', async ({ page }) => {
-    // Select trigger for Grid Size
-    await expect(page.getByText('Grid Size')).toBeVisible();
+    // Select trigger for Grid Size; use exact match to avoid matching the description text
+    await expect(page.getByText('Grid Size', { exact: true })).toBeVisible();
     // Default is 16 x 16
     await expect(page.getByText('16 x 16')).toBeVisible();
   });
@@ -43,8 +43,8 @@ test.describe('Pixel Art Editor', () => {
     const clearBtn = page.getByRole('button', { name: 'Clear' });
     await expect(clearBtn).toBeVisible();
     await clearBtn.click();
-    // Toast "Canvas cleared" should appear
-    await expect(page.getByText('Canvas cleared')).toBeVisible();
+    // Toast "Canvas cleared" should appear; use exact match to avoid matching aria-live region
+    await expect(page.getByText('Canvas cleared', { exact: true }).first()).toBeVisible();
   });
 
   test('should render color palette swatches', async ({ page }) => {

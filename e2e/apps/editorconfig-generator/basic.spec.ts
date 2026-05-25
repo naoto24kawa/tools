@@ -23,26 +23,26 @@ test.describe('EditorConfig Generator', () => {
 
   test('should show global settings section', async ({ page }) => {
     await expect(page.getByText('Global Settings')).toBeVisible();
-    await expect(page.locator('#root')).toBeVisible();
+    await expect(page.getByRole('main').locator('#root')).toBeVisible();
     await expect(page.locator('#charset')).toBeVisible();
     await expect(page.locator('#eol')).toBeVisible();
   });
 
   test('should apply Default preset', async ({ page }) => {
     await page.getByRole('button', { name: 'Default' }).click();
-    await expect(page.getByText('Applied default preset')).toBeVisible();
+    await expect(page.getByText('Applied default preset', { exact: true })).toBeVisible();
     const preview = page.locator('pre');
     await expect(preview).toContainText('[*]');
   });
 
   test('should apply Google preset', async ({ page }) => {
     await page.getByRole('button', { name: 'Google' }).click();
-    await expect(page.getByText('Applied google preset')).toBeVisible();
+    await expect(page.getByText('Applied google preset', { exact: true })).toBeVisible();
   });
 
   test('should apply Airbnb preset', async ({ page }) => {
     await page.getByRole('button', { name: 'Airbnb' }).click();
-    await expect(page.getByText('Applied airbnb preset')).toBeVisible();
+    await expect(page.getByText('Applied airbnb preset', { exact: true })).toBeVisible();
   });
 
   test('should add a new section when Add Section is clicked', async ({ page }) => {
@@ -69,7 +69,7 @@ test.describe('EditorConfig Generator', () => {
 
   test('should update preview when root checkbox is toggled', async ({ page }) => {
     // Uncheck root
-    await page.locator('#root').uncheck();
+    await page.getByRole('main').locator('#root').uncheck();
     const preview = page.locator('pre');
     const text = await preview.textContent();
     expect(text).not.toContain('root = true');

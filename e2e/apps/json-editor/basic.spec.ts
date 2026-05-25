@@ -22,7 +22,7 @@ test.describe('JSON Editor', () => {
     const editor = page.locator('#editor');
     await editor.fill('{"key": "value"}');
     await page.getByRole('button', { name: 'Validate' }).click();
-    await expect(page.getByText('Valid JSON!')).toBeVisible();
+    await expect(page.getByText('Valid JSON!', { exact: true }).first()).toBeVisible();
   });
 
   test('should show error alert when Validate is clicked on invalid JSON', async ({ page }) => {

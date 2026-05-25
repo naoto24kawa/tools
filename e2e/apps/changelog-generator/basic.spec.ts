@@ -18,8 +18,8 @@ test.describe('Changelog Generator', () => {
   });
 
   test('should show initial version card', async ({ page }) => {
-    await expect(page.getByText('Versions')).toBeVisible();
-    await expect(page.getByText('Unreleased')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Versions' })).toBeVisible();
+    await expect(page.getByText('Unreleased').first()).toBeVisible();
   });
 
   test('should show preview panel with initial content', async ({ page }) => {
@@ -41,9 +41,9 @@ test.describe('Changelog Generator', () => {
 
   test('should add a new version', async ({ page }) => {
     await page.getByRole('button', { name: /Add Version/i }).click();
-    // Two version cards should now exist
-    const versionCards = page.getByText('Unreleased');
-    await expect(versionCards).toHaveCount(2);
+    // Two version cards should now exist; use Remove version button count as proxy (one per version card)
+    const removeButtons = page.getByRole('button', { name: /Remove version/i });
+    await expect(removeButtons).toHaveCount(2);
   });
 
   test('should add entry to a version', async ({ page }) => {

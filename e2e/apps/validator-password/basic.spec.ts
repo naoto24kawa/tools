@@ -19,13 +19,15 @@ test.describe('Password Strength Checker', () => {
   test('should show "weak" strength for a simple short password', async ({ page }) => {
     const input = page.locator('input#password');
     await input.fill('abc');
-    await expect(page.getByText(/Very Weak|Weak/i)).toBeVisible();
+    // App uses Japanese labels: とても弱い (Very Weak) or 弱い (Weak)
+    await expect(page.getByText(/とても弱い|弱い/)).toBeVisible();
   });
 
   test('should show stronger rating for complex password', async ({ page }) => {
     const input = page.locator('input#password');
     await input.fill('Tr0ub4dor&3#SecurePass!');
-    await expect(page.getByText(/Strong|Very Strong/i)).toBeVisible();
+    // App uses Japanese labels: 強い (Strong) or とても強い (Very Strong)
+    await expect(page.getByText(/強い|とても強い/)).toBeVisible();
   });
 
   test('should show uppercase check passing', async ({ page }) => {

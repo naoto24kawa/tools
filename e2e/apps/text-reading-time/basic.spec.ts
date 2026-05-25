@@ -21,13 +21,14 @@ test.describe('Text Reading Time', () => {
   test('should update character count when text is entered', async ({ page }) => {
     await page.locator('textarea#input').fill('Hello World');
     const charCard = page.locator('p.text-2xl').first();
-    await expect(charCard).toContainText('11');
+    // countChars excludes whitespace: "Hello World" = 10 chars
+    await expect(charCard).toContainText('10');
   });
 
   test('should estimate reading time for English text (200 words)', async ({ page }) => {
     const longText = 'word '.repeat(200).trim();
     await page.locator('textarea#input').fill(longText);
-    await expect(page.getByText('Reading Time')).toBeVisible();
+    await expect(page.getByText('Reading Time', { exact: true })).toBeVisible();
     // 200 words at ~200 wpm = ~1 min
     const readingCard = page.getByText(/\d+ min/i).first();
     await expect(readingCard).toBeVisible();
@@ -36,7 +37,7 @@ test.describe('Text Reading Time', () => {
   test('should show speaking time', async ({ page }) => {
     const text = 'word '.repeat(150).trim();
     await page.locator('textarea#input').fill(text);
-    await expect(page.getByText('Speaking Time')).toBeVisible();
+    await expect(page.getByText('Speaking Time', { exact: true })).toBeVisible();
   });
 
   test('should show word count', async ({ page }) => {
@@ -48,11 +49,11 @@ test.describe('Text Reading Time', () => {
   test('should detect language', async ({ page }) => {
     await page.locator('textarea#input').fill('This is an English sentence for language detection.');
     await expect(page.getByText('Detected Language')).toBeVisible();
-    await expect(page.getByText('English')).toBeVisible();
+    await expect(page.getByText('English', { exact: true })).toBeVisible();
   });
 
   test('should show time in seconds for very short text', async ({ page }) => {
     await page.locator('textarea#input').fill('Hi.');
-    await expect(page.getByText(/sec/i)).toBeVisible();
+    await expect(page.getByText(/sec/i).first()).toBeVisible();
   });
 });

@@ -7,7 +7,7 @@ test.describe('Gantt Chart', () => {
 
   test('should load page with title', async ({ page }) => {
     await expect(page).toHaveTitle(/Gantt Chart/i);
-    await expect(page.getByText('Gantt Chart')).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Gantt Chart' })).toBeVisible();
   });
 
   test('should show Task Data panel with inputs', async ({ page }) => {
@@ -38,7 +38,7 @@ test.describe('Gantt Chart', () => {
   });
 
   test('should show Timeline section with Download PNG button', async ({ page }) => {
-    await expect(page.getByText('Timeline')).toBeVisible();
+    await expect(page.getByText('Timeline').first()).toBeVisible();
     await expect(page.getByRole('button', { name: /download png/i })).toBeVisible();
   });
 

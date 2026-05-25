@@ -6,7 +6,7 @@ test.describe('Enigma Cipher Simulator', () => {
   });
 
   test('should load page with title', async ({ page }) => {
-    await expect(page.getByText(/Enigma Cipher Simulator/i)).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Enigma Cipher Simulator/i })).toBeVisible();
   });
 
   test('should encrypt input and produce non-empty output', async ({ page }) => {

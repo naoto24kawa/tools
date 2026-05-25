@@ -48,7 +48,7 @@ test.describe('Audio Visualizer', () => {
   test('should switch view mode to spectrum only', async ({ page }) => {
     // Open view mode select
     await page.getByText('表示モード').locator('..').locator('[role="combobox"]').click();
-    await page.getByRole('option', { name: /Frequency Spectrum|スペクトラム/i }).click();
+    await page.getByRole('option', { name: 'Spectrum', exact: true }).click();
     await expect(page.getByText('Frequency Spectrum')).toBeVisible();
     await expect(page.getByText('Waveform')).not.toBeVisible();
   });

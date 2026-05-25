@@ -25,7 +25,7 @@ test.describe('Math Statistics Calculator', () => {
     const textarea = page.getByLabel('数値データ入力');
     await textarea.fill('1, 2, 3, 4, 5');
     // Results card should appear
-    await expect(page.getByRole('heading', { name: 'Results' })).toBeVisible();
+    await expect(page.getByText('Results', { exact: true })).toBeVisible();
     // Count = 5
     await expect(page.getByText('個数').locator('..').getByText('5')).toBeVisible();
     // Sum = 15

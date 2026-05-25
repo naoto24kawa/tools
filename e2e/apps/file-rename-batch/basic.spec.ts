@@ -26,7 +26,7 @@ test.describe('File Rename Batch', () => {
       buffer: Buffer.from('fake-image'),
     });
 
-    await expect(page.getByText(/1 file/)).toBeVisible();
+    await expect(page.getByText(/1 file/).first()).toBeVisible();
   });
 
   test('should apply prefix rule and show renamed preview', async ({ page }) => {
@@ -45,12 +45,12 @@ test.describe('File Rename Batch', () => {
     await prefixInput.fill('2024_');
 
     // Preview should show original -> new name
-    await expect(page.getByText('photo.jpg')).toBeVisible();
+    await expect(page.getByText('photo.jpg').first()).toBeVisible();
     await expect(page.getByText('2024_photo.jpg')).toBeVisible();
   });
 
   test('should have rename rule type selector', async ({ page }) => {
-    await expect(page.getByText('Rename Rule')).toBeVisible();
+    await expect(page.getByText('Rename Rule').first()).toBeVisible();
     await expect(page.getByText('Rule Type')).toBeVisible();
   });
 
@@ -84,7 +84,7 @@ test.describe('File Rename Batch', () => {
       buffer: Buffer.from('content'),
     });
 
-    await expect(page.getByText(/1 file/)).toBeVisible();
+    await expect(page.getByText(/1 file/).first()).toBeVisible();
     await page.getByRole('button', { name: /clear all/i }).click();
     await expect(page.getByText(/upload files to see rename preview/i)).toBeVisible();
   });

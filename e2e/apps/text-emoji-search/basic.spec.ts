@@ -38,7 +38,7 @@ test.describe('Text Emoji Search', () => {
 
   test('should switch to Recent tab when Recent button is clicked', async ({ page }) => {
     await page.getByRole('button', { name: /recent/i }).click();
-    await expect(page.getByText('Recently Used')).toBeVisible();
+    await expect(page.getByText('Recently Used', { exact: true })).toBeVisible();
   });
 
   test('should show empty state in Recent when no emojis have been used', async ({ page }) => {

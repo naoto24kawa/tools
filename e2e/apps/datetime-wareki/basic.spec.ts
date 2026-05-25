@@ -17,14 +17,16 @@ test.describe('和暦変換 (Wareki Converter)', () => {
     await monthInput.fill('5');
     await dayInput.fill('1');
     // 2019-05-01 is the first day of Reiwa
-    await expect(page.getByText(/令和/)).toBeVisible();
+    // "令和" appears in dropdown options and era list too; use first()
+    await expect(page.getByText(/令和/).first()).toBeVisible();
     await expect(page.getByText(/令和1年|令和元年/)).toBeVisible();
   });
 
   test('should convert 2024 (Reiwa 6)', async ({ page }) => {
     const yearInput = page.locator('#wareki-year');
     await yearInput.fill('2024');
-    await expect(page.getByText(/令和/)).toBeVisible();
+    // "令和" appears in dropdown options and era list too; use first()
+    await expect(page.getByText(/令和/).first()).toBeVisible();
     await expect(page.getByText(/令和6年/)).toBeVisible();
   });
 
@@ -46,9 +48,11 @@ test.describe('和暦変換 (Wareki Converter)', () => {
 
   test('should show era list at the bottom', async ({ page }) => {
     await expect(page.getByText('元号一覧')).toBeVisible();
-    await expect(page.getByText('令和')).toBeVisible();
-    await expect(page.getByText('昭和')).toBeVisible();
-    await expect(page.getByText('大正')).toBeVisible();
-    await expect(page.getByText('明治')).toBeVisible();
+    // Scope era name checks to the era list card to avoid matching dropdown options
+    const eraListCard = page.getByText('元号一覧').locator('../..');
+    await expect(eraListCard.getByText('令和')).toBeVisible();
+    await expect(eraListCard.getByText('昭和')).toBeVisible();
+    await expect(eraListCard.getByText('大正')).toBeVisible();
+    await expect(eraListCard.getByText('明治')).toBeVisible();
   });
 });

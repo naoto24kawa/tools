@@ -33,7 +33,7 @@ test.describe('List to Table', () => {
 
   test('should switch output to HTML format', async ({ page }) => {
     // Change format to HTML
-    await page.getByText('Markdown Table').click();
+    await page.getByRole('combobox').filter({ hasText: 'Markdown Table' }).click();
     await page.getByRole('option', { name: 'HTML Table' }).click();
 
     const pre = page.locator('pre');
@@ -42,7 +42,7 @@ test.describe('List to Table', () => {
   });
 
   test('should switch output to CSV format', async ({ page }) => {
-    await page.getByText('Markdown Table').click();
+    await page.getByRole('combobox').filter({ hasText: 'Markdown Table' }).click();
     await page.getByRole('option', { name: 'CSV' }).click();
 
     const pre = page.locator('pre');

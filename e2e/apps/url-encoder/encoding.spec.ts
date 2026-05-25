@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test.describe('URL Encoder - Encoding Functionality', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/url-encoder');
   });
 
   test('should encode a simple URL', async ({ page }) => {
@@ -14,11 +14,10 @@ test.describe('URL Encoder - Encoding Functionality', () => {
     await inputTextarea.fill(inputText);
 
     // Click the encode button
-    const encodeButton = page.getByRole('button', { name: /エンコード/i });
+    const encodeButton = page.getByRole('button', { name: /^Encode$/i });
     await encodeButton.click();
 
     // Check if the output contains the encoded text
-    // Note: This assumes there's an output area. Adjust selector as needed.
     const outputTextarea = page.getByRole('textbox').nth(1);
     await expect(outputTextarea).toHaveValue(expectedEncoded);
   });
@@ -32,7 +31,7 @@ test.describe('URL Encoder - Encoding Functionality', () => {
     await inputTextarea.fill(encodedText);
 
     // Click the decode button
-    const decodeButton = page.getByRole('button', { name: /デコード/i });
+    const decodeButton = page.getByRole('button', { name: /^Decode$/i });
     await decodeButton.click();
 
     // Check if the output contains the decoded text
@@ -47,7 +46,7 @@ test.describe('URL Encoder - Encoding Functionality', () => {
     const inputTextarea = page.getByRole('textbox').first();
     await inputTextarea.fill(inputText);
 
-    const encodeButton = page.getByRole('button', { name: /エンコード/i });
+    const encodeButton = page.getByRole('button', { name: /^Encode$/i });
     await encodeButton.click();
 
     const outputTextarea = page.getByRole('textbox').nth(1);
@@ -56,11 +55,11 @@ test.describe('URL Encoder - Encoding Functionality', () => {
 
   test('should handle special characters', async ({ page }) => {
     const inputText = '!@#$%^&*()';
-    
+
     const inputTextarea = page.getByRole('textbox').first();
     await inputTextarea.fill(inputText);
 
-    const encodeButton = page.getByRole('button', { name: /エンコード/i });
+    const encodeButton = page.getByRole('button', { name: /^Encode$/i });
     await encodeButton.click();
 
     const outputTextarea = page.getByRole('textbox').nth(1);
@@ -74,8 +73,9 @@ test.describe('URL Encoder - Encoding Functionality', () => {
     const inputTextarea = page.getByRole('textbox').first();
     await inputTextarea.fill('');
 
-    const encodeButton = page.getByRole('button', { name: /エンコード/i });
-    await encodeButton.click();
+    // Encode button is disabled when input is empty — verify it and that output stays empty
+    const encodeButton = page.getByRole('button', { name: /^Encode$/i });
+    await expect(encodeButton).toBeDisabled();
 
     const outputTextarea = page.getByRole('textbox').nth(1);
     await expect(outputTextarea).toHaveValue('');
@@ -88,7 +88,7 @@ test.describe('URL Encoder - Encoding Functionality', () => {
     const inputTextarea = page.getByRole('textbox').first();
     await inputTextarea.fill(originalText);
 
-    const encodeButton = page.getByRole('button', { name: /エンコード/i });
+    const encodeButton = page.getByRole('button', { name: /^Encode$/i });
     await encodeButton.click();
 
     const outputTextarea = page.getByRole('textbox').nth(1);
@@ -96,8 +96,8 @@ test.describe('URL Encoder - Encoding Functionality', () => {
 
     // Then, decode the encoded value
     await inputTextarea.fill(encodedValue);
-    
-    const decodeButton = page.getByRole('button', { name: /デコード/i });
+
+    const decodeButton = page.getByRole('button', { name: /^Decode$/i });
     await decodeButton.click();
 
     // Should get back the original text

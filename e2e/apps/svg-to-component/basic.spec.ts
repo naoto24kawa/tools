@@ -49,7 +49,7 @@ test.describe('SVG to Component Converter', () => {
   });
 
   test('should have output format selector', async ({ page }) => {
-    await expect(page.getByText('React (TSX)')).toBeVisible();
+    await expect(page.getByRole('combobox').filter({ hasText: 'React (TSX)' })).toBeVisible();
   });
 
   test('should convert to Vue SFC when format changed', async ({ page }) => {

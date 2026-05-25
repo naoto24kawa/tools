@@ -14,7 +14,7 @@ test.describe('Color Palette Generator', () => {
   });
 
   test('should show base color section', async ({ page }) => {
-    await expect(page.getByText('Base Color')).toBeVisible();
+    await expect(page.getByText('Base Color', { exact: true })).toBeVisible();
   });
 
   test('should show hex input with default value', async ({ page }) => {
@@ -29,12 +29,12 @@ test.describe('Color Palette Generator', () => {
   });
 
   test('should show palette type selector', async ({ page }) => {
-    await expect(page.getByText('Palette Type')).toBeVisible();
+    await expect(page.getByText('Palette Type', { exact: true })).toBeVisible();
   });
 
   test('should generate complementary palette by default', async ({ page }) => {
     await expect(page.getByText('Generated Palette')).toBeVisible();
-    await expect(page.getByText(/Complementary/i)).toBeVisible();
+    await expect(page.getByText(/Complementary/i).first()).toBeVisible();
   });
 
   test('should display color swatches', async ({ page }) => {

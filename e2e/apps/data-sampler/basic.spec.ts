@@ -17,16 +17,16 @@ test.describe('Data Sampler', () => {
     const textarea = page.getByLabel('Paste data');
     await textarea.fill('name,age,city\nAlice,30,Tokyo\nBob,25,Osaka\nCarol,35,Kyoto');
     await page.getByRole('button', { name: 'Parse Text' }).click();
-    await expect(page.getByText('name')).toBeVisible();
-    await expect(page.getByText('Alice')).toBeVisible();
-    await expect(page.getByText('Bob')).toBeVisible();
+    await expect(page.getByRole('columnheader', { name: 'name' })).toBeVisible();
+    await expect(page.getByRole('cell', { name: 'Alice' })).toBeVisible();
+    await expect(page.getByRole('cell', { name: 'Bob' })).toBeVisible();
   });
 
   test('should display row count after parsing', async ({ page }) => {
     const textarea = page.getByLabel('Paste data');
     await textarea.fill('name,age\nAlice,30\nBob,25\nCarol,35');
     await page.getByRole('button', { name: 'Parse Text' }).click();
-    await expect(page.getByText(/Parsed 4 rows/i)).toBeVisible();
+    await expect(page.getByText(/Parsed 4 rows/i).first()).toBeVisible();
   });
 
   test('should enable Sample Data button after parsing', async ({ page }) => {
@@ -83,6 +83,6 @@ test.describe('Data Sampler', () => {
 
   test('should show error when parsing empty input', async ({ page }) => {
     await page.getByRole('button', { name: 'Parse Text' }).click();
-    await expect(page.getByText(/Please enter or upload data/i)).toBeVisible();
+    await expect(page.getByText(/Please enter or upload data/i).first()).toBeVisible();
   });
 });

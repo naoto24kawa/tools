@@ -63,7 +63,7 @@ test.describe('Math Calculator', () => {
 
   test('should show error for invalid expression', async ({ page }) => {
     const input = page.getByLabel('数式入力');
-    await input.fill('2++3');
+    await input.fill('2+@3');
     await expect(page.getByRole('alert')).toBeVisible();
   });
 });

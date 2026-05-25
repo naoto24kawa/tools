@@ -27,8 +27,8 @@ test.describe('Image Transparent', () => {
     await fileInput.setInputFiles('e2e/shared/fixtures/test-image.png');
     // Settings panel (Card) should appear with color picker and tolerance slider
     await expect(page.locator('canvas').first()).toBeVisible({ timeout: 5000 });
-    // Tolerance slider should be visible
-    await expect(page.locator('input[type="range"]').first()).toBeVisible();
+    // Tolerance slider (Radix UI Slider renders as role="slider")
+    await expect(page.getByRole('slider').first()).toBeVisible();
   });
 
   test('should show eyedropper and color options after upload', async ({ page }) => {

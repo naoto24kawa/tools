@@ -20,7 +20,7 @@ test.describe('CIDR Calculator', () => {
     const input = page.locator('input#cidr-input');
     await input.fill('10.0.0.0/8');
     await page.getByRole('button', { name: /^Calculate$/i }).click();
-    await expect(page.getByText('10.0.0.0')).toBeVisible();
+    await expect(page.getByText('10.0.0.0').first()).toBeVisible();
     await expect(page.getByText('10.255.255.255')).toBeVisible();
   });
 
@@ -41,28 +41,31 @@ test.describe('CIDR Calculator', () => {
   test('should check IP containment - IP within range', async ({ page }) => {
     await page.locator('input#contains-cidr').fill('192.168.1.0/24');
     await page.locator('input#contains-ip').fill('192.168.1.100');
-    await page.getByRole('button', { name: /^Check$/i }).click();
+    // There are two Check buttons; use the first (IP Containment section)
+    await page.getByRole('button', { name: /^Check$/i }).first().click();
     await expect(page.getByText(/192\.168\.1\.100 is within 192\.168\.1\.0\/24/)).toBeVisible();
   });
 
   test('should check IP containment - IP outside range', async ({ page }) => {
     await page.locator('input#contains-cidr').fill('192.168.1.0/24');
     await page.locator('input#contains-ip').fill('10.0.0.1');
-    await page.getByRole('button', { name: /^Check$/i }).click();
+    await page.getByRole('button', { name: /^Check$/i }).first().click();
     await expect(page.getByText(/NOT within/i)).toBeVisible();
   });
 
   test('should detect overlapping CIDR ranges', async ({ page }) => {
     await page.locator('input#overlap-cidr1').fill('10.0.0.0/8');
     await page.locator('input#overlap-cidr2').fill('10.1.0.0/16');
-    await page.getByRole('button', { name: /^Check$/i }).click();
-    await expect(page.getByText(/OVERLAP/i)).toBeVisible();
+    // Use the second Check button (CIDR Overlap section)
+    await page.getByRole('button', { name: /^Check$/i }).nth(1).click();
+    // Result says "10.0.0.0/8 and 10.1.0.0/16 OVERLAP"
+    await expect(page.getByText('10.0.0.0/8 and 10.1.0.0/16 OVERLAP')).toBeVisible();
   });
 
   test('should detect non-overlapping CIDR ranges', async ({ page }) => {
     await page.locator('input#overlap-cidr1').fill('10.0.0.0/8');
     await page.locator('input#overlap-cidr2').fill('192.168.0.0/16');
-    await page.getByRole('button', { name: /^Check$/i }).click();
+    await page.getByRole('button', { name: /^Check$/i }).nth(1).click();
     await expect(page.getByText(/do NOT overlap/i)).toBeVisible();
   });
 

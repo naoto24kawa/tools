@@ -14,12 +14,14 @@ test.describe('Password Strength Checker', () => {
   });
 
   test('should not show strength meter before any input', async ({ page }) => {
-    await expect(page.getByText(/Strength/)).not.toBeVisible();
+    // The exact label "Strength" is inside the {result && ...} block, hidden before input
+    await expect(page.getByText('Strength', { exact: true })).not.toBeVisible();
   });
 
   test('should display strength meter after typing', async ({ page }) => {
     await page.locator('#password').fill('abc');
-    await expect(page.getByText(/Strength/)).toBeVisible();
+    // The exact label "Strength" appears inside the result block
+    await expect(page.getByText('Strength', { exact: true })).toBeVisible();
   });
 
   test('should label a short simple password as Very Weak or Weak', async ({ page }) => {
@@ -48,8 +50,10 @@ test.describe('Password Strength Checker', () => {
     await expect(page.getByText(/Minimum 8 characters/i)).toBeVisible();
     await expect(page.getByText(/Uppercase letters/i)).toBeVisible();
     await expect(page.getByText(/Lowercase letters/i)).toBeVisible();
-    await expect(page.getByText(/Numbers/i)).toBeVisible();
-    await expect(page.getByText(/Special characters/i)).toBeVisible();
+    // Use exact text to avoid matching the suggestions list item "Add numbers (0-9)"
+    await expect(page.getByText('Numbers (0-9)', { exact: true })).toBeVisible();
+    // Use exact text to avoid matching the suggestions list item "Add special characters"
+    await expect(page.getByText('Special characters (!@#$%^&*)', { exact: true })).toBeVisible();
   });
 
   test('should toggle password visibility when Show/Hide is clicked', async ({ page }) => {

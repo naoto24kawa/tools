@@ -34,7 +34,7 @@ test.describe('Compound Interest Calculator', () => {
     await expect(page.getByText('結果')).toBeVisible();
     await expect(page.getByText('最終金額')).toBeVisible();
     // 1,000,000 * (1 + 0.05/12)^120 ≈ 1,647,009 (monthly compounding)
-    await expect(page.getByText(/1,6[0-9][0-9],[0-9]+/)).toBeVisible();
+    await expect(page.getByRole('paragraph').filter({ hasText: /1,6[0-9][0-9],[0-9]+/ })).toBeVisible();
   });
 
   test('should show total contributions and interest earned', async ({ page }) => {
@@ -44,7 +44,7 @@ test.describe('Compound Interest Calculator', () => {
     await page.getByRole('button', { name: /計算する/i }).click();
 
     await expect(page.getByText('元本+積立合計')).toBeVisible();
-    await expect(page.getByText('運用益')).toBeVisible();
+    await expect(page.getByText('運用益').first()).toBeVisible();
   });
 
   test('should show yearly breakdown table', async ({ page }) => {
@@ -87,7 +87,7 @@ test.describe('Compound Interest Calculator', () => {
     await page.getByLabel('元本 (円)').fill('1000000');
     await page.getByLabel('年利 (%)').fill('5');
     await page.getByRole('button', { name: /計算する/i }).click();
-    await expect(page.getByText(/運用期間を入力/i)).toBeVisible();
+    await expect(page.getByText(/運用期間を入力/i).first()).toBeVisible();
   });
 
   test('should switch compounding frequency', async ({ page }) => {
@@ -100,7 +100,7 @@ test.describe('Compound Interest Calculator', () => {
     await page.getByRole('button', { name: /計算する/i }).click();
 
     // 1,000,000 * (1.05)^10 ≈ 1,628,894
-    await expect(page.getByText(/1,628/)).toBeVisible();
+    await expect(page.getByRole('paragraph').filter({ hasText: /1,628/ })).toBeVisible();
   });
 
   test('should show entry section heading', async ({ page }) => {

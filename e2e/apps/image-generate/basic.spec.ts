@@ -6,8 +6,8 @@ test.describe('Image Generate - Comprehensive E2E Tests', () => {
   });
 
   test('should load the page successfully', async ({ page }) => {
-    await expect(page.getByRole('heading', { name: /Image Generate/i })).toBeVisible();
-    await expect(page.getByText(/画像を生成/i)).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Image Generator/i })).toBeVisible();
+    await expect(page.getByText(/画像生成/i)).toBeVisible();
   });
 
   test('should display canvas preview', async ({ page }) => {

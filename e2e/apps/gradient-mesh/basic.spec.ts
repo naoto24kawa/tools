@@ -47,6 +47,6 @@ test.describe('Gradient Mesh Generator', () => {
       });
     });
     await page.getByRole('button', { name: /copy css/i }).click();
-    await expect(page.getByText(/css copied to clipboard/i)).toBeVisible();
+    await expect(page.getByText(/css copied to clipboard/i).first()).toBeVisible();
   });
 });

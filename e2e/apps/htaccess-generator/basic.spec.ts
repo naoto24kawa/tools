@@ -53,14 +53,23 @@ test.describe('.htaccess Generator', () => {
     await expect(preview).toContainText('/new');
   });
 
-  test('should show Copy button and trigger clipboard', async ({ page }) => {
+  test('should show Copy button and trigger clipboard', async ({ page, context }) => {
+    await context.grantPermissions(['clipboard-read', 'clipboard-write']);
     await page.evaluate(() => {
-      Object.defineProperty(navigator, 'clipboard', {
-        value: { writeText: () => Promise.resolve() },
-        configurable: true,
-      });
+      // Override clipboard only if it is configurable or not yet defined
+      try {
+        Object.defineProperty(navigator, 'clipboard', {
+          value: { writeText: () => Promise.resolve() },
+          configurable: true,
+          writable: true,
+        });
+      } catch {
+        // clipboard may already be non-configurable; proceed anyway
+      }
     });
-    await page.getByRole('button', { name: /^copy$/i }).click();
-    await expect(page.getByText(/copied to clipboard/i)).toBeVisible();
+    const copyButton = page.getByRole('button', { name: /^copy$/i });
+    await expect(copyButton).toBeVisible();
+    await copyButton.click();
+    await expect(page.getByText(/copied to clipboard/i).first()).toBeVisible({ timeout: 5000 });
   });
 });

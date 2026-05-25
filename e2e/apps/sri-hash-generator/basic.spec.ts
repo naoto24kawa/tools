@@ -24,8 +24,8 @@ test.describe('SRI Hash Generator', () => {
   test('should generate SHA-384 hash from text input', async ({ page }) => {
     await page.locator('#input-text').fill('console.log("hello world");');
     await page.getByRole('button', { name: /generate hash/i }).click();
-    // SHA-384 hash starts with sha384-
-    await expect(page.getByText(/sha384-/)).toBeVisible({ timeout: 5000 });
+    // SHA-384 hash starts with sha384- displayed in the integrity hash result div (text-sm)
+    await expect(page.locator('.font-mono.text-sm.break-all').filter({ hasText: /sha384-/ })).toBeVisible({ timeout: 5000 });
   });
 
   test('should generate SHA-256 hash when algorithm changed', async ({ page }) => {
@@ -34,19 +34,19 @@ test.describe('SRI Hash Generator', () => {
     await page.getByRole('option', { name: 'SHA-256' }).click();
     await page.locator('#input-text').fill('test content');
     await page.getByRole('button', { name: /generate hash/i }).click();
-    await expect(page.getByText(/sha256-/)).toBeVisible({ timeout: 5000 });
+    await expect(page.locator('.font-mono.text-sm.break-all').filter({ hasText: /sha256-/ })).toBeVisible({ timeout: 5000 });
   });
 
   test('should show HTML snippet after hash generation', async ({ page }) => {
     await page.locator('#input-text').fill('body { margin: 0; }');
     await page.getByRole('button', { name: /generate hash/i }).click();
-    await expect(page.getByText('HTML Snippet')).toBeVisible({ timeout: 5000 });
+    await expect(page.getByText('HTML Snippet', { exact: true })).toBeVisible({ timeout: 5000 });
   });
 
   test('should show integrity hash section after generation', async ({ page }) => {
     await page.locator('#input-text').fill('alert(1)');
     await page.getByRole('button', { name: /generate hash/i }).click();
-    await expect(page.getByText('Integrity Hash')).toBeVisible({ timeout: 5000 });
+    await expect(page.getByText('Integrity Hash', { exact: true })).toBeVisible({ timeout: 5000 });
   });
 
   test('should show resource URL input after hash generation', async ({ page }) => {

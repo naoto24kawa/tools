@@ -36,8 +36,9 @@ test.describe('Text Encryption', () => {
     await page.locator('textarea#input').fill('Hello, World!');
     await page.locator('input#passphrase').fill('mypassword');
     await page.getByRole('button', { name: /^encrypt$/i }).click();
-    const output = page.locator('textarea').last();
-    await expect(output).not.toHaveValue('');
+    const output = page.locator('textarea').nth(1);
+    await expect(output).toBeVisible({ timeout: 10000 });
+    await expect(output).not.toHaveValue('', { timeout: 10000 });
     const value = await output.inputValue();
     expect(value.length).toBeGreaterThan(0);
     // Encrypted output should not contain the original plaintext
@@ -52,14 +53,23 @@ test.describe('Text Encryption', () => {
     await page.locator('textarea#input').fill(plaintext);
     await page.locator('input#passphrase').fill(passphrase);
     await page.getByRole('button', { name: /^encrypt$/i }).click();
-    const outputArea = page.locator('textarea').last();
-    await expect(outputArea).not.toHaveValue('');
-    const ciphertext = await outputArea.inputValue();
 
-    // Decrypt
+    // Wait for the output card to appear: the second textarea is only rendered after encryption
+    // completes. Use nth(1) so the locator fails until the output textarea is in the DOM.
+    const outputArea = page.locator('textarea').nth(1);
+    await expect(outputArea).toBeVisible({ timeout: 10000 });
+    await expect(outputArea).not.toHaveValue('', { timeout: 10000 });
+    const ciphertext = await outputArea.inputValue();
+    expect(ciphertext.length).toBeGreaterThan(0);
+
+    // Decrypt: fill input with ciphertext (passphrase is still set from encrypt step)
     await page.locator('textarea#input').fill(ciphertext);
+    await expect(page.locator('textarea#input')).toHaveValue(ciphertext, { timeout: 5000 });
+
     await page.getByRole('button', { name: /^decrypt$/i }).click();
-    await expect(outputArea).toHaveValue(plaintext);
+
+    // Wait for decrypted output to appear (PBKDF2 with 100k iterations can be slow)
+    await expect(page.locator('textarea').nth(1)).toHaveValue(plaintext, { timeout: 15000 });
   });
 
   test('should show error when decrypting with wrong passphrase', async ({ page }) => {
@@ -74,7 +84,7 @@ test.describe('Text Encryption', () => {
     await page.locator('textarea#input').fill(ciphertext);
     await page.locator('input#passphrase').fill('wrongpass');
     await page.getByRole('button', { name: /^decrypt$/i }).click();
-    await expect(page.getByRole('alert')).toBeVisible();
+    await expect(page.getByText(/Decryption failed/i).first()).toBeVisible();
   });
 
   test('should clear all fields when Clear button is clicked', async ({ page }) => {

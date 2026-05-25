@@ -14,7 +14,7 @@ test.describe('CSS Animation Builder', () => {
   });
 
   test('should show Keyframes section with Add button', async ({ page }) => {
-    await expect(page.getByText('Keyframes')).toBeVisible();
+    await expect(page.getByText('Keyframes').first()).toBeVisible();
     await expect(page.getByRole('button', { name: /add/i })).toBeVisible();
   });
 
@@ -26,9 +26,9 @@ test.describe('CSS Animation Builder', () => {
   });
 
   test('should show Live Preview with animated element', async ({ page }) => {
-    await expect(page.getByText('Live Preview')).toBeVisible();
+    await expect(page.getByText('Live Preview').first()).toBeVisible();
     // Preview element with letter "A"
-    await expect(page.getByText('A')).toBeVisible();
+    await expect(page.locator('.preview-element')).toBeVisible();
   });
 
   test('should show Generated CSS section', async ({ page }) => {
@@ -38,7 +38,7 @@ test.describe('CSS Animation Builder', () => {
   });
 
   test('should show animation name input and update CSS', async ({ page }) => {
-    const nameInput = page.getByLabel('Name');
+    const nameInput = page.getByText('Name').locator('..').locator('input');
     await nameInput.clear();
     await nameInput.fill('myAnimation');
     await expect(page.locator('pre code')).toContainText('myAnimation');

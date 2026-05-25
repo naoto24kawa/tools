@@ -32,11 +32,10 @@ test.describe('Invoice Generator', () => {
     const descInput = page.getByPlaceholder('品目の説明').first();
     await descInput.fill('Webデザイン');
 
-    const qtyInputs = page.getByLabel('数量');
-    await qtyInputs.first().fill('2');
-
-    const priceInputs = page.getByLabel('単価 (円)');
-    await priceInputs.first().fill('50000');
+    // quantity is first number input, unitPrice is second (labels not linked via htmlFor)
+    const numberInputs = page.locator('input[type="number"]');
+    await numberInputs.first().fill('2');
+    await numberInputs.nth(1).fill('50000');
 
     // 小計 should show non-zero
     await expect(page.getByText('小計')).toBeVisible();
@@ -57,8 +56,9 @@ test.describe('Invoice Generator', () => {
     const descInput = page.getByPlaceholder('品目の説明').first();
     await descInput.fill('コンサルティング');
 
-    const priceInput = page.getByLabel('単価 (円)').first();
-    await priceInput.fill('100000');
+    // unitPrice is second number input (label not linked via htmlFor)
+    const numberInputs = page.locator('input[type="number"]');
+    await numberInputs.nth(1).fill('100000');
 
     await page.getByRole('button', { name: 'プレビュー' }).click();
 

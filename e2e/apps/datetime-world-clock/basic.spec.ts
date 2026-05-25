@@ -10,8 +10,8 @@ test.describe('World Clock', () => {
   });
 
   test('should display multiple city clocks', async ({ page }) => {
-    // Each city is shown in a Card; there should be multiple
-    const cards = page.locator('[class*="rounded-xl"]');
+    // Each city is shown in a Card with rounded-lg; there should be multiple
+    const cards = page.locator('[class*="rounded-lg"]');
     await expect(cards.first()).toBeVisible();
     expect(await cards.count()).toBeGreaterThan(3);
   });

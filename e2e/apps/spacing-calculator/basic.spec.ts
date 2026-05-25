@@ -22,20 +22,20 @@ test.describe('Spacing Calculator', () => {
   });
 
   test('should display spacing table with px/rem/em/Tailwind columns', async ({ page }) => {
-    await expect(page.getByText('px')).toBeVisible();
-    await expect(page.getByText('rem')).toBeVisible();
-    await expect(page.getByText('em')).toBeVisible();
-    await expect(page.getByText('Tailwind')).toBeVisible();
+    await expect(page.getByRole('columnheader', { name: 'px', exact: true })).toBeVisible();
+    await expect(page.getByRole('columnheader', { name: 'rem', exact: true })).toBeVisible();
+    await expect(page.getByRole('columnheader', { name: 'em', exact: true })).toBeVisible();
+    await expect(page.getByRole('columnheader', { name: 'Tailwind', exact: true })).toBeVisible();
   });
 
   test('should recalculate when base unit changes', async ({ page }) => {
     const baseUnitInput = page.locator('#baseUnit');
     // Default: 8px base → first row shows 8px
-    await expect(page.getByText('8px')).toBeVisible();
+    await expect(page.getByRole('cell', { name: '8px', exact: true })).toBeVisible();
 
     // Change to 4px base
     await baseUnitInput.fill('4');
-    await expect(page.getByText('4px')).toBeVisible();
+    await expect(page.getByRole('cell', { name: '4px', exact: true })).toBeVisible();
   });
 
   test('should show Tailwind class names', async ({ page }) => {

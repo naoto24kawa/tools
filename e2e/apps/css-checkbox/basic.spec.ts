@@ -27,9 +27,9 @@ test.describe('CSS Checkbox / Switch', () => {
   });
 
   test('should show color pickers for Active, Inactive, Knob', async ({ page }) => {
-    await expect(page.getByLabel('Activeカラーピッカー')).toBeVisible();
-    await expect(page.getByLabel('Inactiveカラーピッカー')).toBeVisible();
-    await expect(page.getByLabel('Knobカラーピッカー')).toBeVisible();
+    await expect(page.locator('input[type="color"][aria-label="Activeカラーピッカー"]')).toBeVisible();
+    await expect(page.locator('input[type="color"][aria-label="Inactiveカラーピッカー"]')).toBeVisible();
+    await expect(page.locator('input[type="color"][aria-label="Knobカラーピッカー"]')).toBeVisible();
   });
 
   test('should show CSS Code output', async ({ page }) => {
