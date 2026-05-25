@@ -1,0 +1,68 @@
+import { test, expect } from '@playwright/test';
+
+test.describe('HTML Minifier', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/html-minifier');
+  });
+
+  test('should load page with correct title', async ({ page }) => {
+    await expect(page).toHaveTitle(/HTML Minifier/i);
+  });
+
+  test('should display input and output textareas', async ({ page }) => {
+    await expect(page.locator('#input')).toBeVisible();
+    await expect(page.locator('#output')).toBeVisible();
+  });
+
+  test('should minify HTML by collapsing whitespace', async ({ page }) => {
+    const input = page.locator('#input');
+    await input.fill('<div>\n  <p>hello</p>\n  <span>world</span>\n</div>');
+    await page.getByRole('button', { name: /minify/i }).click();
+    const value = await page.locator('#output').inputValue();
+    expect(value).not.toContain('\n');
+    expect(value).toContain('<p>hello</p>');
+    expect(value).toContain('<span>world</span>');
+  });
+
+  test('should remove HTML comments when option is enabled', async ({ page }) => {
+    const input = page.locator('#input');
+    await input.fill('<!-- This is a comment --><div>content</div>');
+    await page.getByRole('button', { name: /minify/i }).click();
+    const value = await page.locator('#output').inputValue();
+    expect(value).not.toContain('<!-- This is a comment -->');
+    expect(value).toContain('<div>content</div>');
+  });
+
+  test('should show stats after minification', async ({ page }) => {
+    const input = page.locator('#input');
+    await input.fill('<div>\n  <p>hello world</p>\n</div>');
+    await page.getByRole('button', { name: /minify/i }).click();
+    await expect(page.getByText(/original/i)).toBeVisible();
+    await expect(page.getByText(/minified/i)).toBeVisible();
+    await expect(page.getByText(/saved/i)).toBeVisible();
+  });
+
+  test('should clear input and output on clear button click', async ({ page }) => {
+    const input = page.locator('#input');
+    await input.fill('<div>test</div>');
+    await page.getByRole('button', { name: /minify/i }).click();
+    await page.getByRole('button', { name: /clear/i }).click();
+    expect(await input.inputValue()).toBe('');
+    expect(await page.locator('#output').inputValue()).toBe('');
+  });
+
+  test('should disable minify button when input is empty', async ({ page }) => {
+    await expect(page.getByRole('button', { name: /minify/i })).toBeDisabled();
+  });
+
+  test('should disable copy button when output is empty', async ({ page }) => {
+    await expect(page.getByRole('button', { name: /copy result/i })).toBeDisabled();
+  });
+
+  test('should toggle options via checkboxes', async ({ page }) => {
+    const removeCommentsCheckbox = page.getByRole('checkbox', { name: /remove comments/i });
+    await expect(removeCommentsCheckbox).toBeChecked();
+    await removeCommentsCheckbox.click();
+    await expect(removeCommentsCheckbox).not.toBeChecked();
+  });
+});
