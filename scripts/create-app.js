@@ -408,8 +408,10 @@ async function main() {
     if (!skipRouter) {
       console.log(`🔧 メインルーターを更新しています...\n`);
 
-      updateWranglerToml(appName, appNameSnake);
-      updatePackageJson(appName);
+      if (!useReactTemplate) {
+        updateWranglerToml(appName, appNameSnake);
+        updatePackageJson(appName);
+      }
       updateRouterIndex(appName, appNamePascal, appNameSnake, description);
       updateAppsConfig(appName, description);
 
