@@ -36,6 +36,7 @@ function showHelp() {
 
 オプション:
   --help, -h        このヘルプを表示
+  --react, -r       React SPA テンプレートを使用
   --skip-router     メインルーターへの追加をスキップ（手動で追加する場合）
 `);
 }
@@ -372,7 +373,9 @@ async function main() {
   }
 
   // テンプレートディレクトリ
-  const templateDir = path.join(__dirname, '..', 'templates', 'app');
+  const useReactTemplate = args.includes('--react') || args.includes('-r');
+  const templateName = useReactTemplate ? 'react-spa' : 'app';
+  const templateDir = path.join(__dirname, '..', 'templates', templateName);
 
   // テンプレートが存在するか確認
   if (!fs.existsSync(templateDir)) {
@@ -384,6 +387,7 @@ async function main() {
   const replacements = {
     '\\{\\{APP_NAME\\}\\}': appName,
     '\\{\\{APP_NAME_PASCAL\\}\\}': appNamePascal,
+    '\\{\\{APP_TITLE\\}\\}': description,
     '\\{\\{APP_DESCRIPTION\\}\\}': description,
     '\\{\\{SERVICE_NAME\\}\\}': serviceName,
   };
@@ -404,8 +408,10 @@ async function main() {
     if (!skipRouter) {
       console.log(`🔧 メインルーターを更新しています...\n`);
 
-      updateWranglerToml(appName, appNameSnake);
-      updatePackageJson(appName);
+      if (!useReactTemplate) {
+        updateWranglerToml(appName, appNameSnake);
+        updatePackageJson(appName);
+      }
       updateRouterIndex(appName, appNamePascal, appNameSnake, description);
       updateAppsConfig(appName, description);
 
