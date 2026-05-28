@@ -25,6 +25,16 @@ app.get('/health', (c) => {
 
 // 静的ファイルを ASSETS バインディング経由で配信（secureHeaders・cors が全レスポンスに適用される）
 app.all('*', async (c) => {
+  const path = new URL(c.req.url).pathname;
+  const lastSegment = path.split('/').pop() ?? '';
+
+  // trailing slash がなく拡張子もないパスはディレクトリと判断してリダイレクト
+  // (例: /image-resize → /image-resize/)
+  // これにより ./assets/... の相対パスが正しく解決される
+  if (!path.endsWith('/') && !lastSegment.includes('.')) {
+    return c.redirect(path + '/', 301);
+  }
+
   const response = await c.env.ASSETS.fetch(c.req.raw);
   if (response.status === 404) {
     return c.json({ error: 'Not found', message: '指定されたパスは存在しません' }, 404);
