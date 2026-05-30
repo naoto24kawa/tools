@@ -59,6 +59,11 @@ function simpleXmlToJson(xml: string): string {
   const trimmed = xml.trim();
   if (!trimmed) throw new Error('Input is empty');
 
+  // Guard: reject XML features the simple parser cannot handle
+  if (/<(!--|!\[CDATA\[|\?)/.test(xml)) {
+    throw new Error('xml-to-json: comments, CDATA, and processing instructions are not supported');
+  }
+
   // トークナイザー: タグと文字列を分割
   function tokenize(str: string): string[] {
     const tokens: string[] = [];
@@ -171,8 +176,16 @@ export const REGISTRY: Record<string, ToolFn> = {
   'uuencode': (t) => uuencode(t),
   'uudecode': (t) => uudecode(t),
   // Format
-  'json-format': (t) => formatJSON(t, 2).formatted,
-  'json-minify': (t) => minifyJSON(t).formatted,
+  'json-format': (t) => {
+    const result = formatJSON(t, 2);
+    if (result.error) throw new Error(result.error);
+    return result.formatted;
+  },
+  'json-minify': (t) => {
+    const result = minifyJSON(t);
+    if (result.error) throw new Error(result.error);
+    return result.formatted;
+  },
   'xml-format': (t) => formatXml(t),
   'html-format': (t) => formatHtml(t),
   'html-minify': (t) => minifyHtml(t),
@@ -184,11 +197,24 @@ export const REGISTRY: Record<string, ToolFn> = {
   'atbash': (t) => atbash(t),
   'caesar-encrypt': (t) => {
     try {
-      const { text, shift } = JSON.parse(t) as { text: string; shift: number };
-      return caesarEncrypt(text, shift);
+      const parsed: unknown = JSON.parse(t);
+      if (
+        typeof parsed === 'object' &&
+        parsed !== null &&
+        'text' in parsed &&
+        'shift' in parsed &&
+        typeof (parsed as Record<string, unknown>).text === 'string' &&
+        typeof (parsed as Record<string, unknown>).shift === 'number'
+      ) {
+        return caesarEncrypt(
+          (parsed as Record<string, unknown>).text as string,
+          (parsed as Record<string, unknown>).shift as number,
+        );
+      }
     } catch {
-      return caesarEncrypt(t, 3);
+      // not JSON — treat as plain text
     }
+    return caesarEncrypt(t, 3);
   },
   // Generate
   'uuid-v4': () => generateUUIDv4(),
