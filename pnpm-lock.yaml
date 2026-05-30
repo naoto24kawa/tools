@@ -11776,6 +11776,76 @@ importers:
         specifier: ^8.0.0
         version: 8.0.0(@types/node@25.5.0)(esbuild@0.27.4)(jiti@1.21.7)
 
+  apps/markdown-to-pdf:
+    dependencies:
+      '@radix-ui/react-label':
+        specifier: ^2.1.7
+        version: 2.1.8(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      '@radix-ui/react-select':
+        specifier: ^2.2.6
+        version: 2.2.6(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      '@radix-ui/react-slot':
+        specifier: ^1.2.3
+        version: 1.2.4(@types/react@19.2.14)(react@19.2.4)
+      '@radix-ui/react-toast':
+        specifier: ^1.2.15
+        version: 1.2.15(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      class-variance-authority:
+        specifier: ^0.7.1
+        version: 0.7.1
+      clsx:
+        specifier: ^2.1.1
+        version: 2.1.1
+      dompurify:
+        specifier: ^3.2.6
+        version: 3.4.7
+      lucide-react:
+        specifier: ^0.546.0
+        version: 0.546.0(react@19.2.4)
+      marked:
+        specifier: ^15.0.12
+        version: 15.0.12
+      react:
+        specifier: ^19.0.0
+        version: 19.2.4
+      react-dom:
+        specifier: ^19.0.0
+        version: 19.2.4(react@19.2.4)
+      tailwind-merge:
+        specifier: ^3.3.1
+        version: 3.5.0
+    devDependencies:
+      '@types/react':
+        specifier: ^19.0.0
+        version: 19.2.14
+      '@types/react-dom':
+        specifier: ^19.0.0
+        version: 19.2.3(@types/react@19.2.14)
+      '@vitejs/plugin-react-swc':
+        specifier: ^4.3.0
+        version: 4.3.0(vite@8.0.0(@types/node@25.5.0)(esbuild@0.27.4)(jiti@1.21.7))
+      autoprefixer:
+        specifier: ^10.4.21
+        version: 10.4.27(postcss@8.5.8)
+      happy-dom:
+        specifier: ^20.0.10
+        version: 20.8.4
+      postcss:
+        specifier: ^8.5.6
+        version: 8.5.8
+      tailwindcss:
+        specifier: ^3.4.0
+        version: 3.4.19
+      tailwindcss-animate:
+        specifier: ^1.0.7
+        version: 1.0.7(tailwindcss@3.4.19)
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+      vite:
+        specifier: ^8.0.0
+        version: 8.0.0(@types/node@25.5.0)(esbuild@0.27.4)(jiti@1.21.7)
+
   apps/markdown-to-slides:
     dependencies:
       '@radix-ui/react-label':
@@ -21757,6 +21827,9 @@ packages:
   '@types/resolve@1.20.6':
     resolution: {integrity: sha512-A4STmOXPhMUtHH+S6ymgE2GiBSMqf4oTvcQZMcHzokuTLVYzXTB8ttjcgxOVaAp2lGwEdzZ0J+cRbbeevQj1UQ==}
 
+  '@types/trusted-types@2.0.7':
+    resolution: {integrity: sha512-ScaPdn1dQczgbl0QFTeTOmVHFULt394XJgOQNoyVhZ6r2vLnMLJfBPd53SB52T/3G36VI1/g2MZaX0cwDuXsfw==}
+
   '@types/whatwg-mimetype@3.0.2':
     resolution: {integrity: sha512-c2AKvDT8ToxLIOUlN51gTiHXflsfIFisS4pO7pDPoKouJCESkhZnEy623gwP9laCy5lnLDAw1vAzu2vM2YLOrA==}
 
@@ -22205,6 +22278,9 @@ packages:
   dom-accessibility-api@0.6.3:
     resolution: {integrity: sha512-7ZgogeTnjuHbo+ct10G9Ffp0mif17idi0IyWNVA/wcwcm7NPOD/WEHVP3n7n3MhXqxoIYm8d6MuZohYWIZ4T3w==}
 
+  dompurify@3.4.7:
+    resolution: {integrity: sha512-2jBxDJY4RR06tQNy4w5FlFH7kfxsQZlufd0sbv+chfHCxeJwrFw2baUDsSwvBISD4K4RDbd0PTfy3uNXsR6siA==}
+
   doublearray@0.0.2:
     resolution: {integrity: sha512-aw55FtZzT6AmiamEj2kvmR6BuFqvYgKZUkfQ7teqVRNqD5UE0rw8IeW/3gieHNKQ5sPuDKlljWEn4bzv5+1bHw==}
 
@@ -22557,6 +22633,11 @@ packages:
 
   magic-string@0.30.21:
     resolution: {integrity: sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==}
+
+  marked@15.0.12:
+    resolution: {integrity: sha512-8dD6FusOQSrpv9Z1rdNMdlSgQOIP880DHqnohobOmYLElGEqAL/JvxvuxZO16r4HtjTlfPRDC1hbvxC9dPN2nA==}
+    engines: {node: '>= 18'}
+    hasBin: true
 
   merge2@1.4.1:
     resolution: {integrity: sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==}
@@ -24635,6 +24716,9 @@ snapshots:
 
   '@types/resolve@1.20.6': {}
 
+  '@types/trusted-types@2.0.7':
+    optional: true
+
   '@types/whatwg-mimetype@3.0.2': {}
 
   '@types/ws@8.18.1':
@@ -24990,6 +25074,10 @@ snapshots:
 
   dom-accessibility-api@0.6.3: {}
 
+  dompurify@3.4.7:
+    optionalDependencies:
+      '@types/trusted-types': 2.0.7
+
   doublearray@0.0.2: {}
 
   electron-to-chromium@1.5.313: {}
@@ -25308,6 +25396,8 @@ snapshots:
   magic-string@0.30.21:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.5
+
+  marked@15.0.12: {}
 
   merge2@1.4.1: {}
 
