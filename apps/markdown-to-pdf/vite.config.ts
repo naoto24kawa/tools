@@ -24,4 +24,7 @@ export default defineConfig({
     emptyOutDir: true,
     sourcemap: false,
   },
+  test: {
+    environment: 'happy-dom',
+  },
 });
