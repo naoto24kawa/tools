@@ -37,6 +37,7 @@ export const APPS_CONFIG: readonly AppConfig[] = [
   { path: '/text-kana-converter', url: 'https://tools-text-kana-converter.elchika.app', icon: 'あ', displayName: 'Kana Converter', description: 'ひらがな・カタカナ変換', category: 'Text' },
   { path: '/text-bionic-reading', url: 'https://tools-text-bionic-reading.elchika.app', icon: '👁', displayName: 'Bionic Reading', description: 'Bionic Reading変換', category: 'Text' },
   { path: '/text-markdown-html', url: 'https://tools-text-markdown-html.elchika.app', icon: '📑', displayName: 'Markdown to HTML', description: 'Markdown→HTML変換', category: 'Text' },
+  { path: '/markdown-to-pdf', url: 'https://tools-markdown-to-pdf.elchika.app', icon: '📄', displayName: 'Markdown to PDF', description: 'MarkdownをPDFとして保存', category: 'Text' },
   { path: '/text-markdown-preview', url: 'https://tools-text-markdown-preview.elchika.app', icon: '👀', displayName: 'Markdown Preview', description: 'Markdownプレビュー', category: 'Text' },
 
   // ── Encode ──
