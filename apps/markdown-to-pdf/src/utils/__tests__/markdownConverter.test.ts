@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { convertMarkdownToHtml } from '../markdownConverter';
+import { convertMarkdownToFragment, convertMarkdownToHtml } from '../markdownConverter';
 
 describe('convertMarkdownToHtml', () => {
   it('空文字を渡すと空文字を返す', () => {
@@ -48,5 +48,24 @@ describe('convertMarkdownToHtml', () => {
   it('onerror 属性を除去する', () => {
     const result = convertMarkdownToHtml('<img onerror="alert(1)" src="x">');
     expect(result).not.toContain('onerror');
+  });
+});
+
+describe('convertMarkdownToFragment', () => {
+  it('DocumentFragment を返す', () => {
+    const fragment = convertMarkdownToFragment('# Hello');
+    expect(fragment).toBeInstanceOf(DocumentFragment);
+  });
+
+  it('h1 要素を含む Fragment を返す', () => {
+    const fragment = convertMarkdownToFragment('# Hello');
+    const div = document.createElement('div');
+    div.appendChild(fragment.cloneNode(true));
+    expect(div.querySelector('h1')).not.toBeNull();
+  });
+
+  it('空文字の場合も DocumentFragment を返す', () => {
+    const fragment = convertMarkdownToFragment('');
+    expect(fragment).toBeInstanceOf(DocumentFragment);
   });
 });
