@@ -1,7 +1,7 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { z } from 'zod';
-import { REGISTRY, TOOL_NAMES } from './registry.js';
+import { REGISTRY, TOOL_NAMES, type ToolFn } from './registry.js';
 
 const server = new McpServer({ name: 'elchika-tools', version: '1.0.0' });
 
@@ -19,7 +19,7 @@ server.tool(
   },
   async ({ tool, input }) => {
     try {
-      const fn = REGISTRY[tool] as (input: string) => string | Promise<string>;
+      const fn = REGISTRY[tool] as ToolFn;
       const result = await fn(input);
       return { content: [{ type: 'text', text: String(result) }] };
     } catch (e) {

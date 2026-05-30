@@ -150,7 +150,7 @@ function simpleXmlToJson(xml: string): string {
   return JSON.stringify(result, null, 2);
 }
 
-type ToolFn = (input: string) => string;
+export type ToolFn = (input: string) => string | Promise<string>;
 
 export const REGISTRY: Record<string, ToolFn> = {
   'upper-case': (t) => toUpperCase(t),
