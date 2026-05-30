@@ -100,7 +100,7 @@ export default function App() {
   }, []);
 
   const handleDragLeave = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
+    if (e.currentTarget.contains(e.relatedTarget as Node)) return;
     setIsDragOver(false);
   }, []);
 
