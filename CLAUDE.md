@@ -137,3 +137,11 @@ cd packages/router && pnpm run deploy  # Workers デプロイ
 - 一部アプリの `index.html` に元テンプレートの title/description が残っている場合がある
 - 各アプリの `wrangler.toml` はレガシー(個別Pages デプロイ時代の名残)。現在は build-all 方式を使用
 - `packages/router/public/` はビルド生成物。git管理するかは運用方針次第
+
+## Design Rules (AI向けデザイン品質)
+
+UIコードを書く・レビューするときは必ず `.docs/DESIGN.md` を先に読むこと。
+
+- **新規アプリ生成時**: DS-001〜DS-010 をすべて確認してからコミットする
+- **既存アプリ監査時**: `node scripts/design-audit.js --app=<name>` を実行し、違反を修正する
+- **全アプリ一括監査**: `node scripts/design-audit.js` → `.docs/design-audit-result.json` を参照

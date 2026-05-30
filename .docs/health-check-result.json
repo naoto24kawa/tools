@@ -1,0 +1,18 @@
+{
+  "timestamp": "2026-05-29T00:42:25.394Z",
+  "baseUrl": "https://tools.elchika.app",
+  "total": 329,
+  "ok": 328,
+  "ng": 1,
+  "failed": [
+    {
+      "appName": "assets",
+      "issues": [
+        "HTTP 404 (200 expected)",
+        "Content-Type: application/json (text/html expected)",
+        "JSONエラー: Not found"
+      ],
+      "status": 404
+    }
+  ]
+}
