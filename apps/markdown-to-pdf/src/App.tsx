@@ -213,7 +213,8 @@ export default function App() {
               <div
                 ref={previewRef}
                 id="pdf-preview"
-                className="min-h-[520px] rounded-md border border-input bg-background px-4 py-3 text-sm leading-relaxed"
+                className="min-h-[520px] rounded-md border border-input bg-background px-4 py-3 leading-relaxed"
+                style={{ fontSize: `${fontSize}px` }}
               />
             </CardContent>
           </Card>
