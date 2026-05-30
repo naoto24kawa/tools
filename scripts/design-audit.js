@@ -70,7 +70,9 @@ const RULES = {
   'DS-003': ({ appDir, tsxContents }) => {
     const violations = [];
     for (const [file, content] of tsxContents) {
-      const lines = content.split('\n');
+      // Collapse multi-line <button ...> tags into single lines for accurate matching
+      const collapsed = content.replace(/<button\b[^>]*>/gs, m => m.replace(/\n\s*/g, ' '));
+      const lines = collapsed.split('\n');
       lines.forEach((line, i) => {
         if (/<button\b(?![^>]*\btype=)[^>]*>/.test(line)) {
           violations.push({ rule: 'DS-003', file: path.relative(appDir, file), detail: `L${i + 1}: <button> に type 属性がない` });
@@ -86,6 +88,8 @@ const RULES = {
       const lines = content.split('\n');
       lines.forEach((line, i) => {
         if (line.trim().startsWith('//') || line.trim().startsWith('*')) return;
+        // Skip JSX comment lines
+        if (/^\s*\{\/\*/.test(line)) return;
         for (const pattern of ARBITRARY_COLOR_PATTERNS) {
           const match = line.match(pattern);
           if (match) {
@@ -173,7 +177,14 @@ function auditApp(appName) {
   const indexHtml = fs.existsSync(indexHtmlPath) ? fs.readFileSync(indexHtmlPath, 'utf-8') : null;
 
   const tsxFiles = getTsxFiles(appDir);
-  const tsxContents = tsxFiles.map(f => [f, fs.readFileSync(f, 'utf-8')]);
+  const tsxContents = [];
+  for (const f of tsxFiles) {
+    try {
+      tsxContents.push([f, fs.readFileSync(f, 'utf-8')]);
+    } catch {
+      console.warn(`  ⚠️  読み込みスキップ: ${path.relative(appDir, f)}`);
+    }
+  }
   const ctx = { appDir, appName, indexHtml, tsxFiles, tsxContents };
 
   const violations = [];
