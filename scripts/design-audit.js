@@ -169,6 +169,9 @@ const RULES = {
   },
 };
 
+/** DS-010 は SHOULD なので警告扱い。exit code に影響しない */
+const SHOULD_RULES = new Set(['DS-010']);
+
 function auditApp(appName) {
   const appDir = path.join(__dirname, '..', 'apps', appName);
   if (!fs.existsSync(appDir)) return null;
@@ -188,11 +191,17 @@ function auditApp(appName) {
   const ctx = { appDir, appName, indexHtml, tsxFiles, tsxContents };
 
   const violations = [];
+  const warnings = [];
   for (const [ruleId, check] of Object.entries(RULES)) {
     if (filterRule && filterRule !== ruleId) continue;
-    violations.push(...check(ctx));
+    const findings = check(ctx);
+    if (SHOULD_RULES.has(ruleId)) {
+      warnings.push(...findings);
+    } else {
+      violations.push(...findings);
+    }
   }
-  return { appName, violations };
+  return { appName, violations, warnings };
 }
 
 async function main() {
@@ -211,13 +220,23 @@ async function main() {
 
   const results = targets.map(name => auditApp(name)).filter(Boolean);
   const violating = results.filter(r => r.violations.length > 0);
+  const withWarnings = results.filter(r => r.warnings.length > 0);
   const clean = results.filter(r => r.violations.length === 0);
   const totalViolations = results.reduce((s, r) => s + r.violations.length, 0);
+  const totalWarnings = results.reduce((s, r) => s + r.warnings.length, 0);
 
-  for (const { appName, violations } of violating) {
-    console.log(`\n❌ ${appName} (${violations.length}件)`);
-    for (const v of violations) {
-      console.log(`   ${v.rule}  ${v.file}  ${v.detail}`);
+  for (const { appName, violations, warnings } of results) {
+    if (violations.length > 0) {
+      console.log(`\n❌ ${appName} (${violations.length}件)`);
+      for (const v of violations) {
+        console.log(`   ${v.rule}  ${v.file}  ${v.detail}`);
+      }
+    }
+    if (warnings.length > 0) {
+      console.log(`\n⚠️  ${appName} (${warnings.length}件 SHOULD)`);
+      for (const w of warnings) {
+        console.log(`   ${w.rule}  ${w.file}  ${w.detail}`);
+      }
     }
   }
 
@@ -225,8 +244,8 @@ async function main() {
   console.log(`📊 デザイン監査結果`);
   console.log(`${'═'.repeat(60)}`);
   console.log(`✅ 準拠: ${clean.length} / ${targets.length}`);
-  console.log(`❌ 違反あり: ${violating.length} / ${targets.length}`);
-  console.log(`   違反総数: ${totalViolations}`);
+  console.log(`❌ 違反あり (MUST): ${violating.length} / ${targets.length} (${totalViolations}件)`);
+  console.log(`⚠️  警告あり (SHOULD): ${withWarnings.length} / ${targets.length} (${totalWarnings}件)`);
   console.log(`${'═'.repeat(60)}\n`);
 
   const outPath = path.join(__dirname, '..', '.docs', 'design-audit-result.json');
@@ -234,11 +253,19 @@ async function main() {
   fs.writeFileSync(outPath, JSON.stringify({
     timestamp: new Date().toISOString(),
     filter: { app: filterApp ?? null, rule: filterRule ?? null },
-    summary: { total: targets.length, clean: clean.length, violating: violating.length, totalViolations },
-    apps: violating,
+    summary: {
+      total: targets.length,
+      clean: clean.length,
+      violating: violating.length,
+      totalViolations,
+      withWarnings: withWarnings.length,
+      totalWarnings,
+    },
+    apps: results.filter(r => r.violations.length > 0 || r.warnings.length > 0),
   }, null, 2));
   console.log(`📄 結果を保存: ${outPath}\n`);
 
+  // SHOULD 違反のみでは exit 1 しない
   process.exit(violating.length > 0 ? 1 : 0);
 }
 
