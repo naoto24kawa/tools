@@ -41,15 +41,24 @@ export default function App() {
   const previewHeight = current.value > 0 ? previewMaxWidth / current.value : previewMaxWidth;
 
   return (
-    <div className="min-h-screen bg-background p-8">
-      <main className="max-w-4xl mx-auto space-y-6">
-        <header className="space-y-2">
-          <h1 className="text-3xl font-bold tracking-tight">比率計算ツール</h1>
-          <p className="text-muted-foreground">
-            黄金比・白銀比・白金比・青銅比で長さを分割・拡縮するツール。
+    <div className="min-h-screen bg-background">
+      <header className="border-b bg-card shadow-sm">
+        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+          <div className="mb-2">
+            <a href="/" className="text-sm text-primary hover:underline">
+              ← Tools トップに戻る
+            </a>
+          </div>
+          <h1 className="text-3xl font-bold tracking-tight">📐 比率計算ツール</h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            黄金比・白銀比・白金比・青銅比で長さを分割・拡縮するツール。長方形プレビューと4比率の早見表つき。
           </p>
-        </header>
-
+          <p className="mt-1 text-xs text-muted-foreground/80">
+            🔒 すべての処理はブラウザ内で完結 - データは外部に送信・保存されません
+          </p>
+        </div>
+      </header>
+      <main className="mx-auto max-w-7xl space-y-6 px-4 py-8 sm:px-6 lg:px-8">
         <div className="grid gap-6 lg:grid-cols-2">
           <Card>
             <CardHeader>
