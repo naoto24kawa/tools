@@ -28,8 +28,11 @@ export function split(total: number, ratio: number): { long: number; short: numb
   if (!isPositiveFinite(total) || !isPositiveFinite(ratio)) {
     return { long: 0, short: 0 };
   }
-  const long = total / ratio;
-  return { long, short: total - long };
+  // long : short = ratio : 1 となるよう分割する。
+  // long = total * ratio / (ratio + 1), short = total / (ratio + 1)。
+  // これにより常に long >= short かつ long / short === ratio が成り立つ。
+  const short = total / (ratio + 1);
+  return { long: total - short, short };
 }
 
 export function scale(value: number, ratio: number): { larger: number; smaller: number } {
