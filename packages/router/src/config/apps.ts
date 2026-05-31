@@ -82,6 +82,7 @@ export const APPS_CONFIG: readonly AppConfig[] = [
   { path: '/random-number', url: 'https://tools-random-number.elchika.app', icon: '🎲', displayName: 'Random Number', description: '乱数生成', category: 'Number' },
   { path: '/random-dice', url: 'https://tools-random-dice.elchika.app', icon: '🎲', displayName: 'Dice Roller', description: 'サイコロシミュレーター', category: 'Number' },
   { path: '/random-coin', url: 'https://tools-random-coin.elchika.app', icon: '🪙', displayName: 'Coin Flip', description: 'コイン投げシミュレーター', category: 'Number' },
+  { path: '/ratio-calculator', url: 'https://tools-ratio-calculator.elchika.app', icon: '📐', displayName: 'Ratio Calculator', description: '黄金比・白銀比・白金比・青銅比で長さを分割・拡縮', category: 'Number' },
 
   // ── DateTime ──
   { path: '/datetime-unix', url: 'https://tools-datetime-unix.elchika.app', icon: '🕐', displayName: 'Unix Timestamp', description: 'UNIXタイムスタンプ変換', category: 'DateTime' },
