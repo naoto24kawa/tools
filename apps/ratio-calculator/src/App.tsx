@@ -1,6 +1,6 @@
-import { useState, useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -13,130 +13,90 @@ import {
 import { Copy } from 'lucide-react';
 import { Toaster } from '@/components/ui/toaster';
 import { useToast } from '@/hooks/useToast';
-import {
-  calculate,
-  fromRatio,
-  formatRatio,
-  formatDecimal,
-  PRESETS,
-} from '@/utils/aspectRatio';
+import { RATIOS, getRatio, split, scale, formatNumber, type RatioKey } from '@/utils/ratio';
 
 export default function App() {
-  const [width, setWidth] = useState(1920);
-  const [height, setHeight] = useState(1080);
-
-  const [ratioW, setRatioW] = useState(16);
-  const [ratioH, setRatioH] = useState(9);
-  const [knownDimension, setKnownDimension] = useState<'width' | 'height'>('width');
-  const [knownValue, setKnownValue] = useState(1920);
-
+  const [length, setLength] = useState(1000);
+  const [ratioKey, setRatioKey] = useState<RatioKey>('golden');
   const { toast } = useToast();
 
-  const calculated = useMemo(() => calculate(width, height), [width, height]);
-  const fromRatioResult = useMemo(
-    () => fromRatio(ratioW, ratioH, knownDimension, knownValue),
-    [ratioW, ratioH, knownDimension, knownValue]
-  );
+  const current = getRatio(ratioKey);
+  const splitResult = useMemo(() => split(length, current.value), [length, current.value]);
+  const scaleResult = useMemo(() => scale(length, current.value), [length, current.value]);
 
-  const applyPreset = (ratioWidth: number, ratioHeight: number) => {
-    setRatioW(ratioWidth);
-    setRatioH(ratioHeight);
-  };
-
-  const copyRatio = async () => {
+  const copy = async (value: number, label: string) => {
     try {
-      const text = formatRatio(calculated.ratioWidth, calculated.ratioHeight);
+      const text = formatNumber(value);
       await navigator.clipboard.writeText(text);
-      toast({ title: `Copied: ${text}` });
+      toast({ title: `Copied ${label}: ${text}` });
     } catch {
       toast({ title: 'Copy failed', variant: 'destructive' });
     }
   };
 
-  const copyDimensions = async () => {
-    try {
-      const text = `${fromRatioResult.width} x ${fromRatioResult.height}`;
-      await navigator.clipboard.writeText(text);
-      toast({ title: `Copied: ${text}` });
-    } catch {
-      toast({ title: 'Copy failed', variant: 'destructive' });
-    }
-  };
-
-  const previewMaxWidth = 300;
-  const previewAspect = width > 0 && height > 0 ? width / height : 1;
-  const previewWidth = previewAspect >= 1 ? previewMaxWidth : previewMaxWidth * previewAspect;
-  const previewHeight = previewAspect >= 1 ? previewMaxWidth / previewAspect : previewMaxWidth;
+  const previewMaxWidth = 360;
+  const longRatio = current.value > 0 ? current.value / (current.value + 1) : 0.5;
+  const previewWidth = previewMaxWidth;
+  const previewHeight = current.value > 0 ? previewMaxWidth / current.value : previewMaxWidth;
 
   return (
     <div className="min-h-screen bg-background p-8">
       <main className="max-w-4xl mx-auto space-y-6">
         <header className="space-y-2">
-          <h1 className="text-3xl font-bold tracking-tight">Aspect Ratio Calculator</h1>
+          <h1 className="text-3xl font-bold tracking-tight">比率計算ツール</h1>
           <p className="text-muted-foreground">
-            Calculate aspect ratios from dimensions, or dimensions from ratios.
+            黄金比・白銀比・白金比・青銅比で長さを分割・拡縮するツール。
           </p>
         </header>
 
         <div className="grid gap-6 lg:grid-cols-2">
           <Card>
             <CardHeader>
-              <CardTitle>Calculate Ratio</CardTitle>
-              <CardDescription>Enter width and height to find the aspect ratio.</CardDescription>
+              <CardTitle>入力と比率</CardTitle>
+              <CardDescription>長さと比率を選ぶと、分割・拡縮の結果を表示します。</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid gap-4 grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="calc-width">Width</Label>
-                  <Input
-                    id="calc-width"
-                    type="number"
-                    min={1}
-                    value={width}
-                    onChange={(e) => setWidth(parseInt(e.target.value) || 0)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="calc-height">Height</Label>
-                  <Input
-                    id="calc-height"
-                    type="number"
-                    min={1}
-                    value={height}
-                    onChange={(e) => setHeight(parseInt(e.target.value) || 0)}
-                  />
-                </div>
+              <div className="space-y-2">
+                <Label htmlFor="length">長さ</Label>
+                <Input
+                  id="length"
+                  type="number"
+                  min={0}
+                  value={length}
+                  onChange={(e) => setLength(parseFloat(e.target.value) || 0)}
+                />
               </div>
 
-              <div className="rounded-md bg-muted p-4 space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Ratio</span>
-                  <span className="font-mono font-medium">
-                    {formatRatio(calculated.ratioWidth, calculated.ratioHeight)}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Decimal</span>
-                  <span className="font-mono font-medium">
-                    {formatDecimal(calculated.decimal)}
-                  </span>
-                </div>
+              <div className="space-y-2">
+                <Label>比率</Label>
+                <Select value={ratioKey} onValueChange={(v) => setRatioKey(v as RatioKey)}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {RATIOS.map((r) => (
+                      <SelectItem key={r.key} value={r.key}>
+                        {r.label}（{formatNumber(r.value)} : 1）
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
-
-              <Button type="button" variant="outline" className="w-full" onClick={copyRatio}>
-                <Copy className="mr-2 h-4 w-4" /> Copy Ratio
-              </Button>
 
               <div className="flex items-center justify-center pt-2">
                 <div
-                  className="border-2 border-primary rounded-md bg-primary/10 flex items-center justify-center text-xs text-muted-foreground"
-                  style={{
-                    width: `${previewWidth}px`,
-                    height: `${previewHeight}px`,
-                    maxWidth: '100%',
-                  }}
+                  className="relative border-2 border-primary rounded-md bg-primary/10 flex"
+                  style={{ width: `${previewWidth}px`, height: `${previewHeight}px`, maxWidth: '100%' }}
                 >
-                  {width} x {height}
+                  <div
+                    className="flex items-center justify-center text-xs text-muted-foreground border-r-2 border-primary/60"
+                    style={{ width: `${longRatio * 100}%` }}
+                  >
+                    long
+                  </div>
+                  <div className="flex items-center justify-center text-xs text-muted-foreground flex-1">
+                    short
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -144,105 +104,84 @@ export default function App() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Calculate from Ratio</CardTitle>
-              <CardDescription>
-                Enter a ratio and one dimension to find the other.
-              </CardDescription>
+              <CardTitle>{current.label} の計算結果</CardTitle>
+              <CardDescription>{formatNumber(current.value)} : 1</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid gap-4 grid-cols-2">
-                <div className="space-y-2">
-                  <Label>Ratio Width</Label>
-                  <Input
-                    type="number"
-                    min={1}
-                    value={ratioW}
-                    onChange={(e) => setRatioW(parseInt(e.target.value) || 0)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Ratio Height</Label>
-                  <Input
-                    type="number"
-                    min={1}
-                    value={ratioH}
-                    onChange={(e) => setRatioH(parseInt(e.target.value) || 0)}
-                  />
-                </div>
+              <div className="space-y-2">
+                <p className="text-sm font-medium">全体分割（長さ {formatNumber(length)} を分割）</p>
+                <ResultRow label="長い部分 (long)" value={splitResult.long} onCopy={copy} />
+                <ResultRow label="短い部分 (short)" value={splitResult.short} onCopy={copy} />
               </div>
-
-              <div className="grid gap-4 grid-cols-2">
-                <div className="space-y-2">
-                  <Label>Known Dimension</Label>
-                  <Select
-                    value={knownDimension}
-                    onValueChange={(v) => setKnownDimension(v as 'width' | 'height')}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="width">Width</SelectItem>
-                      <SelectItem value="height">Height</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label>Value (px)</Label>
-                  <Input
-                    type="number"
-                    min={1}
-                    value={knownValue}
-                    onChange={(e) => setKnownValue(parseInt(e.target.value) || 0)}
-                  />
-                </div>
+              <div className="space-y-2">
+                <p className="text-sm font-medium">拡大・縮小</p>
+                <ResultRow label="拡大 (×比率)" value={scaleResult.larger} onCopy={copy} />
+                <ResultRow label="縮小 (÷比率)" value={scaleResult.smaller} onCopy={copy} />
               </div>
-
-              <div className="rounded-md bg-muted p-4 space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Width</span>
-                  <span className="font-mono font-medium">{fromRatioResult.width}px</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Height</span>
-                  <span className="font-mono font-medium">{fromRatioResult.height}px</span>
-                </div>
-              </div>
-
-              <Button type="button" variant="outline" className="w-full" onClick={copyDimensions}>
-                <Copy className="mr-2 h-4 w-4" /> Copy Dimensions
-              </Button>
             </CardContent>
           </Card>
         </div>
 
         <Card>
           <CardHeader>
-            <CardTitle>Common Presets</CardTitle>
+            <CardTitle>4比率の早見表</CardTitle>
+            <CardDescription>長さ {formatNumber(length)} に対する各比率の分割値。</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid gap-2 sm:grid-cols-2 md:grid-cols-4">
-              {PRESETS.map((preset) => (
-                <Button
-                  type="button"
-                  key={preset.label}
-                  variant="outline"
-                  className="justify-start"
-                  onClick={() => applyPreset(preset.ratioWidth, preset.ratioHeight)}
-                >
-                  <span className="font-mono mr-2">
-                    {preset.ratioWidth}:{preset.ratioHeight}
-                  </span>
-                  <span className="text-xs text-muted-foreground truncate">
-                    {preset.label.split('(')[1]?.replace(')', '')}
-                  </span>
-                </Button>
-              ))}
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b text-left text-muted-foreground">
+                    <th className="py-2 pr-4 font-medium">比率</th>
+                    <th className="py-2 pr-4 font-medium">値</th>
+                    <th className="py-2 pr-4 font-medium">long</th>
+                    <th className="py-2 pr-4 font-medium">short</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {RATIOS.map((r) => {
+                    const s = split(length, r.value);
+                    return (
+                      <tr key={r.key} className="border-b last:border-0">
+                        <td className="py-2 pr-4">
+                          {r.label}
+                          <span className="ml-1 text-xs text-muted-foreground">{r.englishLabel}</span>
+                        </td>
+                        <td className="py-2 pr-4 font-mono">{formatNumber(r.value)}</td>
+                        <td className="py-2 pr-4 font-mono">{formatNumber(s.long)}</td>
+                        <td className="py-2 pr-4 font-mono">{formatNumber(s.short)}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
             </div>
           </CardContent>
         </Card>
       </main>
       <Toaster />
+    </div>
+  );
+}
+
+function ResultRow({
+  label,
+  value,
+  onCopy,
+}: {
+  label: string;
+  value: number;
+  onCopy: (value: number, label: string) => void;
+}) {
+  return (
+    <div className="flex items-center justify-between rounded-md bg-muted p-3">
+      <span className="text-sm text-muted-foreground">{label}</span>
+      <div className="flex items-center gap-2">
+        <span className="font-mono font-medium">{formatNumber(value)}</span>
+        <Button type="button" variant="ghost" size="icon" className="h-7 w-7" onClick={() => onCopy(value, label)}>
+          <Copy className="h-4 w-4" />
+        </Button>
+      </div>
     </div>
   );
 }
