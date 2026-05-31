@@ -46,6 +46,17 @@ describe("ratio", () => {
     it("returns zeros for non-positive ratio", () => {
       expect(split(1000, 0)).toEqual({ long: 0, short: 0 });
     });
+    it("keeps long >= short for ratios greater than 2 (silver)", () => {
+      const r = split(60, getRatio("silver").value);
+      expect(r.long).toBeGreaterThan(r.short);
+      expect(r.long).toBeCloseTo(42.426407, 4);
+      expect(r.short).toBeCloseTo(17.573593, 4);
+    });
+    it("makes long / short equal the ratio (bronze)", () => {
+      const ratio = getRatio("bronze").value;
+      const r = split(60, ratio);
+      expect(r.long / r.short).toBeCloseTo(ratio, 6);
+    });
   });
 
   describe("scale", () => {

@@ -35,8 +35,8 @@ export default function App() {
   };
 
   const previewMaxWidth = 360;
-  // long の幅割合 = long / total = (total / ratio) / total = 1 / ratio
-  const longRatio = current.value > 0 ? 1 / current.value : 0.5;
+  // long の幅割合 = long / total = ratio / (ratio + 1)（long : short = ratio : 1 のため）
+  const longRatio = current.value > 0 ? current.value / (current.value + 1) : 0.5;
   const previewWidth = previewMaxWidth;
   const previewHeight = current.value > 0 ? previewMaxWidth / current.value : previewMaxWidth;
 
