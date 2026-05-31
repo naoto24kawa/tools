@@ -3,11 +3,6 @@
     "playwright": {
       "command": "npx",
       "args": ["@playwright/mcp@latest"]
-    },
-    "elchika-tools": {
-      "command": "npx",
-      "args": ["tsx", "packages/mcp-server/src/index.ts"],
-      "cwd": "/Users/nishikawa/projects/naoto24kawa/tools"
     }
   }
 }
