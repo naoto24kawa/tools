@@ -23,6 +23,11 @@ app.get('/health', (c) => {
   return c.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+// ルート(/) はランディングページ(/home/)へリダイレクト。
+// ルート直下には index.html はあるが対応する /assets/ が存在せず 404 になるため、
+// 正常稼働している /home/ に寄せる（home の og:url も /home を指す）。
+app.get('/', (c) => c.redirect('/home/', 302));
+
 // 静的ファイルを ASSETS バインディング経由で配信（secureHeaders・cors が全レスポンスに適用される）
 app.all('*', async (c) => {
   const path = new URL(c.req.url).pathname;
