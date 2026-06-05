@@ -14,7 +14,7 @@
 ## 前提条件
 
 - [DESIGN_SYSTEM.md](./DESIGN_SYSTEM.md) を読んで理解している
-- Node.js >= 18.0.0 がインストールされている
+- Node.js >= 20.0.0 がインストールされている
 - プロジェクトルートで `pnpm install` を実行済み
 
 ---
