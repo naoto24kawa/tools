@@ -1,0 +1,15 @@
+# 積立シミュレーション（目標額・期間・利率から月額計算）
+name = "tools-savings-calculator"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+
+# 必要に応じてR2バケット、KV、D1などのバインディングを追加
+# 例: データ保存用のR2バケット
+# [[r2_buckets]]
+# binding = "STORAGE"
+# bucket_name = "savings-calculator-storage"
+
+# 例: メタデータ保存用のKV
+# [[kv_namespaces]]
+# binding = "METADATA"
+# id = "your-kv-namespace-id"
