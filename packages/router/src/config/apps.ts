@@ -7,7 +7,8 @@
 export type AppCategory =
   | 'Text' | 'Encode' | 'Crypto' | 'Number' | 'DateTime'
   | 'JSON' | 'Code' | 'Color / CSS' | 'Image' | 'PDF'
-  | 'Video' | 'Generator' | 'Network';
+  | 'Video' | 'Generator' | 'Network'
+  | 'Design' | 'Finance' | 'Health';
 
 export interface AppConfig {
   path: `/${string}`;
