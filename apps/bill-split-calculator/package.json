@@ -15,7 +15,7 @@
     "lint:fix": "vp check --fix",
     "format": "vp check --fix",
     "format:check": "vp check",
-    "deploy": "vp build && wrangler pages deploy dist --project-name=tools-aspect-ratio-calculator"
+    "deploy": "vp build && wrangler pages deploy dist --project-name=tools-bill-split-calculator"
   },
   "dependencies": {
     "@radix-ui/react-label": "^2.1.7",
