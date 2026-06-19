@@ -6,7 +6,7 @@ describe('calcRetirement', () => {
     const result = calcRetirement({
       currentAge: 30,
       retireAge: 65,
-      lifeExpectancy: 90,
+      targetAge: 90,
       currentAssets: 0,
       monthlyContribution: 30000,
       monthlyExpenseAfterRetire: 200000,
@@ -16,11 +16,11 @@ describe('calcRetirement', () => {
     expect(result.assetsAtRetirement).toBeGreaterThan(30000 * 420);
   });
 
-  it('yearlyBreakdown が currentAge から lifeExpectancy まで含む', () => {
+  it('yearlyBreakdown が currentAge から targetAge まで含む', () => {
     const result = calcRetirement({
       currentAge: 60,
       retireAge: 65,
-      lifeExpectancy: 75,
+      targetAge: 75,
       currentAssets: 10000000,
       monthlyContribution: 0,
       monthlyExpenseAfterRetire: 200000,
@@ -35,7 +35,7 @@ describe('calcRetirement', () => {
     const result = calcRetirement({
       currentAge: 65,
       retireAge: 65,
-      lifeExpectancy: 90,
+      targetAge: 90,
       currentAssets: 1000000, // 100万のみ
       monthlyContribution: 0,
       monthlyExpenseAfterRetire: 100000, // 月10万支出
@@ -49,7 +49,7 @@ describe('calcRetirement', () => {
     const result = calcRetirement({
       currentAge: 65,
       retireAge: 65,
-      lifeExpectancy: 70,
+      targetAge: 70,
       currentAssets: 100000000,
       monthlyContribution: 0,
       monthlyExpenseAfterRetire: 100000,
@@ -63,7 +63,7 @@ describe('calcRetirement', () => {
       calcRetirement({
         currentAge: 65,
         retireAge: 60,
-        lifeExpectancy: 90,
+        targetAge: 90,
         currentAssets: 0,
         monthlyContribution: 0,
         monthlyExpenseAfterRetire: 0,

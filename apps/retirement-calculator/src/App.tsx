@@ -11,7 +11,7 @@ const fmt = (n: number) =>
 export default function App() {
   const [currentAge, setCurrentAge] = useState('35');
   const [retireAge, setRetireAge] = useState('65');
-  const [lifeExpectancy, setLifeExpectancy] = useState('90');
+  const [targetAge, setTargetAge] = useState('90');
   const [currentAssets, setCurrentAssets] = useState('5000000');
   const [monthlyContribution, setMonthlyContribution] = useState('30000');
   const [monthlyExpense, setMonthlyExpense] = useState('200000');
@@ -22,7 +22,7 @@ export default function App() {
       return calcRetirement({
         currentAge: Number(currentAge),
         retireAge: Number(retireAge),
-        lifeExpectancy: Number(lifeExpectancy),
+        targetAge: Number(targetAge),
         currentAssets: Number(currentAssets),
         monthlyContribution: Number(monthlyContribution),
         monthlyExpenseAfterRetire: Number(monthlyExpense),
@@ -31,7 +31,7 @@ export default function App() {
     } catch {
       return null;
     }
-  }, [currentAge, retireAge, lifeExpectancy, currentAssets, monthlyContribution, monthlyExpense, rate]);
+  }, [currentAge, retireAge, targetAge, currentAssets, monthlyContribution, monthlyExpense, rate]);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4">
@@ -69,14 +69,14 @@ export default function App() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="lifeExpectancy">目標寿命</Label>
+              <Label htmlFor="targetAge">目標寿命</Label>
               <Input
-                id="lifeExpectancy"
+                id="targetAge"
                 type="number"
                 min="70"
                 max="110"
-                value={lifeExpectancy}
-                onChange={(e) => setLifeExpectancy(e.target.value)}
+                value={targetAge}
+                onChange={(e) => setTargetAge(e.target.value)}
               />
             </div>
             <div className="space-y-2">

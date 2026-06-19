@@ -1,7 +1,7 @@
 export interface RetirementParams {
   currentAge: number;
   retireAge: number;
-  lifeExpectancy: number;
+  targetAge: number;
   currentAssets: number;
   monthlyContribution: number;
   monthlyExpenseAfterRetire: number;
@@ -24,7 +24,7 @@ export function calcRetirement(params: RetirementParams): RetirementResult {
   const {
     currentAge,
     retireAge,
-    lifeExpectancy,
+    targetAge,
     currentAssets,
     monthlyContribution,
     monthlyExpenseAfterRetire,
@@ -32,14 +32,14 @@ export function calcRetirement(params: RetirementParams): RetirementResult {
   } = params;
 
   if (retireAge < currentAge) throw new Error('Retire age must be greater than current age');
-  if (lifeExpectancy <= retireAge) throw new Error('Life expectancy must be greater than retire age');
+  if (targetAge <= retireAge) throw new Error('Life expectancy must be greater than retire age');
 
   const monthlyRate = annualRate / 100 / 12;
   const yearlyBreakdown: RetirementEntry[] = [];
   let balance = currentAssets;
   let depletionAge: number | null = null;
 
-  for (let age = currentAge; age <= lifeExpectancy; age++) {
+  for (let age = currentAge; age <= targetAge; age++) {
     const isAccumulation = age < retireAge;
     const monthlyFlow = isAccumulation ? monthlyContribution : -monthlyExpenseAfterRetire;
 
