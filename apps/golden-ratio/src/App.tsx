@@ -19,10 +19,9 @@ export default function App() {
   const isValid = inputValue !== '' && !isNaN(numVal) && numVal >= 0;
 
   const handleCopy = (text: string) => {
-    navigator.clipboard.writeText(text).catch(() => {
-      toast({ title: 'コピーに失敗しました', variant: 'destructive' });
-    });
-    toast({ title: 'コピーしました' });
+    navigator.clipboard.writeText(text)
+      .then(() => toast({ title: 'コピーしました' }))
+      .catch(() => toast({ title: 'コピーに失敗しました', variant: 'destructive' }));
   };
 
   return (
