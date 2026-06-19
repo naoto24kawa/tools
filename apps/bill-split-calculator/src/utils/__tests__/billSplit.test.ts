@@ -70,4 +70,18 @@ describe('billSplit', () => {
     expect(result.summaryText).toContain('Alice');
     expect(result.summaryText).toContain('Bob');
   });
+
+  it('端数処理後の合計は totalAmount と一致する', () => {
+    const result = splitBill({
+      items: [{ id: '1', name: '食事', amount: 1000 }],
+      members: [
+        { id: '1', name: 'A', ratio: 1 },
+        { id: '2', name: 'B', ratio: 1 },
+        { id: '3', name: 'C', ratio: 1 },
+      ],
+      rounding: 'up',
+    });
+    const sum = result.perMember.reduce((s, m) => s + m.amount, 0);
+    expect(sum).toBe(result.totalAmount);
+  });
 });

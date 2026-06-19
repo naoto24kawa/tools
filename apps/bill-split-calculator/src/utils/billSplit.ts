@@ -48,11 +48,17 @@ export function splitBill(params: SplitParams): SplitResult {
   const totalAmount = items.reduce((sum, item) => sum + item.amount, 0);
   const totalRatio = members.reduce((sum, m) => sum + m.ratio, 0);
 
-  const perMember: MemberShare[] = members.map((member) => ({
-    memberId: member.id,
-    memberName: member.name,
-    amount: applyRounding((totalAmount * member.ratio) / totalRatio, rounding),
-  }));
+  const perMember: MemberShare[] = [];
+  let assigned = 0;
+  members.forEach((member, idx) => {
+    const raw = (totalAmount * member.ratio) / totalRatio;
+    const amount =
+      idx === members.length - 1
+        ? totalAmount - assigned // 最後のメンバーが端数を吸収し合計を一致させる
+        : applyRounding(raw, rounding);
+    assigned += amount;
+    perMember.push({ memberId: member.id, memberName: member.name, amount });
+  });
 
   const lines = perMember.map(
     (m) => `${m.memberName}: ${m.amount.toLocaleString('ja-JP')}円`,
