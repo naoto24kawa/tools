@@ -234,7 +234,7 @@ export const SYSTEM_PATHS = ['/', '/health'] as const;
 /**
  * 利用可能な全パス
  */
-export const AVAILABLE_PATHS = [...SYSTEM_PATHS, ...APPS_CONFIG.map((app) => app.path), '/bill-split-calculator'] as const;
+export const AVAILABLE_PATHS = [...SYSTEM_PATHS, ...APPS_CONFIG.map((app) => app.path)] as const;
 
 /**
  * カテゴリ別にグループ化
