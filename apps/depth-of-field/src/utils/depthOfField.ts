@@ -20,19 +20,19 @@ export interface DofResult {
 }
 
 export const SENSOR_SIZES: SensorSize[] = [
-  { id: 'fullframe', label: 'フルサイズ (35mm)', coc: 0.03 },
-  { id: 'apsc_canon', label: 'APS-C (Canon)', coc: 0.019 },
-  { id: 'apsc_nikon', label: 'APS-C (Nikon/Sony)', coc: 0.02 },
-  { id: 'mft', label: 'マイクロフォーサーズ', coc: 0.015 },
-  { id: 'one_inch', label: '1型', coc: 0.011 },
+  { id: "ff", label: "Full Frame", coc: 0.029 },
+  { id: "apsc", label: "APS-C", coc: 0.018 },
+  { id: "mft", label: "Micro Four Thirds", coc: 0.015 },
+  { id: "one_inch", label: "1 inch", coc: 0.011 },
+  { id: "one_2_3_inch", label: "1/2.3 inch", coc: 0.006 },
 ];
 
 export function calcDepthOfField(params: DofParams): DofResult {
   const { focalLength, fNumber, subjectDistance, sensorId } = params;
 
-  if (focalLength <= 0) throw new Error('Focal length must be positive');
-  if (fNumber <= 0) throw new Error('f-number must be positive');
-  if (subjectDistance <= 0) throw new Error('Subject distance must be positive');
+  if (focalLength <= 0) throw new Error("Focal length must be positive");
+  if (fNumber <= 0) throw new Error("f-number must be positive");
+  if (subjectDistance <= 0) throw new Error("Subject distance must be positive");
 
   const sensor = SENSOR_SIZES.find((s) => s.id === sensorId);
   if (!sensor) throw new Error(`Unknown sensor: ${sensorId}`);

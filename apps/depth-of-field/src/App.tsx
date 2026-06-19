@@ -1,29 +1,29 @@
-import { useMemo, useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { useMemo, useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Toaster } from '@/components/ui/toaster';
-import { SENSOR_SIZES, calcDepthOfField } from '@/utils/depthOfField';
+} from "@/components/ui/select";
+import { Toaster } from "@/components/ui/toaster";
+import { SENSOR_SIZES, calcDepthOfField } from "@/utils/depthOfField";
 
 const F_NUMBERS = [1, 1.4, 2, 2.8, 4, 5.6, 8, 11, 16, 22];
 
 function formatDistance(mm: number): string {
-  if (mm === Infinity) return '∞';
+  if (mm === Infinity) return "∞";
   return mm >= 1000 ? `${(mm / 1000).toFixed(2)}m` : `${mm.toFixed(0)}mm`;
 }
 
 export default function App() {
-  const [focalLength, setFocalLength] = useState('50');
-  const [fNumber, setFNumber] = useState('8');
-  const [subjectDistance, setSubjectDistance] = useState('3');
-  const [sensorId, setSensorId] = useState('fullframe');
+  const [focalLength, setFocalLength] = useState("50");
+  const [fNumber, setFNumber] = useState("8");
+  const [subjectDistance, setSubjectDistance] = useState("3");
+  const [sensorId, setSensorId] = useState("ff");
 
   const result = useMemo(() => {
     const fl = Number(focalLength);
