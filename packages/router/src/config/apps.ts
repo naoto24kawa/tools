@@ -218,6 +218,12 @@ export const APPS_CONFIG: readonly AppConfig[] = [
   { path: '/csv-to-sql', url: 'https://tools-csv-to-sql.elchika.app', icon: '🗃', displayName: 'CSV to SQL', description: 'CSV→SQL変換', category: 'Network' },
   { path: '/list-compare', url: 'https://tools-list-compare.elchika.app', icon: '📋', displayName: 'List Compare', description: 'リスト比較', category: 'Network' },
   { path: '/list-randomize', url: 'https://tools-list-randomize.elchika.app', icon: '🔀', displayName: 'List Randomizer', description: 'リストランダム化', category: 'Network' },
+
+  // ── Finance ──
+  { path: '/savings-calculator', url: 'https://tools-savings-calculator.elchika.app', icon: '💰', displayName: 'Savings Calculator', description: '積立シミュレーション（月額・期間・利率から最終残高計算）', category: 'Finance' },
+  { path: '/retirement-calculator', url: 'https://tools-retirement-calculator.elchika.app', icon: '🏖', displayName: 'Retirement Calculator', description: '老後資金シミュレーション（積立・取崩しフェーズ）', category: 'Finance' },
+  { path: '/break-even-calculator', url: 'https://tools-break-even-calculator.elchika.app', icon: '📊', displayName: 'Break-Even Point', description: '損益分岐点計算（固定費・変動費率・売上高）', category: 'Finance' },
+  { path: '/bill-split-calculator', url: 'https://tools-bill-split-calculator.elchika.app', icon: '🧾', displayName: 'Bill Split', description: '割り勘計算（品目別・不均等割り・端数処理）', category: 'Finance' },
 ];
 
 /**
@@ -228,7 +234,7 @@ export const SYSTEM_PATHS = ['/', '/health'] as const;
 /**
  * 利用可能な全パス
  */
-export const AVAILABLE_PATHS = [...SYSTEM_PATHS, ...APPS_CONFIG.map((app) => app.path)] as const;
+export const AVAILABLE_PATHS = [...SYSTEM_PATHS, ...APPS_CONFIG.map((app) => app.path), '/bill-split-calculator'] as const;
 
 /**
  * カテゴリ別にグループ化
