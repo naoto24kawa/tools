@@ -1,25 +1,25 @@
-# URL Encoder
+# Golden Ratio Calculator
 
-URLエンコード・デコード。
+黄金比・白銀比・各種比率から寸法を計算するツール。
 
 ## アーキテクチャ
 
-- SPA: React 18 + TypeScript + Vite 6
+- SPA: React 18 + TypeScript + Vite+
 - UI: Tailwind CSS 3.4 + shadcn/ui (Radix UI)
-- デプロイ: Cloudflare Pages
+- デプロイ: Cloudflare Workers + Static Assets
 - 完全クライアントサイド処理(サーバー通信なし)
 
 ## 主要ファイル
 
 - `src/App.tsx` - メインUI
+- `src/utils/goldenRatio.ts` - 比率定義・計算ロジック
 
 ## コマンド
 
 ```bash
-bun run dev      # 開発サーバー
-bun run build    # ビルド
-bun test         # テスト
-bun run deploy   # デプロイ
+vp dev     # 開発サーバー起動 (port 5457)
+vp test    # ユニットテスト
+vp check   # lint/format チェック
 ```
 
 ## 規約
@@ -27,5 +27,4 @@ bun run deploy   # デプロイ
 - パスエイリアス: `@/` = `src/`, `@components/`, `@utils/`, `@types/`, `@config/`, `@hooks/`, `@services/`
 - ボタンには必ず `type="button"` を付与
 - 非同期クリップボード操作は try/catch で囲む
-- linter: Biome (`bun run lint`)
-- テスト: bun test (`src/utils/__tests__/`)
+- テスト: `src/utils/__tests__/`

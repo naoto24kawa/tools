@@ -1,56 +1,18 @@
-# URL Encoder
+# Golden Ratio Calculator
 
-URLエンコード・デコード。ブラウザ上で完結するクライアントサイドツール。
+黄金比・白銀比・各種比率から寸法を計算するツール。
 
-**URL**: https://tools.elchika.app/url-encoder
+## 対応比率
 
-## 技術スタック
-
-- React 18 + TypeScript
-- Vite 6
-- Tailwind CSS 3.4 + shadcn/ui
-- Cloudflare Pages
+- 黄金比 (φ ≈ 1.618)
+- 白銀比 (√2 ≈ 1.414)
+- 青銅比 (≈ 3.303)
+- 16:9, 4:3, 3:2, 三分割
 
 ## 開発
 
 ```bash
-# 依存関係のインストール (ルートから)
-bun install
-
-# 開発サーバー起動
-cd apps/url-encoder
-bun run dev
-
-# ビルド
-bun run build
-
-# デプロイ
-bun run deploy
+vp dev     # 開発サーバー起動 (port 5457)
+vp test    # ユニットテスト
+vp check   # lint/format チェック
 ```
-
-## テスト
-
-```bash
-bun test
-```
-
-## ディレクトリ構成
-
-```
-apps/url-encoder/
-  src/
-    App.tsx          # メインコンポーネント
-    main.tsx         # エントリポイント
-    components/ui/   # shadcn/ui コンポーネント
-  index.html
-  package.json
-  vite.config.ts
-  tailwind.config.js
-  tsconfig.json
-  postcss.config.js
-  wrangler.toml
-```
-
-## ライセンス
-
-MIT
