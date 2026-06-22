@@ -73,7 +73,7 @@ export default function App() {
                   <span className="font-bold">{fmt(result.monthlyEstimate)}</span>
                 </div>
                 <div className="flex justify-between mt-1">
-                  <span className="text-sm">年間（×365日）</span>
+                  <span className="text-sm">年間（月額×12）</span>
                   <span className="font-bold">{fmt(result.yearlyEstimate)}</span>
                 </div>
               </div>
