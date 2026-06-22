@@ -1,54 +1,54 @@
-# URL Encoder
+# CO2 Footprint Calculator
 
-URLエンコード・デコード。ブラウザ上で完結するクライアントサイドツール。
+CO2 排出量を計算・可視化するツール。ブラウザ上で完結するクライアントサイドツール。
 
-**URL**: https://tools.elchika.app/url-encoder
+**URL**: https://tools.elchika.app/co2-footprint/
 
 ## 技術スタック
 
 - React 18 + TypeScript
-- Vite 6
+- Vite (Vite+)
 - Tailwind CSS 3.4 + shadcn/ui
-- Cloudflare Pages
+- Cloudflare Workers + Static Assets
 
 ## 開発
 
 ```bash
 # 依存関係のインストール (ルートから)
-bun install
+pnpm install
 
 # 開発サーバー起動
-cd apps/url-encoder
-bun run dev
+cd apps/co2-footprint
+vp dev
 
 # ビルド
-bun run build
+vp build
 
-# デプロイ
-bun run deploy
-```
+# テスト
+vp test
 
-## テスト
-
-```bash
-bun test
+# Lint/Format
+vp check
+vp check --fix
 ```
 
 ## ディレクトリ構成
 
 ```
-apps/url-encoder/
+apps/co2-footprint/
   src/
-    App.tsx          # メインコンポーネント
-    main.tsx         # エントリポイント
-    components/ui/   # shadcn/ui コンポーネント
+    App.tsx                    # メインコンポーネント
+    main.tsx                   # エントリポイント
+    utils/
+      co2Footprint.ts          # 計算ロジック
+      __tests__/               # ユニットテスト
+    components/ui/             # shadcn/ui コンポーネント
   index.html
   package.json
   vite.config.ts
   tailwind.config.js
   tsconfig.json
   postcss.config.js
-  wrangler.toml
 ```
 
 ## ライセンス
