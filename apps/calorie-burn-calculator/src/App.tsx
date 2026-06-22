@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/select';
 import { Toaster } from '@/components/ui/toaster';
 import { Plus, Trash2 } from 'lucide-react';
-import { calcCalorieBurn, EXERCISES } from '@/utils/calorieBurn';
+import { calcCalorieBurn, EXERCISES, type CalorieBurnResult } from '@/utils/calorieBurn';
 
 const CATEGORIES = Array.from(new Set(EXERCISES.map((e) => e.category)));
 
@@ -91,9 +91,12 @@ export default function App() {
           <CardContent className="space-y-3">
             {entries.map((entry) => {
               const ex = EXERCISES.find((e) => e.id === entry.exerciseId);
-              const result = ex && Number(weight) > 0
-                ? calcCalorieBurn(Number(weight), ex.met, Number(entry.minutes))
-                : null;
+              let result: CalorieBurnResult | null = null;
+              if (ex && Number(weight) > 0) {
+                try {
+                  result = calcCalorieBurn(Number(weight), ex.met, Number(entry.minutes));
+                } catch { /* skip */ }
+              }
               return (
                 <div key={entry.id} className="flex gap-2 items-start">
                   <div className="flex-1 space-y-1">
