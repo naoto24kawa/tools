@@ -47,6 +47,7 @@ export function splitBill(params: SplitParams): SplitResult {
 
   const totalAmount = items.reduce((sum, item) => sum + item.amount, 0);
   const totalRatio = members.reduce((sum, m) => sum + m.ratio, 0);
+  if (totalRatio <= 0) throw new Error('Total ratio must be positive');
 
   const perMember: MemberShare[] = [];
   let assigned = 0;

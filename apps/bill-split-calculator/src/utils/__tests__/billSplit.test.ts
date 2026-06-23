@@ -72,6 +72,7 @@ describe('billSplit', () => {
   });
 
   it('端数処理後の合計は totalAmount と一致する', () => {
+    // 1000/3 = 333.33 → ceil=334。先頭2名は334、最後が端数吸収(1000-668=332)
     const result = splitBill({
       items: [{ id: '1', name: '食事', amount: 1000 }],
       members: [
@@ -81,7 +82,23 @@ describe('billSplit', () => {
       ],
       rounding: 'up',
     });
+    expect(result.perMember[0].amount).toBe(334); // A: ceil
+    expect(result.perMember[1].amount).toBe(334); // B: ceil
+    expect(result.perMember[2].amount).toBe(332); // C: 端数吸収
     const sum = result.perMember.reduce((s, m) => s + m.amount, 0);
     expect(sum).toBe(result.totalAmount);
+  });
+
+  it('全メンバーの比率が0のとき例外を投げる', () => {
+    expect(() =>
+      splitBill({
+        items: [{ id: '1', name: '食事', amount: 1000 }],
+        members: [
+          { id: '1', name: 'A', ratio: 0 },
+          { id: '2', name: 'B', ratio: 0 },
+        ],
+        rounding: 'none',
+      }),
+    ).toThrow('Total ratio must be positive');
   });
 });

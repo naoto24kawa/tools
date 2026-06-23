@@ -2,7 +2,6 @@ import { useMemo, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Toaster } from '@/components/ui/toaster';
 import { calcRetirement } from '@/utils/retirement';
 
 const fmt = (n: number) =>
@@ -203,7 +202,6 @@ export default function App() {
           </Card>
         )}
       </div>
-      <Toaster />
     </div>
   );
 }
