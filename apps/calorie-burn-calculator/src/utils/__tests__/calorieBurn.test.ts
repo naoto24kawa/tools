@@ -10,8 +10,9 @@ describe('calorieBurn', () => {
     });
 
     it('脂肪燃焼量 = kcal / 7.2', () => {
+      // 220.5 / 7.2 = 30.625
       const result = calcCalorieBurn(60, 3.5, 60);
-      expect(result.fatGrams).toBeCloseTo(result.kcal / 7.2, 1);
+      expect(result.fatGrams).toBeCloseTo(30.6, 1);
     });
 
     it('ゼロ分は0kcalを返す', () => {

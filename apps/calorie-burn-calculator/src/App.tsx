@@ -42,15 +42,17 @@ export default function App() {
     const w = Number(weight);
     if (!w) return null;
     let totalKcal = 0;
+    let totalFatGrams = 0;
     for (const entry of entries) {
       const ex = EXERCISES.find((e) => e.id === entry.exerciseId);
       if (!ex) continue;
       try {
         const r = calcCalorieBurn(w, ex.met, Number(entry.minutes));
         totalKcal += r.kcal;
+        totalFatGrams += r.fatGrams;
       } catch { /* skip invalid entries */ }
     }
-    return { kcal: totalKcal, fatGrams: totalKcal / 7.2 };
+    return { kcal: totalKcal, fatGrams: totalFatGrams };
   }, [weight, entries]);
 
   return (

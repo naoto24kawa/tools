@@ -21,6 +21,12 @@ describe('bmi', () => {
       expect(result.category).toBe('obese1');
     });
 
+    it('BMI 18.5ちょうど（境界）→ 普通体重', () => {
+      // 170cm: 53.47 / 1.7^2 ≈ 18.502 → normal
+      const result = calcBMI(170, 53.47);
+      expect(result.category).toBe('normal');
+    });
+
     it('BMI 25ちょうど → 肥満（1度）', () => {
       // 170cm: 1.7^2 × 25 = 72.25kg
       const result = calcBMI(170, 72.25);

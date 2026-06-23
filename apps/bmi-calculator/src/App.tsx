@@ -47,8 +47,20 @@ export default function App() {
         </div>
 
         <div className="flex gap-2">
-          <Button type="button" variant={unit === 'metric' ? 'default' : 'outline'} onClick={() => setUnit('metric')}>cm / kg</Button>
-          <Button type="button" variant={unit === 'imperial' ? 'default' : 'outline'} onClick={() => setUnit('imperial')}>in / lb</Button>
+          <Button type="button" variant={unit === 'metric' ? 'default' : 'outline'} onClick={() => {
+            if (unit !== 'metric') {
+              setHeight(String(Math.round(Number(height) * 2.54)));
+              setWeight(String(Math.round(Number(weight) * 0.453592)));
+            }
+            setUnit('metric');
+          }}>cm / kg</Button>
+          <Button type="button" variant={unit === 'imperial' ? 'default' : 'outline'} onClick={() => {
+            if (unit !== 'imperial') {
+              setHeight(String(Math.round(Number(height) / 2.54)));
+              setWeight(String(Math.round(Number(weight) / 0.453592)));
+            }
+            setUnit('imperial');
+          }}>in / lb</Button>
         </div>
 
         <Card>
