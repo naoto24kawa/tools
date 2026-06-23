@@ -9,7 +9,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Toaster } from "@/components/ui/toaster";
 import { SENSOR_SIZES, calcDepthOfField } from "@/utils/depthOfField";
 
 const F_NUMBERS = [1, 1.4, 2, 2.8, 4, 5.6, 8, 11, 16, 22];
@@ -135,7 +134,6 @@ export default function App() {
           </Card>
         )}
       </div>
-      <Toaster />
     </div>
   );
 }

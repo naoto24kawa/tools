@@ -28,7 +28,7 @@ export const RATIOS: RatioDef[] = [
     id: 'third',
     label: '三分割',
     ratio: 3,
-    description: '1 : 0.333 — 写真の構図で使われる比率',
+    description: '1 : 3.000 — 写真の構図で使われる比率',
   },
   {
     id: 'sixteen9',

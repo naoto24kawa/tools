@@ -30,10 +30,18 @@ describe('exposure', () => {
   });
 
   describe('calcShutterSpeed', () => {
-    it('EV13, f/8, ISO100 → 1/125s', () => {
-      // t = f²/2^(EV - log2(ISO/100)) = 64/2^13 = 64/8192 ≈ 0.00781
+    it('EV13, f/8, ISO100 → 1/128s (理論値)', () => {
+      // t = f²×ISO / (100×2^EV) = 64×100 / (100×8192) = 1/128 ≈ 0.00781
       const ss = calcShutterSpeed(13, 8, 100);
       expect(ss).toBeCloseTo(1 / 128, 4);
+    });
+
+    it('f値0は例外を投げる', () => {
+      expect(() => calcShutterSpeed(13, 0, 100)).toThrow('f-number must be positive');
+    });
+
+    it('ISO 0は例外を投げる', () => {
+      expect(() => calcShutterSpeed(13, 8, 0)).toThrow('ISO must be positive');
     });
   });
 
@@ -42,6 +50,14 @@ describe('exposure', () => {
       const f = calcFNumber(13, 1 / 125, 100);
       expect(f).toBeCloseTo(8, 0);
     });
+
+    it('シャッタースピード0は例外を投げる', () => {
+      expect(() => calcFNumber(13, 0, 100)).toThrow('Shutter speed must be positive');
+    });
+
+    it('ISO 0は例外を投げる', () => {
+      expect(() => calcFNumber(13, 1 / 125, 0)).toThrow('ISO must be positive');
+    });
   });
 
   describe('calcISO', () => {
@@ -49,6 +65,14 @@ describe('exposure', () => {
       // ISO = 100 × 2^13 × (1/125) / 8² = 100 × 8192 / (125 × 64) ≈ 102.4
       const iso = calcISO(13, 8, 1 / 125);
       expect(iso).toBeCloseTo(102, 0);
+    });
+
+    it('f値0は例外を投げる', () => {
+      expect(() => calcISO(13, 0, 1 / 125)).toThrow('f-number must be positive');
+    });
+
+    it('シャッタースピード0は例外を投げる', () => {
+      expect(() => calcISO(13, 8, 0)).toThrow('Shutter speed must be positive');
     });
   });
 });
