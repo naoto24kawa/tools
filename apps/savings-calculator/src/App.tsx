@@ -50,8 +50,12 @@ export default function App() {
     if (!ctx) return;
     const { yearlyBreakdown } = fwdResult;
     if (yearlyBreakdown.length === 0) return;
-    const W = canvas.width;
-    const H = canvas.height;
+    const W = 560;
+    const H = 200;
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = W * dpr;
+    canvas.height = H * dpr;
+    ctx.scale(dpr, dpr);
     const pad = 40;
     ctx.clearRect(0, 0, W, H);
     const maxVal = yearlyBreakdown[yearlyBreakdown.length - 1].balance;
