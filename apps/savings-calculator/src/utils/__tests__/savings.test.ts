@@ -58,6 +58,12 @@ describe('savings', () => {
       expect(monthly).toBeCloseTo(8333.33, 0);
     });
 
+    it('目標100万・10年・年利3%→複利公式で算出', () => {
+      // PMT = FV × r / ((1+r)^n - 1)  where r=0.0025, n=120
+      const monthly = calcRequiredMonthly(1000000, 10, 3);
+      expect(monthly).toBeCloseTo(7156, 0);
+    });
+
     it('目標額負値は例外を投げる', () => {
       expect(() => calcRequiredMonthly(-1, 10, 3)).toThrow('Target must be positive');
     });

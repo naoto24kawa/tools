@@ -36,4 +36,16 @@ describe('breakEven', () => {
   it('売上0は例外を投げる', () => {
     expect(() => calcBreakEven({ fixedCost: 1000000, variableRatio: 60, revenue: 0 })).toThrow('Revenue must be positive');
   });
+
+  it('利益がある場合の operatingLeverage を算出', () => {
+    // 固定費100万・変動費率60%・売上300万 → 貢献利益120万 / 利益20万 = 6
+    const result = calcBreakEven({ fixedCost: 1000000, variableRatio: 60, revenue: 3000000 });
+    expect(result.operatingLeverage).toBeCloseTo(6, 1);
+  });
+
+  it('売上が損益分岐点ちょうどのとき operatingLeverage は Infinity', () => {
+    // 固定費100万・変動費率60%・売上250万 → 利益=0 → Infinity
+    const result = calcBreakEven({ fixedCost: 1000000, variableRatio: 60, revenue: 2500000 });
+    expect(result.operatingLeverage).toBe(Infinity);
+  });
 });

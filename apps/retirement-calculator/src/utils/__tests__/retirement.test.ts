@@ -71,4 +71,18 @@ describe('calcRetirement', () => {
       }),
     ).toThrow('Retire age must be greater than current age');
   });
+
+  it('退職年齢 = 現在年齢のとき assetsAtRetirement は currentAssets', () => {
+    // retireAge === currentAge の場合は積立フェーズなし → currentAssets がそのまま退職時資産
+    const result = calcRetirement({
+      currentAge: 65,
+      retireAge: 65,
+      targetAge: 70,
+      currentAssets: 5000000,
+      monthlyContribution: 0,
+      monthlyExpenseAfterRetire: 100000,
+      annualRate: 0,
+    });
+    expect(result.assetsAtRetirement).toBe(5000000);
+  });
 });
