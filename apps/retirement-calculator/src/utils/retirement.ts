@@ -31,7 +31,7 @@ export function calcRetirement(params: RetirementParams): RetirementResult {
     annualRate,
   } = params;
 
-  if (retireAge < currentAge) throw new Error('Retire age must be greater than current age');
+  if (retireAge < currentAge) throw new Error('Retire age must be greater than or equal to current age');
   if (targetAge <= retireAge) throw new Error('Life expectancy must be greater than retire age');
 
   const monthlyRate = annualRate / 100 / 12;

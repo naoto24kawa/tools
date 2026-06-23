@@ -69,7 +69,7 @@ describe('calcRetirement', () => {
         monthlyExpenseAfterRetire: 0,
         annualRate: 0,
       }),
-    ).toThrow('Retire age must be greater than current age');
+    ).toThrow('Retire age must be greater than or equal to current age');
   });
 
   it('退職年齢 = 現在年齢のとき assetsAtRetirement は currentAssets', () => {
