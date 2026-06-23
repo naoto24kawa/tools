@@ -15,9 +15,10 @@ describe('calorieBurn', () => {
       expect(result.fatGrams).toBeCloseTo(30.6, 1);
     });
 
-    it('ゼロ分は0kcalを返す', () => {
+    it('ゼロ分は0kcal・0g脂肪を返す', () => {
       const result = calcCalorieBurn(60, 3.5, 0);
       expect(result.kcal).toBe(0);
+      expect(result.fatGrams).toBe(0);
     });
 
     it('体重0は例外を投げる', () => {

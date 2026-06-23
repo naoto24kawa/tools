@@ -79,5 +79,9 @@ describe('bmi', () => {
       expect(range.min).toBeCloseTo(53.5, 0);
       expect(range.max).toBeCloseTo(71.9, 0);
     });
+
+    it('身長0は例外を投げる', () => {
+      expect(() => getIdealWeightRange(0)).toThrow('Height must be positive');
+    });
   });
 });
