@@ -6,5 +6,3 @@ declare module '*.css' {
   export default content;
 }
 
-// react-image-crop の CSS ファイル
-declare module 'react-image-crop/dist/ReactCrop.css';

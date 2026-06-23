@@ -1,4 +1,4 @@
-export type YakudoshiType = 'pre' | 'main' | 'post' | 'happo' | 'ko';
+export type YakudoshiType = 'pre' | 'main' | 'post' | 'ko';
 
 export interface YakudoshiEntry {
   age: number;

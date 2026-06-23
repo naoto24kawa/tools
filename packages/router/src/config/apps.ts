@@ -222,7 +222,7 @@ export const APPS_CONFIG: readonly AppConfig[] = [
 
   // ── Life ──
   { path: '/biorhythm', url: 'https://tools-biorhythm.elchika.app', icon: '🌊', displayName: 'Biorhythm', description: '生年月日からバイオリズム波形を計算', category: 'Life' },
-  { path: '/yakudoshi-calculator', url: 'https://tools-yakudoshi-calculator.elchika.app', icon: '🎎', displayName: 'Yakudoshi', description: '厄年・八方塞がり・小厄を計算', category: 'Life' },
+  { path: '/yakudoshi-calculator', url: 'https://tools-yakudoshi-calculator.elchika.app', icon: '🎎', displayName: 'Yakudoshi', description: '厄年・小厄を計算', category: 'Life' },
   { path: '/electricity-cost', url: 'https://tools-electricity-cost.elchika.app', icon: '⚡', displayName: 'Electricity Cost', description: '電気料金計算（使用量・プランから月額試算）', category: 'Life' },
   { path: '/fuel-cost-calculator', url: 'https://tools-fuel-cost-calculator.elchika.app', icon: '⛽', displayName: 'Fuel Cost', description: '燃費・ガソリン代・CO2排出量計算', category: 'Life' },
   { path: '/co2-footprint', url: 'https://tools-co2-footprint.elchika.app', icon: '🌍', displayName: 'CO2 Footprint', description: '生活行動別CO2排出量計算', category: 'Life' },

@@ -39,7 +39,7 @@ export default function App() {
     : 0;
 
   const yearlyTotal = result
-    ? result.totalKgCO2 * 12 +
+    ? monthlyTotal * 12 +
       result.perCategory
         .filter((c) => YEAR_CATEGORIES.includes(c.categoryId))
         .reduce((s, c) => s + c.kgCO2, 0)

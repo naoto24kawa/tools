@@ -11,7 +11,6 @@ const TYPE_COLORS: Record<string, string> = {
   pre: 'bg-orange-50 dark:bg-orange-900/20 text-orange-700 dark:text-orange-300',
   post: 'bg-orange-50 dark:bg-orange-900/20 text-orange-700 dark:text-orange-300',
   ko: 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-700 dark:text-yellow-300',
-  happo: 'bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300',
 };
 
 export default function App() {

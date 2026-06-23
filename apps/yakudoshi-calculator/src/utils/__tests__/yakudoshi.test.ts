@@ -38,12 +38,11 @@ describe('yakudoshi', () => {
   });
 
   describe('年号計算', () => {
-    it('1990年生まれ・25歳の年は2015年', () => {
+    it('1990年生まれ・25歳の年は2014年', () => {
       const result = calcYakudoshi(1990, 'male');
       const main25 = result.entries.find((e) => e.type === 'main' && e.age === 25);
-      // 数え年: 1990 + 25 - 1 = 2014 or 2015
-      expect(main25?.year).toBeGreaterThanOrEqual(2014);
-      expect(main25?.year).toBeLessThanOrEqual(2015);
+      // 数え年: 1990 + 25 - 1 = 2014
+      expect(main25?.year).toBe(2014);
     });
   });
 });
