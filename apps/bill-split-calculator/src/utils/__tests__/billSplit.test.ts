@@ -97,7 +97,7 @@ describe('billSplit', () => {
           { id: '1', name: 'A', ratio: 0 },
           { id: '2', name: 'B', ratio: 0 },
         ],
-        rounding: 'none',
+        rounding: 'nearest',
       }),
     ).toThrow('Total ratio must be positive');
   });
