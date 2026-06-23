@@ -3,7 +3,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Toaster } from '@/components/ui/toaster';
 import { calcSavings, calcRequiredMonthly } from '@/utils/savings';
 
 type Mode = 'forward' | 'reverse';
@@ -96,9 +95,7 @@ export default function App() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4">
       <div className="max-w-2xl mx-auto space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-            Savings Calculator
-          </h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">積立シミュレーション</h1>
           <p className="text-gray-600 dark:text-gray-400 mt-1">積立シミュレーション</p>
         </div>
 
@@ -264,7 +261,6 @@ export default function App() {
           </Card>
         )}
       </div>
-      <Toaster />
     </div>
   );
 }

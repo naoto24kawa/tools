@@ -2,7 +2,6 @@ import { useState, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Toaster } from '@/components/ui/toaster';
 import { calcBreakEven } from '@/utils/breakEven';
 
 const fmt = (n: number) =>
@@ -29,7 +28,7 @@ export default function App() {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4">
       <div className="max-w-2xl mx-auto space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Break-Even Point</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">損益分岐点計算</h1>
           <p className="text-gray-600 dark:text-gray-400 mt-1">損益分岐点・安全余裕率計算</p>
         </div>
         <Card>
@@ -115,7 +114,6 @@ export default function App() {
           </Card>
         )}
       </div>
-      <Toaster />
     </div>
   );
 }
