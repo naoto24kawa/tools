@@ -21,6 +21,30 @@ describe('bmi', () => {
       expect(result.category).toBe('obese1');
     });
 
+    it('BMI 25ちょうど → 肥満（1度）', () => {
+      // 170cm: 1.7^2 × 25 = 72.25kg
+      const result = calcBMI(170, 72.25);
+      expect(result.category).toBe('obese1');
+    });
+
+    it('BMI 30ちょうど → 肥満（2度）', () => {
+      // 170cm: 1.7^2 × 30 = 86.7kg
+      const result = calcBMI(170, 86.7);
+      expect(result.category).toBe('obese2');
+    });
+
+    it('BMI 35ちょうど → 肥満（3度）', () => {
+      // 170cm: 1.7^2 × 35 = 101.15kg
+      const result = calcBMI(170, 101.15);
+      expect(result.category).toBe('obese3');
+    });
+
+    it('BMI 40ちょうど → 肥満（4度）', () => {
+      // 170cm: 1.7^2 × 40 = 115.6kg
+      const result = calcBMI(170, 115.6);
+      expect(result.category).toBe('obese4');
+    });
+
     it('BMI 35以上 → 肥満（3度）', () => {
       const result = calcBMI(170, 102);
       expect(result.category).toBe('obese3');

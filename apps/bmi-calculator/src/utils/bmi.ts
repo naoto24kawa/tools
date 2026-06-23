@@ -1,4 +1,5 @@
-export type BMICategory = 'underweight' | 'normal' | 'overweight' | 'obese1' | 'obese2' | 'obese3' | 'obese4';
+// 日本肥満学会基準（BMI 25以上を肥満と定義。WHOの overweight 区分は採用しない）
+export type BMICategory = 'underweight' | 'normal' | 'obese1' | 'obese2' | 'obese3' | 'obese4';
 
 export interface BMIResult {
   bmi: number;
@@ -6,23 +7,6 @@ export interface BMIResult {
   label: string;
   standardWeight: number;
 }
-
-interface CategoryDef {
-  category: BMICategory;
-  label: string;
-  minBMI: number;
-}
-
-// 日本肥満学会基準（BMI 25以上を肥満と定義）
-const CATEGORIES: CategoryDef[] = [
-  { category: 'underweight', label: '低体重', minBMI: 0 },
-  { category: 'normal', label: '普通体重', minBMI: 18.5 },
-  { category: 'overweight', label: '過体重（前肥満）', minBMI: 25 },
-  { category: 'obese1', label: '肥満（1度）', minBMI: 25 },
-  { category: 'obese2', label: '肥満（2度）', minBMI: 30 },
-  { category: 'obese3', label: '肥満（3度）', minBMI: 35 },
-  { category: 'obese4', label: '肥満（4度）', minBMI: 40 },
-];
 
 function getCategory(bmi: number): { category: BMICategory; label: string } {
   if (bmi < 18.5) return { category: 'underweight', label: '低体重' };

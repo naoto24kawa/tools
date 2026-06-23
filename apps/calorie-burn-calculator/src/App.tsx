@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select';
-import { Toaster } from '@/components/ui/toaster';
 import { Plus, Trash2 } from 'lucide-react';
 import { calcCalorieBurn, EXERCISES, type CalorieBurnResult } from '@/utils/calorieBurn';
 
@@ -143,7 +142,6 @@ export default function App() {
           </Card>
         )}
       </div>
-      <Toaster />
     </div>
   );
 }

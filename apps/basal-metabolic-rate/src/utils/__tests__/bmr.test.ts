@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { calcHarrisBenedict, calcMifflin, calcTDEE } from '../bmr';
+import { calcHarrisBenedict, calcMifflin, calcTDEE, type ActivityLevel } from '../bmr';
 
 const maleParams = { heightCm: 175, weightKg: 70, age: 30, gender: 'male' as const };
 const femaleParams = { heightCm: 160, weightKg: 55, age: 30, gender: 'female' as const };
@@ -23,6 +23,14 @@ describe('bmr', () => {
     it('体重0は例外を投げる', () => {
       expect(() => calcHarrisBenedict({ ...maleParams, weightKg: 0 })).toThrow('Weight must be positive');
     });
+
+    it('身長0は例外を投げる', () => {
+      expect(() => calcHarrisBenedict({ ...maleParams, heightCm: 0 })).toThrow('Height must be positive');
+    });
+
+    it('年齢0は例外を投げる', () => {
+      expect(() => calcHarrisBenedict({ ...maleParams, age: 0 })).toThrow('Age must be positive');
+    });
   });
 
   describe('calcMifflin', () => {
@@ -37,6 +45,18 @@ describe('bmr', () => {
       const bmr = calcMifflin(femaleParams);
       expect(bmr).toBeCloseTo(1239, 0);
     });
+
+    it('体重0は例外を投げる', () => {
+      expect(() => calcMifflin({ ...maleParams, weightKg: 0 })).toThrow('Weight must be positive');
+    });
+
+    it('身長0は例外を投げる', () => {
+      expect(() => calcMifflin({ ...maleParams, heightCm: 0 })).toThrow('Height must be positive');
+    });
+
+    it('年齢0は例外を投げる', () => {
+      expect(() => calcMifflin({ ...maleParams, age: 0 })).toThrow('Age must be positive');
+    });
   });
 
   describe('calcTDEE', () => {
@@ -45,9 +65,28 @@ describe('bmr', () => {
       expect(tdee).toBeCloseTo(2040, 0);
     });
 
+    it('light: BMR × 1.375', () => {
+      const tdee = calcTDEE(1700, 'light');
+      expect(tdee).toBeCloseTo(2337.5, 0);
+    });
+
+    it('moderate: BMR × 1.55', () => {
+      const tdee = calcTDEE(1700, 'moderate');
+      expect(tdee).toBeCloseTo(2635, 0);
+    });
+
+    it('active: BMR × 1.725', () => {
+      const tdee = calcTDEE(1700, 'active');
+      expect(tdee).toBeCloseTo(2932.5, 0);
+    });
+
     it('very_active: BMR × 1.9', () => {
       const tdee = calcTDEE(1700, 'very_active');
       expect(tdee).toBeCloseTo(3230, 0);
+    });
+
+    it('不明な活動レベルは例外を投げる', () => {
+      expect(() => calcTDEE(1700, 'unknown' as ActivityLevel)).toThrow('Unknown activity level: unknown');
     });
   });
 });

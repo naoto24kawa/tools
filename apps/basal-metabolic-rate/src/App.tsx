@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select';
-import { Toaster } from '@/components/ui/toaster';
 import {
   calcHarrisBenedict, calcMifflin, calcTDEE,
   ACTIVITY_LEVELS, type ActivityLevel,
@@ -121,7 +120,6 @@ export default function App() {
           </>
         )}
       </div>
-      <Toaster />
     </div>
   );
 }
