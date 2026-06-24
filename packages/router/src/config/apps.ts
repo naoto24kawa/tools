@@ -7,7 +7,8 @@
 export type AppCategory =
   | 'Text' | 'Encode' | 'Crypto' | 'Number' | 'DateTime'
   | 'JSON' | 'Code' | 'Color / CSS' | 'Image' | 'PDF'
-  | 'Video' | 'Generator' | 'Network' | 'Finance';
+  | 'Video' | 'Generator' | 'Network'
+  | 'Design' | 'Finance' | 'Health';
 
 export interface AppConfig {
   path: `/${string}`;
@@ -224,6 +225,11 @@ export const APPS_CONFIG: readonly AppConfig[] = [
   { path: '/retirement-calculator', url: 'https://tools-retirement-calculator.elchika.app', icon: '🏖', displayName: 'Retirement Calculator', description: '老後資金シミュレーション（積立・取崩しフェーズ）', category: 'Finance' },
   { path: '/break-even-calculator', url: 'https://tools-break-even-calculator.elchika.app', icon: '📊', displayName: 'Break-Even Point', description: '損益分岐点計算（固定費・変動費率・売上高）', category: 'Finance' },
   { path: '/bill-split-calculator', url: 'https://tools-bill-split-calculator.elchika.app', icon: '🧾', displayName: 'Bill Split', description: '割り勘計算（品目別・不均等割り・端数処理）', category: 'Finance' },
+
+  // ── Health ──
+  { path: '/bmi-calculator', url: 'https://tools-bmi-calculator.elchika.app', icon: '⚖️', displayName: 'BMI Calculator', description: 'BMI・標準体重・肥満度計算', category: 'Health' },
+  { path: '/calorie-burn-calculator', url: 'https://tools-calorie-burn-calculator.elchika.app', icon: '🔥', displayName: 'Calorie Burn', description: '運動種目別消費カロリー計算（MET値）', category: 'Health' },
+  { path: '/basal-metabolic-rate', url: 'https://tools-basal-metabolic-rate.elchika.app', icon: '💪', displayName: 'BMR Calculator', description: '基礎代謝・1日の必要カロリー計算', category: 'Health' },
 ];
 
 /**
