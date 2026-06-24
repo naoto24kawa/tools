@@ -220,6 +220,12 @@ export const APPS_CONFIG: readonly AppConfig[] = [
   { path: '/list-compare', url: 'https://tools-list-compare.elchika.app', icon: '📋', displayName: 'List Compare', description: 'リスト比較', category: 'Network' },
   { path: '/list-randomize', url: 'https://tools-list-randomize.elchika.app', icon: '🔀', displayName: 'List Randomizer', description: 'リストランダム化', category: 'Network' },
 
+  // ── Design ──
+  { path: '/golden-ratio', url: 'https://tools-golden-ratio.elchika.app', icon: 'φ', displayName: 'Golden Ratio', description: '黄金比・白銀比から寸法計算', category: 'Design' },
+  { path: '/image-grid-calculator', url: 'https://tools-image-grid-calculator.elchika.app', icon: '🔲', displayName: 'Image Grid', description: 'コンテナ幅・画像サイズ・ギャップから列数計算', category: 'Design' },
+  { path: '/photo-exposure', url: 'https://tools-photo-exposure.elchika.app', icon: '📷', displayName: 'Exposure Calculator', description: 'EV値・f値・ISO・SSの相互計算', category: 'Design' },
+  { path: '/depth-of-field', url: 'https://tools-depth-of-field.elchika.app', icon: '🔭', displayName: 'Depth of Field', description: '焦点距離・f値・センサーサイズから被写界深度計算', category: 'Design' },
+
   // ── Finance ──
   { path: '/savings-calculator', url: 'https://tools-savings-calculator.elchika.app', icon: '💰', displayName: 'Savings Calculator', description: '積立シミュレーション（月額・期間・利率から最終残高計算）', category: 'Finance' },
   { path: '/retirement-calculator', url: 'https://tools-retirement-calculator.elchika.app', icon: '🏖', displayName: 'Retirement Calculator', description: '老後資金シミュレーション（積立・取崩しフェーズ）', category: 'Finance' },
