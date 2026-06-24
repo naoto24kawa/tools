@@ -1,0 +1,7 @@
+name = "tools-savings-calculator"
+compatibility_date = "2024-12-01"
+
+# Cloudflare Pages Configuration
+# Deploy: wrangler pages deploy dist --project-name=tools-savings-calculator
+# Build output directory: dist
+# Framework: React + Vite

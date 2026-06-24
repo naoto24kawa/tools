@@ -220,6 +220,12 @@ export const APPS_CONFIG: readonly AppConfig[] = [
   { path: '/list-compare', url: 'https://tools-list-compare.elchika.app', icon: '📋', displayName: 'List Compare', description: 'リスト比較', category: 'Network' },
   { path: '/list-randomize', url: 'https://tools-list-randomize.elchika.app', icon: '🔀', displayName: 'List Randomizer', description: 'リストランダム化', category: 'Network' },
 
+  // ── Finance ──
+  { path: '/savings-calculator', url: 'https://tools-savings-calculator.elchika.app', icon: '💰', displayName: 'Savings Calculator', description: '積立シミュレーション（月額・期間・利率から最終残高計算）', category: 'Finance' },
+  { path: '/retirement-calculator', url: 'https://tools-retirement-calculator.elchika.app', icon: '🏖', displayName: 'Retirement Calculator', description: '老後資金シミュレーション（積立・取崩しフェーズ）', category: 'Finance' },
+  { path: '/break-even-calculator', url: 'https://tools-break-even-calculator.elchika.app', icon: '📊', displayName: 'Break-Even Point', description: '損益分岐点計算（固定費・変動費率・売上高）', category: 'Finance' },
+  { path: '/bill-split-calculator', url: 'https://tools-bill-split-calculator.elchika.app', icon: '🧾', displayName: 'Bill Split', description: '割り勘計算（品目別・不均等割り・端数処理）', category: 'Finance' },
+
   // ── Health ──
   { path: '/bmi-calculator', url: 'https://tools-bmi-calculator.elchika.app', icon: '⚖️', displayName: 'BMI Calculator', description: 'BMI・標準体重・肥満度計算', category: 'Health' },
   { path: '/calorie-burn-calculator', url: 'https://tools-calorie-burn-calculator.elchika.app', icon: '🔥', displayName: 'Calorie Burn', description: '運動種目別消費カロリー計算（MET値）', category: 'Health' },
