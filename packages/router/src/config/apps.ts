@@ -8,7 +8,7 @@ export type AppCategory =
   | 'Text' | 'Encode' | 'Crypto' | 'Number' | 'DateTime'
   | 'JSON' | 'Code' | 'Color / CSS' | 'Image' | 'PDF'
   | 'Video' | 'Generator' | 'Network'
-  | 'Design' | 'Finance' | 'Health';
+  | 'Design' | 'Finance' | 'Health' | 'Life';
 
 export interface AppConfig {
   path: `/${string}`;
@@ -236,6 +236,13 @@ export const APPS_CONFIG: readonly AppConfig[] = [
   { path: '/bmi-calculator', url: 'https://tools-bmi-calculator.elchika.app', icon: '⚖️', displayName: 'BMI Calculator', description: 'BMI・標準体重・肥満度計算', category: 'Health' },
   { path: '/calorie-burn-calculator', url: 'https://tools-calorie-burn-calculator.elchika.app', icon: '🔥', displayName: 'Calorie Burn', description: '運動種目別消費カロリー計算（MET値）', category: 'Health' },
   { path: '/basal-metabolic-rate', url: 'https://tools-basal-metabolic-rate.elchika.app', icon: '💪', displayName: 'BMR Calculator', description: '基礎代謝・1日の必要カロリー計算', category: 'Health' },
+
+  // ── Life ──
+  { path: '/biorhythm', url: 'https://tools-biorhythm.elchika.app', icon: '🌊', displayName: 'Biorhythm', description: '生年月日からバイオリズム波形を計算', category: 'Life' },
+  { path: '/yakudoshi-calculator', url: 'https://tools-yakudoshi-calculator.elchika.app', icon: '🎎', displayName: 'Yakudoshi', description: '厄年・小厄を計算', category: 'Life' },
+  { path: '/electricity-cost', url: 'https://tools-electricity-cost.elchika.app', icon: '⚡', displayName: 'Electricity Cost', description: '電気料金計算（使用量・プランから月額試算）', category: 'Life' },
+  { path: '/fuel-cost-calculator', url: 'https://tools-fuel-cost-calculator.elchika.app', icon: '⛽', displayName: 'Fuel Cost', description: '燃費・ガソリン代・CO2排出量計算', category: 'Life' },
+  { path: '/co2-footprint', url: 'https://tools-co2-footprint.elchika.app', icon: '🌍', displayName: 'CO2 Footprint', description: '生活行動別CO2排出量計算', category: 'Life' },
 ];
 
 /**
