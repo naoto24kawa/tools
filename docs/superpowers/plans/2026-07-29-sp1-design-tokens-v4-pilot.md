@@ -919,22 +919,22 @@ mkdir -p .docs/verification
 
 dev サーバーを**バックグラウンドで**起動する（`pnpm --filter url-encoder dev`）。フォアグラウンドで起動するとセッションがブロックされる。
 
-起動を待つ間、次のコマンドで応答を確認する（`vite.config.ts` の `server.port` は 5173）:
+Vite の起動ログが示す実ポートを読み、同じポートで応答を確認する:
 
-Run: `curl -s -o /dev/null -w '%{http_code}\n' http://localhost:5173/`
+Run: `curl -s -o /dev/null -w '%{http_code}\n' http://localhost:<実ポート>/`
 
 Expected: `200`。まだなら数秒おいて再実行する。
 
 - [ ] **Step 2: light テーマを確認して撮影する**
 
-ブラウザで `http://localhost:5173/` を開き、次を確認する:
+ブラウザで Vite の起動ログが示す実ポートの URL を開き、次を確認する:
 
 - ヘッダの h1・説明文が読める（`--muted-foreground` が薄すぎない）
 - ボタンが**青地に白文字**で描画されている（`--primary` が効いている）
 - 入力欄・テキストエリアの枠線が見える
 - 角丸が付いている（`--radius: 0.625rem`）
 - 欧文が Geist で描画され、日本語がフォールバックで自然に出ている
-- Tab キーでフォーカスを移動し、フォーカスリングが 3px で見える
+- Tab キーでフォーカスを移動し、フォーカスリングが可視である
 
 スクリーンショットを `.docs/verification/2026-07-29-sp1-url-encoder-light.png` に保存する。
 
@@ -1004,9 +1004,9 @@ document.documentElement.classList.add('dark');
 
 - [ ] **Step 5: dev サーバーを止めてコミット**
 
-バックグラウンドで起動した dev サーバーのプロセスを終了する。終了したことを次で確認する:
+バックグラウンドで起動した dev サーバーのプロセスを終了する。Vite の起動ログで確認した実ポートについて、終了したことを次で確認する:
 
-Run: `curl -s -o /dev/null -w '%{http_code}\n' http://localhost:5173/`
+Run: `curl -s -o /dev/null -w '%{http_code}\n' http://localhost:<実ポート>/`
 
 Expected: 接続失敗（`000`）。まだ 200 が返るならプロセスが残っているので終了させる。
 
@@ -1132,6 +1132,9 @@ node scripts/design-audit.js --app=<app>
 ## 目視で見るべき観点
 
 （Task 4 の `.docs/verification/2026-07-29-sp1-visual-check.md` から引き継ぐ）
+
+- dev サーバーのポートは固定しない。Vite の起動ログが示す実ポートで起動時のHTTP 200と停止後の接続失敗を確認する。SP1 では5173が外部 `com.docker` に占有され、Viteが5174へ自動退避した。
+- 和文フォールバックは日本語本文を持つアプリで確認する。url-encoder の `App.tsx` は日本語0件だったため一時DOM probeで補助確認しただけであり、SP2 のサンプリングには日本語本文を持つアプリを最低1つ含める。
 ```
 
 - [ ] **Step 2: 未記入の欄が残っていないか確認する**
