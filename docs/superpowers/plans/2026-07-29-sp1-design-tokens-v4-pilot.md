@@ -17,9 +17,10 @@
 - **`apps/url-encoder/vite.config.ts` の `base: './'` は絶対に変更しない。** `'/'` にすると全アプリが白画面になる（HTML は 200 を返すため気づけない）。正本は `.docs/ASSET_PATH_INCIDENT.md`。
 - **触るアプリは `apps/url-encoder` のみ。** 残り 345 アプリのファイルを一切変更しない。
 - **ブランドノブの値は固定値。** light `--primary: oklch(0.55 0.18 255)` / `--primary-foreground: oklch(0.985 0 0)`、dark `--primary: oklch(0.72 0.14 255)` / `--primary-foreground: oklch(0.145 0 0)`。L 値を上げると WCAG 4.5:1 を割るため変更しない。
-- **`tokens.css` の standards テンプレートからの差分は上記 4 行のみ。** 他の行は `~/projects/naoto24kawa/standards/templates/design-tokens.css` からそのままコピーする。
+- **`tokens.css` の standards テンプレートからの差分は primary 4 行 + light の `--warning-foreground` 1 行のみ。** 他の行は `~/projects/naoto24kawa/standards/templates/design-tokens.css` からそのままコピーする。
 - **検証コマンドに pipe を挟まない。** exit code と出力を直接見る。
 - **パッケージ名の scope は `@tools/`**（既存の `@tools/ui` に合わせる）。
+- **新しい workspace パッケージの `tsconfig.json` は `../../tsconfig.base.json` を extends する。** root `tsconfig.json` は Cloudflare 型だけに限定され、Node の型を持たないため継承しない。
 - **作業ブランチは `feature/design-tokens-v4-pilot`**（既存・作成済み）。
 - ボタン要素には `type="button"` を付与する（CLAUDE.md コーディング規約）。
 - Oxfmt 設定: indent 2 spaces / single quotes / semicolons / line width 100。
@@ -32,6 +33,7 @@ standards §3 は「`--primary` を上書きしたらコントラスト 4.5:1 �
 
 **Files:**
 - Create: `packages/design-tokens/package.json`
+- Create: `packages/design-tokens/tsconfig.json`
 - Create: `packages/design-tokens/tokens.css`
 - Create: `packages/design-tokens/README.md`
 - Create: `packages/design-tokens/src/contrast.ts`
@@ -69,6 +71,21 @@ standards §3 は「`--primary` を上書きしたらコントラスト 4.5:1 �
     "tailwindcss": "^4.3.3",
     "tw-animate-css": "^1.4.0"
   }
+}
+```
+
+`packages/design-tokens/tsconfig.json`:
+
+```json
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["src"]
 }
 ```
 
@@ -213,12 +230,26 @@ Expected: PASS（7 テスト）
 `packages/design-tokens/src/__tests__/tokens.test.ts`:
 
 ```ts
-import { readFileSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
+import { existsSync, readFileSync } from 'node:fs';
+import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { contrastRatio, extractTokens, parseOklch, type OklchColor } from '../contrast';
 
-const css = readFileSync(fileURLToPath(new URL('../../tokens.css', import.meta.url)), 'utf8');
+/**
+ * tokens.css はリポジトリルート基準で解決する。
+ * import.meta.url は Vite+ の transform 下で file: スキームにならず
+ * fileURLToPath が TypeError を投げるため使えない。
+ */
+const tokensPath = path.resolve(process.cwd(), 'packages/design-tokens/tokens.css');
+
+if (!existsSync(tokensPath)) {
+  throw new Error(
+    `tokens.css が見つからない: ${tokensPath}\n` +
+      'このテストはリポジトリルートから実行すること: pnpm exec vp test packages/design-tokens/src'
+  );
+}
+
+const css = readFileSync(tokensPath, 'utf8');
 const light = extractTokens(css, ':root');
 const dark = extractTokens(css, '.dark');
 
@@ -311,17 +342,18 @@ describe('トークンの網羅性', () => {
 
 Run: `pnpm exec vp test packages/design-tokens/src`（リポジトリルートで実行する）
 
-Expected: FAIL（`tokens.css` が存在せず `readFileSync` が ENOENT）
+Expected: FAIL（`tokens.css` が存在しないため「`tokens.css が見つからない: ...`」のエラーで落ちる）
 
 - [ ] **Step 8: tokens.css を作る**
 
-`~/projects/naoto24kawa/standards/templates/design-tokens.css` の全内容をコピーし、以下 4 行だけを書き換える。**他の行は一切変更しない**（standards テンプレート改訂時の差分マージを機械的に保つため）。
+`~/projects/naoto24kawa/standards/templates/design-tokens.css` の全内容をコピーし、以下 5 行だけを書き換える。**他の行は一切変更しない**（standards テンプレート改訂時の差分マージを機械的に保つため）。
 
 `:root` ブロック内:
 
 ```css
     --primary: oklch(0.55 0.18 255);   /* 青。--primary-foreground と 4.72:1（tokens.test.ts で検証） */
     --primary-foreground: oklch(0.985 0 0);
+    --warning-foreground: oklch(0.985 0 0);   /* 明色。standards の暗色 0.145 は warning と 3.92:1 で AA 未達（下記コメント参照） */
 ```
 
 `.dark` ブロック内:
@@ -338,8 +370,14 @@ Expected: FAIL（`tokens.css` が存在せず `readFileSync` が ENOENT）
  * Elchika Tools デザイントークン — 唯一の正本。
  *
  * 正準ソース: naoto24kawa/standards の templates/design-tokens.css
- * tools 側の差分は --primary / --primary-foreground（light・dark 各 2 行）のみ。
- * それ以外を変更すると standards テンプレート改訂時の差分マージが破綻する。
+ * standards テンプレートからの差分（この 5 行以外は変更しない）:
+ *   - :root の --primary / --primary-foreground（ブランドノブ）
+ *   - .dark の --primary / --primary-foreground（ブランドノブ）
+ *   - :root の --warning-foreground: standards の oklch(0.145 0 0) は --warning と 3.92:1 で
+ *     WCAG AA（4.5:1）に届かない。暗色方向では純黒でも 4.16:1 で到達不能なため明色へ変更した。
+ *     light の他の status foreground と同値。standards 側が修正されたらこの差分は解消する。
+ *
+ * このファイルは Oxfmt で整形しないこと。整形すると standards テンプレートとの diff が取れなくなる。
  *
  * 値を変更した場合は src/__tests__/tokens.test.ts が WCAG コントラストを検証する。
  * standards DESIGN.md §3 は「ノブを上書きしたら 4.5:1 を実計算で確認する」を MUST としており、
@@ -353,11 +391,11 @@ Run: `pnpm exec vp test packages/design-tokens/src`（リポジトリルート�
 
 Expected: PASS（contrast.test.ts 7 件 + tokens.test.ts 16 件）
 
-- [ ] **Step 10: 差分が 4 行に限定されていることを確認する**
+- [ ] **Step 10: 差分が 5 行に限定されていることを確認する**
 
 Run: `diff ~/projects/naoto24kawa/standards/templates/design-tokens.css packages/design-tokens/tokens.css`
 
-Expected: 差分は冒頭のコメントブロックと `--primary` / `--primary-foreground` の 4 行のみ。他の行に差分が出ていたらコピーミスなので修正する。
+Expected: 差分は冒頭のコメントブロック、`--primary` / `--primary-foreground` の 4 行、light の `--warning-foreground` 1 行のみ。他の行に差分が出ていたらコピーミスなので修正する。
 
 - [ ] **Step 11: README を書く**
 
@@ -381,12 +419,15 @@ Elchika Tools 全アプリの oklch デザイントークン。**このパッケ
 ## standards との関係
 
 正準ソースは `naoto24kawa/standards` の `templates/design-tokens.css`。
-tools 側の差分は `--primary` / `--primary-foreground`（light・dark 各 2 行）のみ。
+tools 側の差分は `--primary` / `--primary-foreground`（light・dark 各 2 行）と
+light の `--warning-foreground` の計 5 行のみ。standards の暗色 warning foreground は
+warning 背景と 3.92:1 で WCAG AA 未達のため、明色へ変更している。
+`tokens.css` は Oxfmt で整形しない。整形すると standards テンプレートとの diff が取れなくなる。
 
 standards のテンプレートが改訂されたら:
 
 1. `diff ~/projects/naoto24kawa/standards/templates/design-tokens.css tokens.css` で差分を確認
-2. ブランドノブ 4 行以外の差分を取り込む
+2. tools 固有の 5 行以外の差分を取り込む
 3. リポジトリルートで `pnpm exec vp test packages/design-tokens/src` を実行してコントラストが維持されているか確認
 
 ## ブランドノブ
@@ -401,9 +442,16 @@ standards のテンプレートが改訂されたら:
 
 - [ ] **Step 12: lint を通す**
 
-Run: `pnpm check`
+リポジトリ全体の `pnpm check` は使わない。移行前から 9074 ファイルに既存の formatting issue があり exit 1 になるため、SP1 では変更したファイルのみを対象にする。standards テンプレート由来の `tokens.css` は整形すると同期ポリシーが破綻するため対象外とし、Step 9 の behavior test と Step 10 の diff で検証する。
 
-Expected: PASS。失敗したら `pnpm check:fix` を実行し、再度 `pnpm check` で PASS を確認する。
+Run:
+
+```bash
+pnpm exec vp check --fix packages/design-tokens/README.md packages/design-tokens/package.json packages/design-tokens/tsconfig.json packages/design-tokens/src/contrast.ts packages/design-tokens/src/__tests__/contrast.test.ts packages/design-tokens/src/__tests__/tokens.test.ts
+pnpm exec vp check packages/design-tokens/README.md packages/design-tokens/package.json packages/design-tokens/tsconfig.json packages/design-tokens/src/contrast.ts packages/design-tokens/src/__tests__/contrast.test.ts packages/design-tokens/src/__tests__/tokens.test.ts
+```
+
+Expected: 2 回目の scoped check が PASS。
 
 - [ ] **Step 13: コミット**
 
@@ -412,7 +460,7 @@ git add packages/design-tokens
 git commit -m "feat(design-tokens): oklch トークンパッケージとコントラスト自動検証を追加
 
 standards templates/design-tokens.css を正準ソースとし、tools の差分は
---primary / --primary-foreground の 4 行に限定する。standards DESIGN.md §3 が
+ブランドノブ 4 行と warning foreground 1 行に限定する。standards DESIGN.md §3 が
 MUST とするコントラスト実計算を tokens.test.ts で自動化した。
 
 Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
@@ -567,9 +615,16 @@ Expected: exit 0。
 
 `pnpm --filter url-encoder test` を使わない。アプリ cwd の `vite.config.ts` が使われ、root の test 設定（`environment: happy-dom` / `setupFiles`）を失って `document is not defined` で全 DOM テストが落ちる。これは移行の失敗ではなく検証経路の誤りである。
 
-Run: `pnpm check`
+リポジトリ全体の `pnpm check` は使わない。移行前から 9074 ファイルに既存の formatting issue があり exit 1 になるため、SP1 では変更したファイルのみを対象にする。
 
-Expected: PASS。失敗したら `pnpm check:fix` 後に再確認する。
+Run:
+
+```bash
+pnpm exec vp check --fix apps/url-encoder/package.json apps/url-encoder/vite.config.ts apps/url-encoder/src/index.css pnpm-lock.yaml
+pnpm exec vp check apps/url-encoder/package.json apps/url-encoder/vite.config.ts apps/url-encoder/src/index.css pnpm-lock.yaml
+```
+
+Expected: 2 回目の scoped check が PASS。
 
 - [ ] **Step 11: DS ルールの非回帰を確認する（G10）**
 
@@ -779,9 +834,16 @@ Expected: `apps/url-encoder/vite.config.ts` と `packages/design-tokens/tokens.c
 
 - [ ] **Step 5: lint を通してコミット**
 
-Run: `pnpm check`
+リポジトリ全体の `pnpm check` は使わない。移行前から 9074 ファイルに既存の formatting issue があり exit 1 になるため、SP1 では変更したファイルのみを対象にする。
 
-Expected: PASS。失敗したら `pnpm check:fix` 後に再確認する。
+Run:
+
+```bash
+pnpm exec vp check --fix scripts/verify-v4-migration.js
+pnpm exec vp check scripts/verify-v4-migration.js
+```
+
+Expected: 2 回目の scoped check が PASS。
 
 ```bash
 git add scripts/verify-v4-migration.js
@@ -950,6 +1012,12 @@ SP1（url-encoder パイロット）で実測して確定した手順。SP2 の
 | 4 | tailwindcss-animate → tw-animate-css で既存 className が壊れないか | |
 | 5 | base: './' が維持されるか | |
 
+## standards テンプレート由来の既知差分
+
+light の `--warning-foreground` は standards テンプレートの暗色値だと warning 背景との
+コントラストが 3.92:1 で WCAG AA 未達になるため、明色へ変更している。
+standards 側が修正されたら、この差分は解消する。
+
 ## 1 アプリあたりの変換手順
 
 ### package.json
@@ -994,6 +1062,15 @@ node scripts/design-audit.js --app=<app>
 
 テストはリポジトリルートから `pnpm exec vp test apps/<app>/src` で実行する。
 `pnpm --filter <app> test` はアプリ cwd の `vite.config.ts` を使い、root の test 設定（`environment: happy-dom` / `setupFiles`）を失うため使わない。
+リポジトリ内のファイルをテストから読む場合は `import.meta.url` を使わず、
+`process.cwd()` 基準の `path.resolve` を使う。Vite+ の transform 下では
+`import.meta.url` が `file:` スキームにならず、`fileURLToPath` が失敗するためである。
+
+## SP2 で踏む地雷
+
+- リポジトリ全体の check は移行前から 9074 ファイルの既存 formatting issue で exit 1 になる。変更ファイルを明示した scoped check を使う。
+- standards テンプレート由来の CSS は整形対象から外す。formatter ではなく、テンプレートとの差分と behavior test で検証する。
+- 新規 workspace パッケージには `../../tsconfig.base.json` を extends した `tsconfig.json` が必要。root `tsconfig.json` は Cloudflare 型だけに限定され、Node の型を持たないため継承しない。Node API を使う package は `compilerOptions.types` に `node` を明示する。
 
 ## SP2 の変換スクリプトへの要求
 
@@ -1078,9 +1155,15 @@ Run: `pnpm exec vp test packages/design-tokens/src`（リポジトリルート�
 
 Expected: exit 0（コントラスト検証）
 
-Run: `pnpm check`
+リポジトリ全体の `pnpm check` は使わない。移行前から 9074 ファイルに既存の formatting issue があり exit 1 になるため、SP1 では変更したファイルのみを対象にする。`packages/design-tokens/tokens.css` は standards テンプレートとの diff を維持するため除外する。PNG は formatter / linter の対象外であり、Step 3 で実体を検証する。
 
-Expected: PASS（G9）
+Run:
+
+```bash
+pnpm exec vp check packages/design-tokens/README.md packages/design-tokens/package.json packages/design-tokens/tsconfig.json packages/design-tokens/src/contrast.ts packages/design-tokens/src/__tests__/contrast.test.ts packages/design-tokens/src/__tests__/tokens.test.ts apps/url-encoder/package.json apps/url-encoder/vite.config.ts apps/url-encoder/src/index.css pnpm-lock.yaml scripts/verify-v4-migration.js .docs/verification/2026-07-29-sp1-visual-check.md .docs/plans/tailwind-v4-migration-guide.md docs/superpowers/plans/2026-07-29-sp1-design-tokens-v4-pilot.md
+```
+
+Expected: PASS（G9）。このブランチで新規作成・変更した formatter / linter 対象ファイルをすべて明示列挙し、`tokens.css` だけを除外した scoped check である。
 
 - [ ] **Step 3: 目視の証跡が存在することを確認する（G6・G7）**
 
