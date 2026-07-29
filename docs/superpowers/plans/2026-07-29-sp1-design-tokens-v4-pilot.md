@@ -821,9 +821,7 @@ Run: `node scripts/verify-v4-migration.js --app=url-encoder`
 
 Expected: `✅ url-encoder` と表示され exit 0。
 
-Run: `echo $?`
-
-Expected: `0`
+終了コードは `node scripts/verify-v4-migration.js --app=url-encoder` 自体の正常終了で確認する。別shell の `$?` は当該コマンドの終了コードを示さないため使わない。
 
 - [ ] **Step 3: 意図的に壊して FAIL することを確認する**
 
@@ -1092,6 +1090,8 @@ node scripts/verify-v4-migration.js --app=<app>
 node scripts/check-asset-paths.js
 node scripts/design-audit.js --app=<app>
 ```
+
+各コマンドは個別に実行し、そのコマンド自体の終了コードと出力を確認する。別shell の `$?` は当該コマンドの終了コードを示さないため使わない。
 
 テストはリポジトリルートから `pnpm exec vp test apps/<app>/src` で実行する。
 `pnpm --filter <app> test` はアプリ cwd の `vite.config.ts` を使い、root の test 設定（`environment: happy-dom` / `setupFiles`）を失うため使わない。
