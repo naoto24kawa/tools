@@ -64,7 +64,7 @@ SP4  文書・監査の再編（.docs/DESIGN.md 差分化・design-audit.js の 
 
 ```
 packages/design-tokens/
-  package.json     # name: @elchika/design-tokens, exports: { ".": "./tokens.css" }
+  package.json     # name: @tools/design-tokens, exports: { ".": "./tokens.css" }
   tokens.css       # oklch トークンの唯一の正本
   README.md        # standards テンプレートとの同期ポリシー
 ```
@@ -72,7 +72,7 @@ packages/design-tokens/
 移行後、各アプリの `src/index.css` は全 346 個が次の 1 行になる（`@import "tailwindcss"` はトークン側が持つ）。
 
 ```css
-@import '@elchika/design-tokens';
+@import '@tools/design-tokens';
 ```
 
 ### `tokens.css` = standards テンプレート + ブランドノブ差分のみ
@@ -131,17 +131,17 @@ packages/design-tokens/
 
 | ファイル | 操作 |
 |---|---|
-| `package.json` | `tailwindcss@^3.4` → `^4.3`、`@tailwindcss/vite` 追加、`tailwindcss-animate` → `tw-animate-css`、`@elchika/design-tokens: workspace:*` 追加、`postcss` / `autoprefixer` 削除 |
+| `package.json` | `tailwindcss@^3.4` → `^4.3`、`@tailwindcss/vite` 追加、`tailwindcss-animate` → `tw-animate-css`、`@tools/design-tokens: workspace:*` 追加、`postcss` / `autoprefixer` 削除 |
 | `vite.config.ts` | `@tailwindcss/vite` プラグイン追加。**`base: './'` は触らない** |
 | `tailwind.config.js` | 削除（v4 は CSS-first 設定） |
 | `postcss.config.js` | 削除 |
-| `src/index.css` | `@import '@elchika/design-tokens';` の 1 行に置換 |
+| `src/index.css` | `@import '@tools/design-tokens';` の 1 行に置換 |
 
 ### 実測で確定させる未知
 
 推測で設計を固めず、パイロットで実際に動かして確定させる項目。
 
-1. **v4 のコンテンツ自動検出**が `node_modules/@elchika/design-tokens/tokens.css` から `@import "tailwindcss"` した場合にアプリの `src/` を走査するか。走査しなければ `@source '../src'` の明示が必要になり、アプリ側 `index.css` は 2 行になる。
+1. **v4 のコンテンツ自動検出**が `node_modules/@tools/design-tokens/tokens.css` から `@import "tailwindcss"` した場合にアプリの `src/` を走査するか。走査しなければ `@source '../src'` の明示が必要になり、アプリ側 `index.css` は 2 行になる。
 2. **Rolldown-Vite × `@tailwindcss/vite`** が動作するか（Vite 8.0.0 / plugin 4.3.3）。
 3. `@import "shadcn/tailwind.css"` の実体と、v3 前提で書かれた `src/components/ui/*.tsx` がそのまま動作するか。
 4. `tailwindcss-animate` → `tw-animate-css` の置換で既存アニメーション className が壊れないか。
