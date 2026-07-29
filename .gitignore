@@ -68,6 +68,10 @@ Thumbs.db
 # Playwright MCP temporary files
 .playwright-mcp/
 
+# 検証スクショはリポルート直下に出力されがちなので無視する
+# (サブディレクトリの画像は対象外。ルート直下だけを狙う)
+/*.png
+
 # Playwright
 test-results/
 playwright-report/

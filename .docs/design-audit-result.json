@@ -1,0 +1,16 @@
+{
+  "timestamp": "2026-05-31T14:34:09.999Z",
+  "filter": {
+    "app": "ratio-calculator",
+    "rule": null
+  },
+  "summary": {
+    "total": 1,
+    "clean": 1,
+    "violating": 0,
+    "totalViolations": 0,
+    "withWarnings": 0,
+    "totalWarnings": 0
+  },
+  "apps": []
+}
