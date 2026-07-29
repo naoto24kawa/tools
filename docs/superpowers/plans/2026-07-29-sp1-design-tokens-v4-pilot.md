@@ -129,11 +129,11 @@ describe('contrastRatio', () => {
 
 - [ ] **Step 3: テストを実行して失敗を確認する**
 
-Run: `pnpm --filter @tools/design-tokens test`
+Run: `pnpm exec vp test packages/design-tokens/src`（リポジトリルートで実行する）
 
 Expected: FAIL（`../contrast` が存在しないため解決エラー）
 
-もしこのコマンドで design-tokens のテストが収集されない場合は、リポジトリルートで `pnpm test` を実行して収集されるか確認し、収集される方のコマンドを以降のステップでも使う。
+もしこのコマンドで design-tokens のテストが収集されない場合は、その事実を報告して指示を待つ。
 
 - [ ] **Step 4: `contrast.ts` を実装する**
 
@@ -204,7 +204,7 @@ export function extractTokens(css: string, selector: ':root' | '.dark'): Record<
 
 - [ ] **Step 5: テストを実行して通ることを確認する**
 
-Run: `pnpm --filter @tools/design-tokens test`
+Run: `pnpm exec vp test packages/design-tokens/src`（リポジトリルートで実行する）
 
 Expected: PASS（7 テスト）
 
@@ -349,7 +349,7 @@ Expected: FAIL（`tokens.css` が存在せず `readFileSync` が ENOENT）
 
 - [ ] **Step 9: テストを実行して通ることを確認する**
 
-Run: `pnpm --filter @tools/design-tokens test`
+Run: `pnpm exec vp test packages/design-tokens/src`（リポジトリルートで実行する）
 
 Expected: PASS（contrast.test.ts 7 件 + tokens.test.ts 16 件）
 
@@ -444,6 +444,10 @@ Expected: 違反 1 件（`DS-002 "← Tools トップに戻る" バックリン�
 Run: `node scripts/check-asset-paths.js`
 
 Expected: PASS。移行前から壊れていないことを確認しておく（移行後に落ちたら移行が原因だと切り分けられる）。
+
+Run: `pnpm exec vp test apps/url-encoder/src`（リポジトリルートで実行する）
+
+Expected: exit 0 / 5 files / 55 tests PASS。これを G8 の比較基準にし、移行後も同じ 55 tests が PASS することを確認する。
 
 - [ ] **Step 2: package.json を書き換える**
 
@@ -557,9 +561,11 @@ Expected: PASS。**落ちたら `vite.config.ts` の `base` を確認し、`'./'
 
 - [ ] **Step 10: 既存テストと lint を通す（G8・G9）**
 
-Run: `pnpm --filter url-encoder test`
+Run: `pnpm exec vp test apps/url-encoder/src`（リポジトリルートで実行する）
 
 Expected: exit 0。
+
+`pnpm --filter url-encoder test` を使わない。アプリ cwd の `vite.config.ts` が使われ、root の test 設定（`environment: happy-dom` / `setupFiles`）を失って `document is not defined` で全 DOM テストが落ちる。これは移行の失敗ではなく検証経路の誤りである。
 
 Run: `pnpm check`
 
@@ -986,6 +992,9 @@ node scripts/check-asset-paths.js
 node scripts/design-audit.js --app=<app>
 ```
 
+テストはリポジトリルートから `pnpm exec vp test apps/<app>/src` で実行する。
+`pnpm --filter <app> test` はアプリ cwd の `vite.config.ts` を使い、root の test 設定（`environment: happy-dom` / `setupFiles`）を失うため使わない。
+
 ## SP2 の変換スクリプトへの要求
 
 - **冪等**: 移行済みアプリに再実行しても二重適用しない（`index.css` の
@@ -1059,11 +1068,13 @@ Run: `node scripts/design-audit.js --app=url-encoder`
 
 Expected: 違反 1 件（Task 2 Step 1 のベースラインと同数。G10）
 
-Run: `pnpm --filter url-encoder test`
+Run: `pnpm exec vp test apps/url-encoder/src`（リポジトリルートで実行する）
 
 Expected: exit 0（G8）
 
-Run: `pnpm --filter @tools/design-tokens test`
+`pnpm --filter url-encoder test` を使わない。アプリ cwd の `vite.config.ts` が使われ、root の test 設定（`environment: happy-dom` / `setupFiles`）を失って `document is not defined` で全 DOM テストが落ちる。これは移行の失敗ではなく検証経路の誤りである。
+
+Run: `pnpm exec vp test packages/design-tokens/src`（リポジトリルートで実行する）
 
 Expected: exit 0（コントラスト検証）
 
