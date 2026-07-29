@@ -55,8 +55,8 @@ SP1 の実測では `apps/` 配下の旧設定は688件すべて `.js` であり
 
 ## 例外対応が必要なアプリ
 
-346個の `src/index.css` のうち、移行済みurl-encoderを除く340個はshadcn既定とmd5一致だった。
-次の6アプリは一致せず、個別確認が必要である。
+移行前の346個の `src/index.css` のうち340個がshadcn既定とmd5一致し、次の6アプリは
+一致せず個別確認が必要だった。url-encoderは一致した340個の1つである。
 
 - `image-generate`
 - `image-transparent`
@@ -79,8 +79,9 @@ pnpm exec vp test apps/<app>/src
 
 各コマンドは個別に実行し、そのコマンド自身の終了コードと出力を確認する。`;`、`&&`、pipe、末尾の `printf` で検証を連結してはならない。別shell の `echo $?` も当該コマンドの終了コードを示さないため使わない。SP2 の346アプリ検証は人手で連結せず、`verify-v4-migration.js` の単一exit codeへ集約する。
 
-テストはリポジトリルートから `pnpm exec vp test apps/<app>/src` で実行する。
-`pnpm --filter <app> test` はアプリ cwd の `vite.config.ts` を使い、root の test 設定（`environment: happy-dom` / `setupFiles`）を失うため使わない。
+`pnpm --filter <app> build` はアプリ自身のVite設定を使うため正しい。テストはリポジトリルートから
+`pnpm exec vp test apps/<app>/src` で実行する。使わないのは `pnpm --filter <app> test` だけであり、
+これはアプリ cwd の `vite.config.ts` を使い、root の test 設定（`environment: happy-dom` / `setupFiles`）を失うためである。
 リポジトリ内のファイルをテストから読む場合は `import.meta.url` を使わず、
 `process.cwd()` 基準の `path.resolve` を使う。Vite+ の transform 下では
 `import.meta.url` が `file:` スキームにならず、`fileURLToPath` が失敗するためである。
@@ -98,7 +99,7 @@ pnpm exec vp test apps/<app>/src
 | standards同期のdesign tokens CSS | formatterではなく、standardsテンプレートとの差分とbehavior testで検証する。 | diff + reviewで確認する。 |
 | `apps/*/vite.config.ts` | Oxfmtのquote変更はruntimeでは同値でも、source文字列を比較するasset gateを偽失敗させる。 | `vp check --no-fmt`、literal diff/text読み取り、asset gateで確認する。 |
 
-`check-asset-paths.js` のsource文字列依存gateは、`base: './'` がOxfmtで `base: "./"` に変わったとき345 / 346を違反とする偽失敗を起こした。SP2の前提条件として、このgateをquote-independentに直す。
+`check-asset-paths.js` のsource文字列依存gateは、url-encoderだけで `base: './'` がOxfmtにより `base: "./"` に変わったとき、1件を違反判定する偽失敗を起こした。SP2の前提条件として、このgateをquote-independentに直す。
 
 ## SP2 で踏む地雷
 
