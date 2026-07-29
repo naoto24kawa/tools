@@ -52,14 +52,15 @@ function sampleUtilityClasses(appDir) {
 }
 
 function parsePrimary(value) {
-  const components = value.match(/^oklch\(\s*([0-9.]+%?)\s+([0-9.]+)\s+([0-9.]+)\s*\)$/);
+  const components = value.match(/^oklch\(\s*(\S+)\s+(\S+)\s+(\S+)\s*\)$/);
   if (!components) return null;
 
-  const lightness = components[1].endsWith("%")
-    ? Number.parseFloat(components[1]) / 100
-    : Number.parseFloat(components[1]);
-  const chroma = Number.parseFloat(components[2]);
-  const hue = Number.parseFloat(components[3]);
+  const rawLightness = components[1];
+  const hasPercent = rawLightness.endsWith("%");
+  const numericLightness = hasPercent ? rawLightness.slice(0, -1) : rawLightness;
+  const lightness = Number(numericLightness) / (hasPercent ? 100 : 1);
+  const chroma = Number(components[2]);
+  const hue = Number(components[3]);
   return [lightness, chroma, hue].every(Number.isFinite) ? { lightness, chroma, hue } : null;
 }
 
@@ -116,7 +117,12 @@ const CHECKS = {
     const viteConfig = path.join(appDir, "vite.config.ts");
     if (!fs.existsSync(viteConfig)) return ["vite.config.ts が存在しない"];
     const content = fs.readFileSync(viteConfig, "utf8");
-    return /base:\s*'\.\/'/.test(content) ? [] : ["vite.config.ts の base が './' でない"];
+    const declaration = content.match(/^\s*base\s*:\s*(.+?)\s*,?\s*$/m);
+    if (!declaration) return ["vite.config.ts に base 宣言がない"];
+
+    const rawValue = declaration[1].replace(/,$/, "").trim();
+    const base = rawValue.replace(/^(['"])(.*)\1$/, "$2");
+    return base === "./" ? [] : ["vite.config.ts の base が './' でない"];
   },
 
   /** v3 の設定ファイルが残っていない */
