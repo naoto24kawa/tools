@@ -16,16 +16,36 @@ const path = require("node:path");
 
 const APPS_DIR = path.join(__dirname, "..", "apps");
 const DECIMAL = /^(?:\d+(?:\.\d+)?|\.\d+)$/;
-const filterApp = process.argv
-  .slice(2)
-  .find((arg) => arg.startsWith("--app="))
-  ?.split("=")[1];
+
+function parseArgs(args) {
+  if (args.length === 0) return null;
+
+  const unknown = args.find((arg) => !arg.startsWith("--app="));
+  if (unknown !== undefined) throw new Error(`未知の option: ${unknown}`);
+  if (args.length > 1) throw new Error("--app は1回だけ指定できる");
+
+  const appName = args[0].slice("--app=".length);
+  if (appName.length === 0) throw new Error("--app の値が空である");
+  if (appName.includes("/") || appName.includes("\\")) {
+    throw new Error("--app に path separator は指定できない");
+  }
+  return appName;
+}
+
+let filterApp;
+try {
+  filterApp = parseArgs(process.argv.slice(2));
+} catch (error) {
+  console.error(`引数エラー: ${error.message}`);
+  process.exit(1);
+}
 
 /** 移行済みの目印: index.css が design-tokens を import している */
 function isMigrated(appDir) {
   const indexCss = path.join(appDir, "src", "index.css");
   if (!fs.existsSync(indexCss)) return false;
-  return fs.readFileSync(indexCss, "utf8").includes("@tools/design-tokens");
+  const content = fs.readFileSync(indexCss, "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
+  return /(?:^|[\r\n])\s*@import\s+(["'])@tools\/design-tokens\1\s*;\s*(?=$|[\r\n])/.test(content);
 }
 
 function readBuiltCss(appDir) {
@@ -93,28 +113,30 @@ const CHECKS = {
 
   /** G4: ブランドノブの light 青が適用されている */
   G4: ({ builtCss }) => {
-    const primaryValues = [...builtCss.matchAll(/--primary:\s*(oklch\([^)]*\))/g)].map(
-      (match) => match[1],
-    );
-    if (primaryValues.length === 0) return ["生成 CSS から --primary:oklch(...) を抽出できない"];
+    const cssWithoutComments = builtCss.replace(/\/\*[\s\S]*?\*\//g, "");
+    const primaryValues = [
+      ...cssWithoutComments.matchAll(/(?:^|[;{])\s*--primary\s*:\s*([^;}]+)/g),
+    ].map((match) => match[1].trim());
+    if (primaryValues.length !== 2) {
+      return [
+        `生成 CSS の --primary 宣言は light/dark の2件でなければならない: ${primaryValues.length}件（共有token外再定義）`,
+      ];
+    }
 
     const errors = [];
-    const primaryColors = primaryValues.map((value) => {
+    const [lightPrimary, darkPrimary] = primaryValues.map((value) => {
       const parsed = parsePrimary(value);
       if (!parsed) errors.push(`--primary の oklch 値を数値抽出できない: ${value}`);
       return parsed;
     });
     if (errors.length > 0) return errors;
 
-    const expectedPrimaryExists = primaryColors.some(
-      ({ lightness, chroma, hue }) =>
-        Math.abs(lightness - 0.55) < 1e-6 &&
-        Math.abs(chroma - 0.18) < 1e-6 &&
-        Math.abs(hue - 255) < 1e-6,
-    );
-    return expectedPrimaryExists
+    if (darkPrimary === null) return errors;
+    return Math.abs(lightPrimary.lightness - 0.55) < 1e-6 &&
+      Math.abs(lightPrimary.chroma - 0.18) < 1e-6 &&
+      Math.abs(lightPrimary.hue - 255) < 1e-6
       ? []
-      : ["生成 CSS に数値として --primary oklch(0.55 0.18 255) が現れない"];
+      : ["生成 CSS の1件目に数値として --primary oklch(0.55 0.18 255) が現れない"];
   },
 
   /** G5 補強: base: './' が維持されている（白画面事故の直撃点） */
@@ -139,7 +161,7 @@ const CHECKS = {
   },
 };
 
-const appNames = filterApp ? [filterApp] : fs.readdirSync(APPS_DIR);
+const appNames = filterApp === null ? fs.readdirSync(APPS_DIR) : [filterApp];
 const targets = appNames
   .map((name) => ({ name, appDir: path.join(APPS_DIR, name) }))
   .filter(

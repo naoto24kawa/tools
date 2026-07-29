@@ -6,9 +6,12 @@
  */
 export type OklchColor = { L: number; C: number; H: number };
 
-/** oklch(L C H) / oklch(L C H / A) を解析する。oklch でなければ null */
+/** alpha なしの oklch(L C H) を解析する。完全一致しなければ null */
 export function parseOklch(value: string): OklchColor | null {
-  const match = value.trim().match(/^oklch\(\s*([\d.]+)\s+([\d.]+)\s+([\d.]+)/);
+  const decimal = "(?:\\d+(?:\\.\\d+)?|\\.\\d+)";
+  const match = value
+    .trim()
+    .match(new RegExp(`^oklch\\(\\s*(${decimal})\\s+(${decimal})\\s+(${decimal})\\s*\\)$`));
   if (!match) return null;
   return { L: Number(match[1]), C: Number(match[2]), H: Number(match[3]) };
 }

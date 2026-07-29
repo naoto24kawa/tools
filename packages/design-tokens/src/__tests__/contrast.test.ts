@@ -10,9 +10,12 @@ describe("parseOklch", () => {
     expect(parseOklch("oklch(0.985 0 0)")).toEqual({ L: 0.985, C: 0, H: 0 });
   });
 
-  it("アルファ付き oklch を解析する", () => {
-    expect(parseOklch("oklch(1 0 0 / 10%)")).toEqual({ L: 1, C: 0, H: 0 });
-  });
+  it.each(["oklch(1 0 0", "oklch(1 0 0)garbage", "oklch(1 0 0 / 10%)", "oklch(1 0 0 / nope)"])(
+    "不完全・末尾付き・alpha付きの値を拒否する: %s",
+    (value) => {
+      expect(parseOklch(value)).toBeNull();
+    },
+  );
 
   it("oklch でない値には null を返す", () => {
     expect(parseOklch("0.625rem")).toBeNull();

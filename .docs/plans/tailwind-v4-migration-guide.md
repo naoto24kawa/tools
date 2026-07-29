@@ -103,6 +103,11 @@ pnpm exec vp test apps/<app>/src
 
 ## SP2 で踏む地雷
 
+- verifier の引数はapps scanより前に全件をparse・validateする。SP1では空の `--app=` が引数なしmodeへfallbackし、重複 `--app` と未知optionが無視され、path separator付きの値が正規化されて、いずれも別modeまたは別targetとして偽PASSした。不正入力をall-migrated modeへ落としてはならない。
+- 移行済み判定はcomment除去後のactiveな完全 `@import "@tools/design-tokens";` statementで行う。substring判定ではcomment内だけの文字列でもstaleなbuild成果物を検査して偽PASSした。single/double quoteと合理的なwhitespaceだけを許容し、SP1の1-line契約を広げない。
+- G4は正しい値が1件あるかを `some()` で見るのではなく、生成CSSの `--primary` 宣言がlight/darkの2件だけであることを先に検証する。SP1では正しいlight/dark宣言の後に別の `:root` 再定義を追加しても `some()` が真となり、cascade後の値が誤っていても偽PASSした。
+- contrast用のOKLCH parserは入力全体をdecimal grammarで照合し、終了括弧なし・末尾garbage・alpha付き値を拒否する。SP1のalpha付き値はdarkの `--border` と `--input` だけでcontrast testの計算対象外だったが、prefix matchのままでは将来の未対応値を有効色として偽解析する。
+- packageに壊れたtest scriptを公開しない。`@tools/design-tokens` のpackage cwdではrootのVite+ test設定を失うため、testの正本はリポジトリルートから実行する `pnpm exec vp test packages/design-tokens/src` とし、package側の `test` scriptは置かない。
 - 新規workspaceパッケージには `../../tsconfig.base.json` をextendsした `tsconfig.json` が必要である。root `tsconfig.json` はCloudflare型だけに限定され、Nodeの型を持たないため継承しない。Node APIを使うpackageは `compilerOptions.types` に `node` を明示する。
 - G4はexact stringから `parseFloat` と緩いregex、`Number` と `\S+`、decimal grammar + `Number` へ段階的に厳密化した。数値パースは変換関数だけでなく字句文法でも決まり、検証コード自体が壊れやすい。negativeとpositiveの両方で証明する。
 - focus外縁は実測4pxで、344アプリが共有する既存のv3時代shadcn実装である。standards §5の3pxはSHOULDであり、SP1の対象外として別ticketにした。SP2でこの実装の修正を要求しない。
