@@ -693,6 +693,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const APPS_DIR = path.join(__dirname, '..', 'apps');
+const DECIMAL = /^(?:\d+(?:\.\d+)?|\.\d+)$/;
 const filterApp = process.argv.slice(2).find((a) => a.startsWith('--app='))?.split('=')[1];
 
 /** 移行済みの目印: index.css が design-tokens を import している */
@@ -747,11 +748,17 @@ const CHECKS = {
 
     const parsed = [];
     for (const value of primaryValues) {
-      const components = value.match(/^oklch\(\s*([0-9.]+%?)\s+([0-9.]+)\s+([0-9.]+)\s*\)$/);
+      const components = value.match(/^oklch\(\s*(\S+)\s+(\S+)\s+(\S+)\s*\)$/);
       if (!components) return [`--primary の oklch 値を数値抽出できない: ${value}`];
-      const L = components[1].endsWith('%') ? parseFloat(components[1]) / 100 : parseFloat(components[1]);
-      const C = parseFloat(components[2]);
-      const H = parseFloat(components[3]);
+      const rawL = components[1];
+      const hasPercent = rawL.endsWith('%');
+      const numericL = hasPercent ? rawL.slice(0, -1) : rawL;
+      if (![numericL, components[2], components[3]].every((component) => DECIMAL.test(component))) {
+        return [`--primary の oklch 値を数値抽出できない: ${value}`];
+      }
+      const L = Number(numericL) / (hasPercent ? 100 : 1);
+      const C = Number(components[2]);
+      const H = Number(components[3]);
       if (![L, C, H].every(Number.isFinite)) return [`--primary の数値が不正: ${value}`];
       parsed.push({ L, C, H });
     }
@@ -1111,6 +1118,7 @@ node scripts/design-audit.js --app=<app>
 - `apps/*/vite.config.ts` も format 対象外。Oxfmt の quote 変更は runtime では同値でも source 比較の asset gate を偽失敗させるため、literal diff/text 読み取りと asset gate で検証する。quote-independent な gate への修正は SP2 の前提条件とする。
 - 複数検証を `;`、`&&`、pipe などで連結しない。各コマンドの単体 exit code と出力を確認する。Task 2 では末尾の `printf` が preceding `grep` の exit 1 を exit 0 へ上書きし、`oklch(0.55 0.18 255)` の無出力を1件と誤記した。SP2 の346アプリ検証は人手連結でなく `verify-v4-migration.js` の単一 exit code へ集約する。
 - 新規 workspace パッケージには `../../tsconfig.base.json` を extends した `tsconfig.json` が必要。root `tsconfig.json` は Cloudflare 型だけに限定され、Node の型を持たないため継承しない。Node API を使う package は `compilerOptions.types` に `node` を明示する。
+- G4 は文字列一致から `parseFloat` と緩いdecimal、`Number` と `\S+`、decimal grammar + `Number` へ段階的に厳密化した。数値パースは変換関数だけでなく字句文法でも決まり、検証コード自体が壊れやすいためnegativeとpositiveの両方で証明する。
 
 ## SP2 の変換スクリプトへの要求
 

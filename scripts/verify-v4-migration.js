@@ -15,6 +15,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 
 const APPS_DIR = path.join(__dirname, "..", "apps");
+const DECIMAL = /^(?:\d+(?:\.\d+)?|\.\d+)$/;
 const filterApp = process.argv
   .slice(2)
   .find((arg) => arg.startsWith("--app="))
@@ -58,6 +59,10 @@ function parsePrimary(value) {
   const rawLightness = components[1];
   const hasPercent = rawLightness.endsWith("%");
   const numericLightness = hasPercent ? rawLightness.slice(0, -1) : rawLightness;
+  if (![numericLightness, components[2], components[3]].every((value) => DECIMAL.test(value))) {
+    return null;
+  }
+
   const lightness = Number(numericLightness) / (hasPercent ? 100 : 1);
   const chroma = Number(components[2]);
   const hue = Number(components[3]);
