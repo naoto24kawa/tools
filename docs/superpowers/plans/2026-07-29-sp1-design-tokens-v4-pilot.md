@@ -309,7 +309,7 @@ describe('トークンの網羅性', () => {
 
 - [ ] **Step 7: テストを実行して失敗を確認する**
 
-Run: `pnpm --filter @tools/design-tokens test`
+Run: `pnpm exec vp test packages/design-tokens/src`（リポジトリルートで実行する）
 
 Expected: FAIL（`tokens.css` が存在せず `readFileSync` が ENOENT）
 
@@ -387,7 +387,7 @@ standards のテンプレートが改訂されたら:
 
 1. `diff ~/projects/naoto24kawa/standards/templates/design-tokens.css tokens.css` で差分を確認
 2. ブランドノブ 4 行以外の差分を取り込む
-3. `pnpm --filter @tools/design-tokens test` でコントラストが維持されているか確認
+3. リポジトリルートで `pnpm exec vp test packages/design-tokens/src` を実行してコントラストが維持されているか確認
 
 ## ブランドノブ
 
