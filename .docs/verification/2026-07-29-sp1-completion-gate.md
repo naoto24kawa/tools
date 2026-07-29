@@ -2,10 +2,41 @@
 
 ## 結論
 
-- G1〜G10: **全項目 PASS**
-- **裁定後の総合判定: SP1完了**。Task 6独立検証で未知3の証跡矛盾を検出して訂正した。55 tests PASSの数値は正しかったが内訳記述が実測と異なった。
+- 最新HEAD `82ee0db612e7cf366313531965572ea51efc79f4` でG1〜G10を再実行し、**全項目 PASS**。
+- 最終whole-branch reviewのImportant 5件はcommit `82ee0db612e7cf366313531965572ea51efc79f4`で全件修正し、ACCEPTED_RISKSは0件。
+- **裁定後の総合判定: SP1完了**。Task 6独立検証で未知3の証跡矛盾を検出して訂正し、最終レビュー修正後にも別担当で全gateを再実行した。
 - 未知3は部分確定である。`@import "shadcn/tailwind.css"` は解決してbuildがexit 0、button / card / inputの直接testはPASS、`Toaster` は`App.tsx`でmountされApp testもPASSした。一方、`Select` はurl-encoder未使用でstoriesのみのため未検証であり、v3前提UI components全体の互換性は完全確定として扱わない。
 - 未使用shadcn componentsは、それらを使うappのSP2移行時に目視+testで検証し、未検証を検証済み扱いしない。
+- 以下のTask 6本文はHEAD `f16abd841af4a30afc33cc37028ff21588a48975`で実施した初回完了ゲートの履歴として保持する。最終HEADの詳細証跡は[SP1最終完了ゲート](../verifications/sp1-final-gate-82ee0db6/report.md)を正本とする。
+
+## 最終レビュー修正後の再検証
+
+### 修正履歴
+
+| # | 最終レビュー指摘 | 修正と実測 |
+|---|---|---|
+| 1 | OKLCH parserが末尾garbage・alphaを受理 | 入力全体をstrict decimal grammarで照合しalphaを拒否。contrast negativeを含む10/10 PASS。現行のalpha付きtokenはdarkの`--border`と`--input`だけでcontrast計算対象外のため現時点の実害はなく、将来の偽成功経路を予防した。 |
+| 2 | 空・重複・unknown・path separatorのCLI引数が別mode/targetへfallback | apps scan前に引数全件をvalidateし、4分類すべてexit 1かつPASS表示なし。 |
+| 3 | comment内のimport文字列を移行済みと誤認 | block comment除去後のactiveな完全`@import` statementだけを許可し、comment-only fixtureはexit 1。 |
+| 4 | G4が`some()`で後続primary overrideを見逃す | primary宣言をlight/darkのexact 2件に限定し、3件目override fixtureはexit 1。 |
+| 5 | package-localの壊れたtest scriptを公開 | package側`test` scriptを削除し、rootの正本経路`pnpm exec vp test packages/design-tokens/src`へ一本化。2 files / 26 tests PASS。 |
+
+### HEAD `82ee0db6` のG1〜G10
+
+| Gate | 判定 | 実測結果 |
+|---|---|---|
+| G1 | PASS | stale `dist`削除後のbuildがexit 0。1,689 modules、`index-CQ3WOB66.css` 31,481 bytes、SHA-256 `dd1ee7531e262dad04efec1f7a5a80081d10806d82a83526f3d0ddc6457381ee`。 |
+| G2 | PASS | verifier exit 0、`.max-w-6xl`を生成CSSから実検出。 |
+| G3 | PASS | `oklch(`あり、`hsl(var(--`なし。 |
+| G4 | PASS | primaryはexact 2宣言。light `oklch(55% .18 255)`、dark `oklch(72% .14 255)`。 |
+| G5 | PASS | asset gate exit 0、346/346、成果物違反0、sourceはexact `base: './'`。 |
+| G6 | PASS | light PNG 40,871 bytes、SHA-256 `739e2561102650d689cc5177011ab00c5190aa3e349cc15a39112c7e771df3e8`を実見。 |
+| G7 | PASS | dark PNG 40,275 bytes、SHA-256 `174934855837997159dc877a259e9fc71424532846cfeb4efa74c5152adb6446`を実見。 |
+| G8 | PASS | url-encoder 5 files / 55 tests、design-tokens 2 files / 26 tests。いずれもexit 0。 |
+| G9 | PASS | scoped check exit 0。8 formatted files、4 lint/type files、warning/error 0。 |
+| G10 | PASS | design auditは期待exit 1、DS-002バックリンク欠落1件のみ。監査JSONは開始blob/hashへexact復元し差分なし。 |
+
+最終確認時のHEAD・branchは開始時と一致し、`git status --short --untracked-files=all`は出力なし、apps差分はurl-encoderの5パスだけ、他345アプリの差分はなかった。
 
 ## 実行環境（再現性の前提）
 
