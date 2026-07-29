@@ -605,9 +605,11 @@ Run: `grep -c 'hsl(var(--' apps/url-encoder/dist/assets/<css>`
 
 Expected: 0（grep は不一致で exit 1 を返すので、出力が `0` であることを確認する）。
 
-Run: `grep -o 'oklch(0.55 0.18 255)' apps/url-encoder/dist/assets/<css>`
+G4 は生成物の文字列表記一致ではなく、`--primary:oklch(...)` の数値意味を検証する。minifier は同じ値を `oklch(55% .18 255)` のように正規化できるため、`oklch(0.55 0.18 255)` の source 文字列一致を期待してはならない。`--primary` を抽出できない場合も FAIL とする。
 
-Expected: 1 件以上ヒットする。
+Run: `node -e "const fs=require('node:fs');const css=fs.readFileSync(process.argv[1],'utf8');const m=css.match(/--primary:\s*oklch\(\s*([0-9.]+%?)\s+([0-9.]+)\s+([0-9.]+)\s*\)/);if(!m)process.exit(1);const L=m[1].endsWith('%')?parseFloat(m[1])/100:parseFloat(m[1]);const C=parseFloat(m[2]);const H=parseFloat(m[3]);if(![L,C,H].every(Number.isFinite)||Math.abs(L-.55)>=1e-6||Math.abs(C-.18)>=1e-6||Math.abs(H-255)>=1e-6)process.exit(1);console.log({L,C,H});" apps/url-encoder/dist/assets/<css>`
+
+Expected: `{ L: 0.55, C: 0.18, H: 255 }` を出力して exit 0。
 
 - [ ] **Step 9: アセットパスを検査する（G5）**
 
@@ -738,9 +740,27 @@ const CHECKS = {
 
   /** G4: ブランドノブの青が適用されている */
   G4: ({ builtCss }) => {
-    return builtCss.includes('oklch(0.55 0.18 255)')
+    const primaryValues = [...builtCss.matchAll(/--primary:\s*(oklch\([^)]*\))/g)].map(
+      (match) => match[1]
+    );
+    if (primaryValues.length === 0) return ['生成 CSS から --primary:oklch(...) を抽出できない'];
+
+    const parsed = [];
+    for (const value of primaryValues) {
+      const components = value.match(/^oklch\(\s*([0-9.]+%?)\s+([0-9.]+)\s+([0-9.]+)\s*\)$/);
+      if (!components) return [`--primary の oklch 値を数値抽出できない: ${value}`];
+      const L = components[1].endsWith('%') ? parseFloat(components[1]) / 100 : parseFloat(components[1]);
+      const C = parseFloat(components[2]);
+      const H = parseFloat(components[3]);
+      if (![L, C, H].every(Number.isFinite)) return [`--primary の数値が不正: ${value}`];
+      parsed.push({ L, C, H });
+    }
+
+    return parsed.some(
+      ({ L, C, H }) => Math.abs(L - 0.55) < 1e-6 && Math.abs(C - 0.18) < 1e-6 && Math.abs(H - 255) < 1e-6
+    )
       ? []
-      : ['生成 CSS に --primary の青 oklch(0.55 0.18 255) が現れない'];
+      : ['生成 CSS に数値として --primary oklch(0.55 0.18 255) が現れない'];
   },
 
   /** G5 補強: base: './' が維持されている（白画面事故の直撃点） */
@@ -809,7 +829,7 @@ Expected: `0`
 
 **このステップを省略しない。** 常に PASS を返すスクリプトは検証ゲートとして無価値であり、その状態は PASS 表示からは区別できない（偽成功シグナル）。
 
-G4 の検出を確認する（変更は `git checkout` で戻すのでバックアップは取らない）:
+G4 の検出を確認する（変更は `git checkout` で戻すのでバックアップは取らない）。以下は連結せず、各コマンドを独立して実行する:
 
 ```bash
 sed -i '' 's|--primary: oklch(0.55 0.18 255)|--primary: oklch(0.60 0.10 255)|' packages/design-tokens/tokens.css
@@ -818,6 +838,8 @@ node scripts/verify-v4-migration.js --app=url-encoder
 ```
 
 Expected: `❌ url-encoder` と `G4 ...` が表示され exit 1。
+
+報告には `node scripts/verify-v4-migration.js --app=url-encoder` の単体 exit code が `1` だったことと、そのG4出力を必ず記録する。生成CSSの表記が正規化されても、訂正後G4は `0.60 / 0.10 / 255` を数値比較して FAIL しなければならない。
 
 G5 の検出を確認する（先に tokens.css を戻してから、今度は base を壊す）:
 
@@ -1083,6 +1105,7 @@ node scripts/design-audit.js --app=<app>
 - standards テンプレート由来の CSS は整形対象から外す。formatter ではなく、テンプレートとの差分と behavior test で検証する。
 - standards 同期 CSS と Markdown は format 対象外。CSS は diff + review、Markdown は `git diff` + review で検証し、必要な lint/type 検査は `vp check --no-fmt` を使う。
 - `apps/*/vite.config.ts` も format 対象外。Oxfmt の quote 変更は runtime では同値でも source 比較の asset gate を偽失敗させるため、literal diff/text 読み取りと asset gate で検証する。quote-independent な gate への修正は SP2 の前提条件とする。
+- 複数検証を `;`、`&&`、pipe などで連結しない。各コマンドの単体 exit code と出力を確認する。Task 2 では末尾の `printf` が preceding `grep` の exit 1 を exit 0 へ上書きし、`oklch(0.55 0.18 255)` の無出力を1件と誤記した。SP2 の346アプリ検証は人手連結でなく `verify-v4-migration.js` の単一 exit code へ集約する。
 - 新規 workspace パッケージには `../../tsconfig.base.json` を extends した `tsconfig.json` が必要。root `tsconfig.json` は Cloudflare 型だけに限定され、Node の型を持たないため継承しない。Node API を使う package は `compilerOptions.types` に `node` を明示する。
 
 ## SP2 の変換スクリプトへの要求
@@ -1149,6 +1172,8 @@ Expected: exit 0 かつ `apps/url-encoder/dist/assets/` に CSS が生成され�
 Run: `node scripts/verify-v4-migration.js --app=url-encoder`
 
 Expected: `✅ url-encoder` / exit 0（G2・G3・G4・G5 補強）
+
+G4 は `--primary:oklch(...)` を抽出して L/C/H を数値比較する。L の `%` 表記は 100 で割り、light の `0.55 / 0.18 / 255` と各誤差が `1e-6` 未満であることを確認する。抽出不能または不一致は violation として exit 1。
 
 Run: `node scripts/check-asset-paths.js`
 
