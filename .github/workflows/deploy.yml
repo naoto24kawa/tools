@@ -20,6 +20,13 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # このワークフローはビルドを行わず、コミットされた packages/router/public/ を
+      # そのまま本番へ配信する。壊れた成果物がコミットされていれば本番が壊れるため、
+      # デプロイ前に vite base とビルド成果物の参照パスを検査して止める。
+      # 詳細: .docs/ASSET_PATH_INCIDENT.md
+      - name: Check asset paths
+        run: node scripts/check-asset-paths.js
+
       - name: Deploy to Cloudflare Workers
         uses: cloudflare/wrangler-action@v3
         with:

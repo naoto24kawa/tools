@@ -130,13 +130,36 @@ cd packages/router && pnpm run deploy  # Workers デプロイ
 `packages/router` が `tools.elchika.app/<tool-name>` へのルーティングと静的ファイル配信を担当。
 ルーティング設定は `packages/router/src/config/apps.ts` で一元管理。
 
+### デプロイ後の確認
+
+**HTML の HTTP 200 やバンドルハッシュの一致だけを根拠にしない。**
+ハッシュが一致していても参照パスが壊れていれば白画面になる(過去に発生)。
+HTML が参照している URL を実際に GET し、200 かつ content-type が JS/CSS であることまで確認する。
+
+```bash
+curl -s https://tools.elchika.app/<app>/ | grep -o -E '(src|href)="[^"]*"'   # 参照先を取り出し
+curl -s -o /dev/null -w '%{http_code} %{content_type}\n' <上で得た URL>       # 実際に取得する
+```
+
+content-type まで見るのは、存在しないパスに HTML が 200 で返るケースを弾くため。
+詳細は `.docs/ASSET_PATH_INCIDENT.md`。
+
 ## Gotchas
 
+- **`apps/*/vite.config.ts` の `base` は必ず `'./'`。`'/'` にすると全アプリが白画面になる**
+  (HTML は 200 で返るが参照先の JS/CSS が 404 になるため、ステータスコードでは検知できない)。
+  2026-03 以降くり返し再発している。再発構造・診断手順は `.docs/ASSET_PATH_INCIDENT.md` が正本
+- **修正は必ず `apps/*/vite.config.ts` 側に入れる**。`packages/router/public/` の生成物を
+  書き換えて直しても、次の `build-all.sh` で巻き戻る(実際に再発した)
 - ほぼ全アプリが完全クライアントサイド (例外: image-ocr は tesseract.js がCDNから言語データをダウンロード、dns-lookup は DoH API を使用)
 - `url-encoder` が最初期のテンプレート。多くのアプリがこれをベースにコピーされている
 - 一部アプリの `index.html` に元テンプレートの title/description が残っている場合がある
 - 各アプリの `wrangler.toml` はレガシー(個別Pages デプロイ時代の名残)。現在は build-all 方式を使用
-- `packages/router/public/` はビルド生成物。git管理するかは運用方針次第
+- `packages/router/public/` はビルド生成物だが **git 管理が必須**。
+  `.github/workflows/deploy.yml` は `wrangler deploy` のみでビルドを行わないため、
+  **コミットされている `public/` の中身がそのまま本番になる**
+- 上記は `node scripts/check-asset-paths.js` で機械的に検査できる
+  (build-all.sh の先頭と deploy.yml のデプロイ前に組み込み済み。違反があれば止まる)
 
 ## Design Rules (AI向けデザイン品質)
 

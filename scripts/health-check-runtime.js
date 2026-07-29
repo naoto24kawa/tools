@@ -1,7 +1,15 @@
 #!/usr/bin/env node
 /**
  * 全ツールのランタイムヘルスチェック
- * 各 URL に HTTP リクエストを送り、200 + HTML であることを確認する
+ *
+ * 各 URL に HTTP リクエストを送り、
+ *   1. 200 + HTML が返ること
+ *   2. その HTML が参照する JS/CSS が実際に取得できること
+ * を確認する。
+ *
+ * 2 が重要。アセットパスが壊れていても HTML 自体は 200 + text/html で正常に返るため、
+ * 1 だけでは全アプリ白画面でも「正常」と報告してしまう（実際に空振りした実績あり）。
+ * 詳細: .docs/ASSET_PATH_INCIDENT.md
  *
  * 使用方法:
  *   node scripts/health-check-runtime.js [--concurrency=N] [--base-url=URL] [--timeout=MS]
@@ -29,18 +37,72 @@ function getDeployedApps() {
     .sort();
 }
 
-/** HTTP(S) GET を Promise でラップ */
-function fetchUrl(url) {
+/**
+ * HTTP(S) GET を Promise でラップ
+ * discardBody: true にするとボディを読み捨てる（アセットは status と content-type だけ見れば十分なため）
+ */
+function fetchUrl(url, { discardBody = false } = {}) {
   return new Promise((resolve) => {
     const mod = url.startsWith('https') ? https : http;
     const req = mod.get(url, { timeout: TIMEOUT_MS }, (res) => {
+      const meta = { status: res.statusCode, contentType: res.headers['content-type'] ?? '' };
+      if (discardBody) {
+        res.resume(); // ボディを捨てつつソケットを解放する
+        res.on('end', () => resolve({ ...meta, body: '' }));
+        return;
+      }
       let body = '';
       res.on('data', chunk => { body += chunk; });
-      res.on('end', () => resolve({ status: res.statusCode, contentType: res.headers['content-type'] ?? '', body }));
+      res.on('end', () => resolve({ ...meta, body }));
     });
     req.on('timeout', () => { req.destroy(); resolve({ status: null, contentType: '', body: '', error: 'timeout' }); });
     req.on('error', (err) => resolve({ status: null, contentType: '', body: '', error: err.message }));
   });
+}
+
+/** HTML から JS/CSS の参照を取り出す */
+function extractAssetRefs(html) {
+  return [...html.matchAll(/(?:src|href)="([^"]*\.(?:js|css))"/g)].map(m => m[1]);
+}
+
+/** 参照を絶対 URL に解決する */
+function resolveAssetUrl(ref, appName) {
+  if (/^https?:\/\//.test(ref)) return ref;
+  if (ref.startsWith('/')) return `${BASE_URL}${ref}`;
+  return `${BASE_URL}/${appName}/${ref.replace(/^\.\//, '')}`;
+}
+
+/**
+ * HTML が参照する JS/CSS を実際に取得して検証する。
+ * 200 でも content-type が HTML なら実体が無い（フォールバックで index.html が返っている）とみなす。
+ */
+async function checkAssets(appName, html) {
+  const issues = [];
+  const refs = extractAssetRefs(html);
+
+  if (refs.length === 0) {
+    issues.push('HTML が JS/CSS を 1 つも参照していない（ビルド不全の可能性）');
+    return issues;
+  }
+
+  for (const ref of refs) {
+    const assetUrl = resolveAssetUrl(ref, appName);
+    const res = await fetchUrl(assetUrl, { discardBody: true });
+
+    if (res.error) {
+      issues.push(`アセット取得失敗 ${ref}: ${res.error}`);
+      continue;
+    }
+    if (res.status !== 200) {
+      issues.push(`アセット ${ref} が HTTP ${res.status}`);
+      continue;
+    }
+    if (!/javascript|ecmascript|css/i.test(res.contentType)) {
+      issues.push(`アセット ${ref} は 200 だが Content-Type: ${res.contentType}（実体が無い可能性）`);
+    }
+  }
+
+  return issues;
 }
 
 /** レスポンスが正常 HTML かチェック */
@@ -102,7 +164,15 @@ async function main() {
   const tasks = apps.map(appName => async () => {
     const url = `${BASE_URL}/${appName}/`;
     const res = await fetchUrl(url);
-    const { ok, issues } = diagnose(appName, res);
+    const { issues } = diagnose(appName, res);
+
+    // HTML が取得できたときだけ、その HTML が参照するアセットまで実際に取りにいく。
+    // HTML が 200 でもここで 404 が出れば白画面。1 段目だけでは検知できない。
+    if (!res.error && res.status === 200 && res.body) {
+      issues.push(...await checkAssets(appName, res.body));
+    }
+    const ok = issues.length === 0;
+
     completed++;
     if (!ok) {
       process.stdout.write(`\r❌ ${appName}: ${issues.join(', ')}\n`);
@@ -149,4 +219,10 @@ async function main() {
   process.exit(ng.length > 0 ? 1 : 0);
 }
 
-main().catch(err => { console.error(err); process.exit(1); });
+// 直接実行されたときだけ走らせる。require されたときは検査関数だけを公開する
+// （検知器そのものが壊れた入力で正しく落ちるかを検証できるようにするため）
+if (require.main === module) {
+  main().catch(err => { console.error(err); process.exit(1); });
+}
+
+module.exports = { extractAssetRefs, resolveAssetUrl, checkAssets, diagnose };
