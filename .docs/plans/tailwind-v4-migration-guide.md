@@ -9,7 +9,7 @@ SP1（url-encoder パイロット）で実測して確定した手順。SP2 の
 |---|---|---|
 | 1 | v4 のコンテンツ自動検出がアプリの src/ を走査するか | 機能した。`src/index.css` を `@import "@tools/design-tokens";` の1行だけにして build し、`App.tsx:52` に実在する `max-w-6xl` が生成CSSに1件あった。`@source` は不要である。初回の `max-w-7xl` 0件は、sourceに存在しないclassをprobeにした偽陰性であり撤回済みである。 |
 | 2 | Rolldown-Vite で `@tailwindcss/vite` が動くか | 機能した。`plugins: [react(), tailwindcss()]` のまま `pnpm --filter url-encoder build` がexit 0となり、Vite 8.0.16がCSSを生成した。 |
-| 3 | shadcn/tailwind.css の import が必要か / v3 前提の components/ui が動くか | `@import "shadcn/tailwind.css"` は `@tools/design-tokens` 内で解決して build がexit 0となった。既存のv3前提のToast / Selectを含む5 test files / 55 testsもPASSした。 |
+| 3 | shadcn/tailwind.css の import が必要か / v3 前提の components/ui が動くか | **部分確定**。`@import "shadcn/tailwind.css"` は `@tools/design-tokens` 内で解決して build がexit 0となった。button / card / input の直接testはPASSし、`Toaster` は `App.tsx` でmountされApp testもPASSした。`Select` はurl-encoderでは未使用でstoriesのみのため未検証であり、v3前提components全体の互換性は完全確定として扱わない。 |
 | 4 | `tailwindcss-animate` → `tw-animate-css` で既存 className が壊れないか | 壊れなかった。生成CSSに既存componentの `animate-in`、`slide-in-from-top-2`、`zoom-in-95`、`fade-in-0` が各1件あり、`tw-animate-css` の実在も確認した。 |
 | 5 | `base: './'` が維持されるか | 維持された。`apps/url-encoder/vite.config.ts` は `base: './',` のままで、`check-asset-paths.js` は346 / 346の `base: './'`、違反0件を報告した。 |
 
@@ -121,3 +121,4 @@ pnpm exec vp test apps/<app>/src
 - 和文fallbackは日本語本文を持つアプリで確認する。url-encoderの `App.tsx` は日本語0件だったため一時DOM probeで補助確認しただけであり、SP2のsamplingには日本語本文を持つアプリを最低1つ含める。
 - light/darkとも、有効状態のprimary buttonでforegroundとopacityを確認する。disabled状態だけでは実色を誤判定しうる。
 - darkのborder/inputで使用する半透明白は、実背景上で画面とcomputed styleの両方を確認する。
+- SP1で検証済みはbutton / card / input / Toasterのみである。Select / Dialog / Accordion等の未使用shadcn componentsは未検証であり、それらを使うapp移行時に目視+testを実施し、未検証を検証済み扱いしない。

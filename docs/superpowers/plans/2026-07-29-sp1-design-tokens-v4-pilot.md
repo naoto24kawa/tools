@@ -49,7 +49,7 @@ standards §3 は「`--primary` を上書きしたらコントラスト 4.5:1 �
   - `contrastRatio(a: OklchColor, b: OklchColor): number`
   - `extractTokens(css: string, selector: ':root' | '.dark'): Record<string, string>`
 
-- [ ] **Step 1: パッケージ骨格を作る**
+- [x] **Step 1: パッケージ骨格を作る**
 
 `packages/design-tokens/package.json`:
 
@@ -99,7 +99,7 @@ standards §3 は「`--primary` を上書きしたらコントラスト 4.5:1 �
 | `shadcn` | `shadcn/tailwind.css`（`data-state` 系 custom variant と accordion keyframes）。`exports` に `"./tailwind.css": "./dist/tailwind.css"` が定義されていることを確認済み |
 | `@fontsource-variable/geist` | Geist Variable フォント本体 |
 
-- [ ] **Step 2: コントラスト計算の失敗するテストを書く**
+- [x] **Step 2: コントラスト計算の失敗するテストを書く**
 
 `packages/design-tokens/src/__tests__/contrast.test.ts`:
 
@@ -145,7 +145,7 @@ describe('contrastRatio', () => {
 });
 ```
 
-- [ ] **Step 3: テストを実行して失敗を確認する**
+- [x] **Step 3: テストを実行して失敗を確認する**
 
 Run: `pnpm exec vp test packages/design-tokens/src`（リポジトリルートで実行する）
 
@@ -153,7 +153,7 @@ Expected: FAIL（`../contrast` が存在しないため解決エラー）
 
 もしこのコマンドで design-tokens のテストが収集されない場合は、その事実を報告して指示を待つ。
 
-- [ ] **Step 4: `contrast.ts` を実装する**
+- [x] **Step 4: `contrast.ts` を実装する**
 
 `packages/design-tokens/src/contrast.ts`:
 
@@ -220,13 +220,13 @@ export function extractTokens(css: string, selector: ':root' | '.dark'): Record<
 }
 ```
 
-- [ ] **Step 5: テストを実行して通ることを確認する**
+- [x] **Step 5: テストを実行して通ることを確認する**
 
 Run: `pnpm exec vp test packages/design-tokens/src`（リポジトリルートで実行する）
 
 Expected: PASS（7 テスト）
 
-- [ ] **Step 6: tokens.css の失敗するテストを書く**
+- [x] **Step 6: tokens.css の失敗するテストを書く**
 
 `packages/design-tokens/src/__tests__/tokens.test.ts`:
 
@@ -339,13 +339,13 @@ describe('トークンの網羅性', () => {
 });
 ```
 
-- [ ] **Step 7: テストを実行して失敗を確認する**
+- [x] **Step 7: テストを実行して失敗を確認する**
 
 Run: `pnpm exec vp test packages/design-tokens/src`（リポジトリルートで実行する）
 
 Expected: FAIL（`tokens.css` が存在しないため「`tokens.css が見つからない: ...`」のエラーで落ちる）
 
-- [ ] **Step 8: tokens.css を作る**
+- [x] **Step 8: tokens.css を作る**
 
 `~/projects/naoto24kawa/standards/templates/design-tokens.css` の全内容をコピーし、以下の変更許可トークン 5つだけを書き換える。**他の行は一切変更しない**（standards テンプレート改訂時の差分マージを機械的に保つため）。
 
@@ -389,19 +389,19 @@ Expected: FAIL（`tokens.css` が存在しないため「`tokens.css が見つ�
  */
 ```
 
-- [ ] **Step 9: テストを実行して通ることを確認する**
+- [x] **Step 9: テストを実行して通ることを確認する**
 
 Run: `pnpm exec vp test packages/design-tokens/src`（リポジトリルートで実行する）
 
 Expected: PASS（contrast.test.ts 7 件 + tokens.test.ts 16 件）
 
-- [ ] **Step 10: diff 本体差分が 4 行に限定されていることを確認する**
+- [x] **Step 10: diff 本体差分が 4 行に限定されていることを確認する**
 
 Run: `diff ~/projects/naoto24kawa/standards/templates/design-tokens.css packages/design-tokens/tokens.css`
 
 Expected: 差分は冒頭のコメントブロックと、本体4行（`:root` の `--primary` / `--warning-foreground`、`.dark` の `--primary` / `--primary-foreground`）のみ。`:root` の `--primary-foreground` は変更許可対象だが standards と同値の `oklch(0.985 0 0)` のため diff には現れない。他の本体差分が出ていたらコピーミスなので修正する。
 
-- [ ] **Step 11: README を書く**
+- [x] **Step 11: README を書く**
 
 `packages/design-tokens/README.md`:
 
@@ -446,7 +446,7 @@ standards のテンプレートが改訂されたら:
 値を変更する場合は `src/__tests__/tokens.test.ts` が実計算で検証する（standards DESIGN.md §3 の MUST）。
 ```
 
-- [ ] **Step 12: lint を通す**
+- [x] **Step 12: lint を通す**
 
 リポジトリ全体の `pnpm check` は使わない。移行前から 9074 ファイルに既存の formatting issue があり exit 1 になるため、SP1 では変更したファイルのみを対象にする。standards テンプレート由来の `tokens.css` は整形すると同期ポリシーが破綻するため対象外とし、Step 9 の behavior test と Step 10 の diff で検証する。
 
@@ -459,7 +459,7 @@ pnpm exec vp check packages/design-tokens/README.md packages/design-tokens/packa
 
 Expected: 2 回目の scoped check が PASS。
 
-- [ ] **Step 13: コミット**
+- [x] **Step 13: コミット**
 
 ```bash
 git add packages/design-tokens
@@ -489,7 +489,7 @@ spec の「実測で確定させる未知」5 項目を、ここで実際に動�
 - Consumes: `@tools/design-tokens`（Task 1 が作った workspace パッケージ）
 - Produces: 移行済みの `apps/url-encoder`。Task 3 の検証スクリプトが `apps/url-encoder/dist/assets/*.css` を検査する
 
-- [ ] **Step 1: 移行前のベースラインを記録する**
+- [x] **Step 1: 移行前のベースラインを記録する**
 
 Run: `node scripts/design-audit.js --app=url-encoder`
 
@@ -503,7 +503,7 @@ Run: `pnpm exec vp test apps/url-encoder/src`（リポジトリルートで実�
 
 Expected: exit 0 / 5 files / 55 tests PASS。これを G8 の比較基準にし、移行後も同じ 55 tests が PASS することを確認する。
 
-- [ ] **Step 2: package.json を書き換える**
+- [x] **Step 2: package.json を書き換える**
 
 `apps/url-encoder/package.json` の `dependencies` に追加:
 
@@ -526,7 +526,7 @@ Expected: exit 0 / 5 files / 55 tests PASS。これを G8 の比較基準にし�
 
 `tw-animate-css` はアプリ側に足さない（`@tools/design-tokens` が依存として持ち、`tokens.css` が `@import` する）。
 
-- [ ] **Step 3: vite.config.ts に Tailwind プラグインを追加する**
+- [x] **Step 3: vite.config.ts に Tailwind プラグインを追加する**
 
 `apps/url-encoder/vite.config.ts` の import 行と `plugins` 配列だけを変更する。**`base: './'` の行には触らない**:
 
@@ -544,7 +544,7 @@ export default defineConfig({
 
 以降（`server` / `resolve` / `build`）は変更しない。
 
-- [ ] **Step 4: index.css を 1 行にする**
+- [x] **Step 4: index.css を 1 行にする**
 
 `apps/url-encoder/src/index.css` の全内容を次で置き換える:
 
@@ -552,13 +552,13 @@ export default defineConfig({
 @import '@tools/design-tokens';
 ```
 
-- [ ] **Step 5: v3 の設定ファイルを削除する**
+- [x] **Step 5: v3 の設定ファイルを削除する**
 
 ```bash
 rm apps/url-encoder/tailwind.config.js apps/url-encoder/postcss.config.js
 ```
 
-- [ ] **Step 6: 依存を再インストールする**
+- [x] **Step 6: 依存を再インストールする**
 
 Run: `pnpm install`
 
@@ -568,7 +568,7 @@ Run: `ls -la apps/url-encoder/node_modules/@tools/`
 
 Expected: `design-tokens` が workspace への symlink として存在する。
 
-- [ ] **Step 7: ビルドする（G1・未知 2 と 4 の確定）**
+- [x] **Step 7: ビルドする（G1・未知 2 と 4 の確定）**
 
 Run: `pnpm --filter url-encoder build`
 
@@ -580,7 +580,7 @@ Expected: exit 0 かつ `apps/url-encoder/dist/assets/` に `.css` ファイル�
 - `tw-animate-css` の解決に失敗 → `packages/design-tokens/package.json` の `dependencies` に入っているか確認する。`pnpm install` を再実行する。
 - `shadcn/tailwind.css` の解決に失敗（未知 3）→ `packages/design-tokens/package.json` の `dependencies` に `shadcn` が入っているか確認する。入っているのに解決できない場合は、`tokens.css` の `@import "shadcn/tailwind.css";` 行を削除し、その旨を Task 5 の手順書に「standards テンプレートからの追加差分」として記録する。この import が提供するのは `data-state` 系 custom variant と accordion keyframes なので、削除した場合は Task 4 の目視で Toast / Select の開閉アニメーションが壊れていないか追加確認する。
 
-- [ ] **Step 8: 生成 CSS を目で確認する（G2・G3・G4 の手動確認）**
+- [x] **Step 8: 生成 CSS を目で確認する（G2・G3・G4 の手動確認）**
 
 Run: `ls apps/url-encoder/dist/assets/`
 
@@ -611,13 +611,13 @@ Run: `node -e "const fs=require('node:fs');const css=fs.readFileSync(process.arg
 
 Expected: `{ L: 0.55, C: 0.18, H: 255 }` を出力して exit 0。
 
-- [ ] **Step 9: アセットパスを検査する（G5）**
+- [x] **Step 9: アセットパスを検査する（G5）**
 
 Run: `node scripts/check-asset-paths.js`
 
 Expected: PASS。**落ちたら `vite.config.ts` の `base` を確認し、`'./'` でなければ即座に戻す。**
 
-- [ ] **Step 10: 既存テストと lint を通す（G8・G9）**
+- [x] **Step 10: 既存テストと lint を通す（G8・G9）**
 
 Run: `pnpm exec vp test apps/url-encoder/src`（リポジトリルートで実行する）
 
@@ -639,13 +639,13 @@ pnpm exec vp check --no-fmt apps/url-encoder/vite.config.ts
 
 Expected: 2 回目の scoped check が PASS。
 
-- [ ] **Step 11: DS ルールの非回帰を確認する（G10）**
+- [x] **Step 11: DS ルールの非回帰を確認する（G10）**
 
 Run: `node scripts/design-audit.js --app=url-encoder`
 
 Expected: 違反 1 件（Step 1 のベースラインと同数）。増えていたら原因を特定して修正する。
 
-- [ ] **Step 12: コミット**
+- [x] **Step 12: コミット**
 
 ```bash
 git add -A apps/url-encoder pnpm-lock.yaml
@@ -671,7 +671,7 @@ Task 2 の Step 8〜9 を手作業でなく機械検査にする。SP2 で 346 �
 - Consumes: `apps/<name>/dist/assets/*.css`（Task 2 が生成したビルド成果物）、`apps/<name>/src/index.css`、`apps/<name>/vite.config.ts`
 - Produces: CLI `node scripts/verify-v4-migration.js [--app=<name>]`。全チェック PASS で exit 0、1 つでも FAIL で exit 1。SP2 の一括検証がこれを呼ぶ
 
-- [ ] **Step 1: スクリプトを書く**
+- [x] **Step 1: スクリプトを書く**
 
 `scripts/verify-v4-migration.js`:
 
@@ -822,7 +822,7 @@ console.log(`\n検証: ${targets.length - failed} / ${targets.length} PASS`);
 process.exit(failed > 0 ? 1 : 0);
 ```
 
-- [ ] **Step 2: 移行済みアプリに対して PASS することを確認する**
+- [x] **Step 2: 移行済みアプリに対して PASS することを確認する**
 
 Run: `node scripts/verify-v4-migration.js --app=url-encoder`
 
@@ -830,7 +830,7 @@ Expected: `✅ url-encoder` と表示され exit 0。
 
 終了コードは `node scripts/verify-v4-migration.js --app=url-encoder` 自体の正常終了で確認する。別shell の `$?` は当該コマンドの終了コードを示さないため使わない。
 
-- [ ] **Step 3: 意図的に壊して FAIL することを確認する**
+- [x] **Step 3: 意図的に壊して FAIL することを確認する**
 
 **このステップを省略しない。** 常に PASS を返すスクリプトは検証ゲートとして無価値であり、その状態は PASS 表示からは区別できない（偽成功シグナル）。
 
@@ -856,7 +856,7 @@ node scripts/verify-v4-migration.js --app=url-encoder
 
 Expected: `G5  vite.config.ts の base が './' でない` が表示され exit 1。
 
-- [ ] **Step 4: 壊した箇所を確実に戻す**
+- [x] **Step 4: 壊した箇所を確実に戻す**
 
 ```bash
 git checkout apps/url-encoder/vite.config.ts packages/design-tokens/tokens.css
@@ -870,7 +870,7 @@ Run: `git status --short`
 
 Expected: `apps/url-encoder/vite.config.ts` と `packages/design-tokens/tokens.css` に差分がない（`scripts/verify-v4-migration.js` の新規追加のみ）。
 
-- [ ] **Step 5: lint を通してコミット**
+- [x] **Step 5: lint を通してコミット**
 
 リポジトリ全体の `pnpm check` は使わない。移行前から 9074 ファイルに既存の formatting issue があり exit 1 になるため、SP1 では変更したファイルのみを対象にする。
 
@@ -911,7 +911,7 @@ G6・G7 は機械検査で代替できない。実際にブラウザで描画し
 - Consumes: 移行済み `apps/url-encoder`（Task 2）
 - Produces: 目視検証の証跡。Task 5 の手順書が「SP2 でサンプリング目視する際の観点」としてこの結果を参照する
 
-- [ ] **Step 1: 証跡ディレクトリを作り、dev サーバーを起動する**
+- [x] **Step 1: 証跡ディレクトリを作り、dev サーバーを起動する**
 
 ```bash
 mkdir -p .docs/verification
@@ -925,7 +925,7 @@ Run: `curl -s -o /dev/null -w '%{http_code}\n' http://localhost:<実ポート>/`
 
 Expected: `200`。まだなら数秒おいて再実行する。
 
-- [ ] **Step 2: light テーマを確認して撮影する**
+- [x] **Step 2: light テーマを確認して撮影する**
 
 ブラウザで Vite の起動ログが示す実ポートの URL を開き、次を確認する:
 
@@ -938,7 +938,7 @@ Expected: `200`。まだなら数秒おいて再実行する。
 
 スクリーンショットを `.docs/verification/2026-07-29-sp1-url-encoder-light.png` に保存する。
 
-- [ ] **Step 3: dark テーマを確認して撮影する**
+- [x] **Step 3: dark テーマを確認して撮影する**
 
 ブラウザの開発者コンソールで次を実行する（ThemeToggle は SP3 のため、ここでは手動でクラスを付ける）:
 
@@ -955,7 +955,7 @@ document.documentElement.classList.add('dark');
 
 スクリーンショットを `.docs/verification/2026-07-29-sp1-url-encoder-dark.png` に保存する。
 
-- [ ] **Step 4: 検証記録を書く**
+- [x] **Step 4: 検証記録を書く**
 
 `.docs/verification/2026-07-29-sp1-visual-check.md`:
 
@@ -1002,7 +1002,7 @@ document.documentElement.classList.add('dark');
 
 表の「結果」列を実際の確認結果で埋め、「移行前との差異」「SP2 へ引き継ぐ観点」を記述する。
 
-- [ ] **Step 5: dev サーバーを止めてコミット**
+- [x] **Step 5: dev サーバーを止めてコミット**
 
 バックグラウンドで起動した dev サーバーのプロセスを終了する。Vite の起動ログで確認した実ポートについて、終了したことを次で確認する:
 
@@ -1030,7 +1030,7 @@ SP1 の成果物 3 点目。SP2 の変換スクリプトはこの手順書を仕
 - Consumes: Task 2 で確定した移行手順、Task 3 の検証スクリプト、Task 4 の目視観点
 - Produces: SP2 の `scripts/migrate-tailwind-v4.js` の仕様となる手順書
 
-- [ ] **Step 1: 手順書を書く**
+- [x] **Step 1: 手順書を書く**
 
 `.docs/plans/tailwind-v4-migration-guide.md` に以下を記述する。**すべて Task 2〜4 で実際に観測した結果で埋める**（未実施・未確認の項目を推測で埋めない）:
 
@@ -1137,7 +1137,7 @@ node scripts/design-audit.js --app=<app>
 - 和文フォールバックは日本語本文を持つアプリで確認する。url-encoder の `App.tsx` は日本語0件だったため一時DOM probeで補助確認しただけであり、SP2 のサンプリングには日本語本文を持つアプリを最低1つ含める。
 ```
 
-- [ ] **Step 2: 未記入の欄が残っていないか確認する**
+- [x] **Step 2: 未記入の欄が残っていないか確認する**
 
 Run: `grep -n '^| [0-9] |.*| |$' .docs/plans/tailwind-v4-migration-guide.md`
 
@@ -1147,7 +1147,7 @@ Run: `grep -n '（.*ここに' .docs/plans/tailwind-v4-migration-guide.md`
 
 Expected: 出力なし（指示文のプレースホルダが残っていない）。
 
-- [ ] **Step 3: コミット**
+- [x] **Step 3: コミット**
 
 ```bash
 git add .docs/plans/tailwind-v4-migration-guide.md
@@ -1171,7 +1171,7 @@ spec の rubric G1〜G10 を通しで再実行し、全項目 PASS を確認す�
 - Consumes: Task 1〜5 のすべての成果物
 - Produces: SP1 完了の判定。SP2 の着手可否が決まる
 
-- [ ] **Step 1: クリーンな状態からビルドし直す**
+- [x] **Step 1: クリーンな状態からビルドし直す**
 
 ```bash
 rm -rf apps/url-encoder/dist
@@ -1182,7 +1182,7 @@ Expected: exit 0 かつ `apps/url-encoder/dist/assets/` に CSS が生成され�
 
 `dist` を消してからビルドするのは、古い成果物が残っていると検証が前回のビルドを見てしまうため（URISK-011「build したら rm -rf dist」）。
 
-- [ ] **Step 2: 機械検査を通しで実行する**
+- [x] **Step 2: 機械検査を通しで実行する**
 
 Run: `node scripts/verify-v4-migration.js --app=url-encoder`
 
@@ -1218,7 +1218,7 @@ pnpm exec vp check packages/design-tokens/package.json packages/design-tokens/ts
 
 Expected: PASS（G9）。このブランチで新規作成・変更した formatter / linter 対象ファイルをすべて明示列挙し、standards 同期 CSS、Markdown、Vite設定を除外した scoped check である。
 
-- [ ] **Step 3: 目視の証跡が存在することを確認する（G6・G7）**
+- [x] **Step 3: 目視の証跡が存在することを確認する（G6・G7）**
 
 Run: `ls .docs/verification/`
 
@@ -1226,19 +1226,19 @@ Expected: `2026-07-29-sp1-url-encoder-light.png` / `2026-07-29-sp1-url-encoder-d
 
 `2026-07-29-sp1-visual-check.md` の表の「結果」列に未記入がないことを目で確認する。
 
-- [ ] **Step 4: スコープ境界が守られたことを確認する**
+- [x] **Step 4: スコープ境界が守られたことを確認する**
 
 Run: `git diff --stat main -- apps/`
 
 Expected: `apps/url-encoder/` 配下のファイルのみが変更されている。**他のアプリのファイルが 1 つでも出たらスコープ違反**なので、その変更を戻す。
 
-- [ ] **Step 5: 未コミットの変更がないことを確認する**
+- [x] **Step 5: 未コミットの変更がないことを確認する**
 
 Run: `git status --short`
 
 Expected: 出力なし。
 
-- [ ] **Step 6: 結果を報告する**
+- [x] **Step 6: 結果を報告する**
 
 G1〜G10 の各項目について、実行したコマンドと実際の出力を添えて報告する。**1 つでも FAIL があれば SP1 は未完了**として扱い、修正ループに戻る。
 
