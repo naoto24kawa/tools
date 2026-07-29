@@ -7,7 +7,7 @@ const __dirname = fileURLToPath(new URL('.', import.meta.url));
 export default defineConfig({
   plugins: [react()],
   // Pages直接アクセス用にルートパスを使用
-  base: '/',
+  base: './',
   server: {
     port: 5175,
   },
