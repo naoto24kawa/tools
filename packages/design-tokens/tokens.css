@@ -2,12 +2,15 @@
  * Elchika Tools デザイントークン — 唯一の正本。
  *
  * 正準ソース: naoto24kawa/standards の templates/design-tokens.css
- * standards テンプレートからの差分（この 5 行以外は変更しない）:
+ * standards テンプレートからの変更許可トークン（5つ）:
  *   - :root の --primary / --primary-foreground（ブランドノブ）
  *   - .dark の --primary / --primary-foreground（ブランドノブ）
  *   - :root の --warning-foreground: standards の oklch(0.145 0 0) は --warning と 3.92:1 で
  *     WCAG AA（4.5:1）に届かない。暗色方向では純黒でも 4.16:1 で到達不能なため明色へ変更した。
  *     light の他の status foreground と同値。standards 側が修正されたらこの差分は解消する。
+ * standards diff に現れる本体差分は :root の --primary / --warning-foreground と .dark の
+ * --primary / --primary-foreground の4行。:root の --primary-foreground は standards と同値の
+ * oklch(0.985 0 0) のため、変更許可対象だが diff には現れない。他の本体差分はコピーミスである。
  * このファイルは Oxfmt で整形しないこと。整形すると standards テンプレートとの diff が取れなくなる。
  *
  * 値を変更した場合は src/__tests__/tokens.test.ts が WCAG コントラストを検証する。

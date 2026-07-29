@@ -17,7 +17,7 @@
 - **`apps/url-encoder/vite.config.ts` の `base: './'` は絶対に変更しない。** `'/'` にすると全アプリが白画面になる（HTML は 200 を返すため気づけない）。正本は `.docs/ASSET_PATH_INCIDENT.md`。
 - **触るアプリは `apps/url-encoder` のみ。** 残り 345 アプリのファイルを一切変更しない。
 - **ブランドノブの値は固定値。** light `--primary: oklch(0.55 0.18 255)` / `--primary-foreground: oklch(0.985 0 0)`、dark `--primary: oklch(0.72 0.14 255)` / `--primary-foreground: oklch(0.145 0 0)`。L 値を上げると WCAG 4.5:1 を割るため変更しない。
-- **`tokens.css` の standards テンプレートからの差分は primary 4 行 + light の `--warning-foreground` 1 行のみ。** 他の行は `~/projects/naoto24kawa/standards/templates/design-tokens.css` からそのままコピーする。
+- **`tokens.css` の変更許可トークンは5つ。** `:root` の `--primary` / `--primary-foreground`、`.dark` の `--primary` / `--primary-foreground`、light の `--warning-foreground` だけを変更できる。standards diff の本体は `:root` の `--primary` / `--warning-foreground` と `.dark` の `--primary` / `--primary-foreground` の4行だけで、`:root` の `--primary-foreground` は standards と同値のため diff に現れない。他の本体差分はコピーミスである。
 - **検証コマンドに pipe を挟まない。** exit code と出力を直接見る。
 - **パッケージ名の scope は `@tools/`**（既存の `@tools/ui` に合わせる）。
 - **新しい workspace パッケージの `tsconfig.json` は `../../tsconfig.base.json` を extends する。** root `tsconfig.json` は Cloudflare 型だけに限定され、Node の型を持たないため継承しない。
@@ -346,7 +346,7 @@ Expected: FAIL（`tokens.css` が存在しないため「`tokens.css が見つ�
 
 - [ ] **Step 8: tokens.css を作る**
 
-`~/projects/naoto24kawa/standards/templates/design-tokens.css` の全内容をコピーし、以下 5 行だけを書き換える。**他の行は一切変更しない**（standards テンプレート改訂時の差分マージを機械的に保つため）。
+`~/projects/naoto24kawa/standards/templates/design-tokens.css` の全内容をコピーし、以下の変更許可トークン 5つだけを書き換える。**他の行は一切変更しない**（standards テンプレート改訂時の差分マージを機械的に保つため）。
 
 `:root` ブロック内:
 
@@ -370,12 +370,15 @@ Expected: FAIL（`tokens.css` が存在しないため「`tokens.css が見つ�
  * Elchika Tools デザイントークン — 唯一の正本。
  *
  * 正準ソース: naoto24kawa/standards の templates/design-tokens.css
- * standards テンプレートからの差分（この 5 行以外は変更しない）:
+ * standards テンプレートからの変更許可トークン（5つ）:
  *   - :root の --primary / --primary-foreground（ブランドノブ）
  *   - .dark の --primary / --primary-foreground（ブランドノブ）
  *   - :root の --warning-foreground: standards の oklch(0.145 0 0) は --warning と 3.92:1 で
  *     WCAG AA（4.5:1）に届かない。暗色方向では純黒でも 4.16:1 で到達不能なため明色へ変更した。
  *     light の他の status foreground と同値。standards 側が修正されたらこの差分は解消する。
+ * standards diff に現れる本体差分は :root の --primary / --warning-foreground と .dark の
+ * --primary / --primary-foreground の4行。:root の --primary-foreground は standards と同値の
+ * oklch(0.985 0 0) のため、変更許可対象だが diff には現れない。他の本体差分はコピーミスである。
  *
  * このファイルは Oxfmt で整形しないこと。整形すると standards テンプレートとの diff が取れなくなる。
  *
@@ -391,11 +394,11 @@ Run: `pnpm exec vp test packages/design-tokens/src`（リポジトリルート�
 
 Expected: PASS（contrast.test.ts 7 件 + tokens.test.ts 16 件）
 
-- [ ] **Step 10: 差分が 5 行に限定されていることを確認する**
+- [ ] **Step 10: diff 本体差分が 4 行に限定されていることを確認する**
 
 Run: `diff ~/projects/naoto24kawa/standards/templates/design-tokens.css packages/design-tokens/tokens.css`
 
-Expected: 差分は冒頭のコメントブロック、`--primary` / `--primary-foreground` の 4 行、light の `--warning-foreground` 1 行のみ。他の行に差分が出ていたらコピーミスなので修正する。
+Expected: 差分は冒頭のコメントブロックと、本体4行（`:root` の `--primary` / `--warning-foreground`、`.dark` の `--primary` / `--primary-foreground`）のみ。`:root` の `--primary-foreground` は変更許可対象だが standards と同値の `oklch(0.985 0 0)` のため diff には現れない。他の本体差分が出ていたらコピーミスなので修正する。
 
 - [ ] **Step 11: README を書く**
 
@@ -419,15 +422,17 @@ Elchika Tools 全アプリの oklch デザイントークン。**このパッケ
 ## standards との関係
 
 正準ソースは `naoto24kawa/standards` の `templates/design-tokens.css`。
-tools 側の差分は `--primary` / `--primary-foreground`（light・dark 各 2 行）と
-light の `--warning-foreground` の計 5 行のみ。standards の暗色 warning foreground は
-warning 背景と 3.92:1 で WCAG AA 未達のため、明色へ変更している。
+変更許可トークンは `:root` の `--primary` / `--primary-foreground`、`.dark` の
+`--primary` / `--primary-foreground`、light の `--warning-foreground` の5つ。standards の
+暗色 warning foreground は warning 背景と 3.92:1 で WCAG AA 未達のため、明色へ変更している。
+実際の standards diff 本体は4行だけである。`:root` の `--primary-foreground` は standards と
+同値の `oklch(0.985 0 0)` のため、変更許可対象だが diff には現れない。他の本体差分はコピーミスである。
 `tokens.css` は Oxfmt で整形しない。整形すると standards テンプレートとの diff が取れなくなる。
 
 standards のテンプレートが改訂されたら:
 
 1. `diff ~/projects/naoto24kawa/standards/templates/design-tokens.css tokens.css` で差分を確認
-2. tools 固有の 5 行以外の差分を取り込む
+2. 変更許可トークン5つと diff 本体4行以外の差分を取り込む
 3. リポジトリルートで `pnpm exec vp test packages/design-tokens/src` を実行してコントラストが維持されているか確認
 
 ## ブランドノブ
