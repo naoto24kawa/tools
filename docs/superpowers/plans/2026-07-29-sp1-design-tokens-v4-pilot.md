@@ -24,6 +24,7 @@
 - **作業ブランチは `feature/design-tokens-v4-pilot`**（既存・作成済み）。
 - ボタン要素には `type="button"` を付与する（CLAUDE.md コーディング規約）。
 - Oxfmt 設定: indent 2 spaces / single quotes / semicolons / line width 100。
+- **format-exempt は3カテゴリ。** `packages/design-tokens/tokens.css`、Markdown（`*.md`）、`apps/*/vite.config.ts` を format/check --fix の対象外とする。CSS は standards との差分と behavior test、Markdown は `git diff` の目視と review、Vite設定は literal diff/text 読み取りと asset gate を正本とする。必要な lint/type 検査は `vp check --no-fmt` を使う。
 
 ---
 
@@ -585,9 +586,11 @@ Run: `ls apps/url-encoder/dist/assets/`
 
 生成された CSS ファイル名を控える。以下 `<css>` はそのパスとする。
 
-Run: `grep -c 'max-w-7xl' apps/url-encoder/dist/assets/<css>`
+生成 CSS の probe には、対象アプリの source に実在する Tailwind className を使う。実コードにない例示 className を用いると、コンテンツ検出が正しくても偽陰性になる。
 
-Expected: 1 以上。**0 ならコンテンツ検出が効いていない（未知 1 の否定）** → `apps/url-encoder/src/index.css` を次の 2 行にして Step 7 からやり直す:
+Run: `grep -c 'max-w-6xl' apps/url-encoder/dist/assets/<css>`
+
+Expected: 1 以上。`max-w-6xl` は `apps/url-encoder/src/App.tsx` に実在する。**0 ならコンテンツ検出が効いていない（未知 1 の否定）** → `apps/url-encoder/src/index.css` を次の 2 行にして Step 7 からやり直す:
 
 ```css
 @import '@tools/design-tokens';
@@ -622,11 +625,14 @@ Expected: exit 0。
 
 リポジトリ全体の `pnpm check` は使わない。移行前から 9074 ファイルに既存の formatting issue があり exit 1 になるため、SP1 では変更したファイルのみを対象にする。
 
+この3ファイルは lint 対象が0件のため、通常の `vp check` は format 成功後に `Linting could not start` で exit 1 となる。`--no-error-on-unmatched-pattern` はこのCLI仕様だけを許容し、format結果を再検証する。
+
 Run:
 
 ```bash
-pnpm exec vp check --fix apps/url-encoder/package.json apps/url-encoder/vite.config.ts apps/url-encoder/src/index.css pnpm-lock.yaml
-pnpm exec vp check apps/url-encoder/package.json apps/url-encoder/vite.config.ts apps/url-encoder/src/index.css pnpm-lock.yaml
+pnpm exec vp check --fix apps/url-encoder/package.json apps/url-encoder/src/index.css pnpm-lock.yaml
+pnpm exec vp check --no-error-on-unmatched-pattern apps/url-encoder/package.json apps/url-encoder/src/index.css pnpm-lock.yaml
+pnpm exec vp check --no-fmt apps/url-encoder/vite.config.ts
 ```
 
 Expected: 2 回目の scoped check が PASS。
@@ -1075,6 +1081,8 @@ node scripts/design-audit.js --app=<app>
 
 - リポジトリ全体の check は移行前から 9074 ファイルの既存 formatting issue で exit 1 になる。変更ファイルを明示した scoped check を使う。
 - standards テンプレート由来の CSS は整形対象から外す。formatter ではなく、テンプレートとの差分と behavior test で検証する。
+- standards 同期 CSS と Markdown は format 対象外。CSS は diff + review、Markdown は `git diff` + review で検証し、必要な lint/type 検査は `vp check --no-fmt` を使う。
+- `apps/*/vite.config.ts` も format 対象外。Oxfmt の quote 変更は runtime では同値でも source 比較の asset gate を偽失敗させるため、literal diff/text 読み取りと asset gate で検証する。quote-independent な gate への修正は SP2 の前提条件とする。
 - 新規 workspace パッケージには `../../tsconfig.base.json` を extends した `tsconfig.json` が必要。root `tsconfig.json` は Cloudflare 型だけに限定され、Node の型を持たないため継承しない。Node API を使う package は `compilerOptions.types` に `node` を明示する。
 
 ## SP2 の変換スクリプトへの要求
@@ -1160,15 +1168,15 @@ Run: `pnpm exec vp test packages/design-tokens/src`（リポジトリルート�
 
 Expected: exit 0（コントラスト検証）
 
-リポジトリ全体の `pnpm check` は使わない。移行前から 9074 ファイルに既存の formatting issue があり exit 1 になるため、SP1 では変更したファイルのみを対象にする。`packages/design-tokens/tokens.css` は standards テンプレートとの diff を維持するため除外する。PNG は formatter / linter の対象外であり、Step 3 で実体を検証する。
+リポジトリ全体の `pnpm check` は使わない。移行前から 9074 ファイルに既存の formatting issue があり exit 1 になるため、SP1 では変更したファイルのみを対象にする。`packages/design-tokens/tokens.css`、`*.md`、`apps/*/vite.config.ts` は format 対象外である。前者は standards テンプレートとの diff、Markdown は `git diff` と review、Vite設定は literal diff/text 読み取りと asset gate で検証する。必要な lint/type 検査は `vp check --no-fmt` を使う。PNG は formatter / linter の対象外であり、Step 3 で実体を検証する。
 
 Run:
 
 ```bash
-pnpm exec vp check packages/design-tokens/README.md packages/design-tokens/package.json packages/design-tokens/tsconfig.json packages/design-tokens/src/contrast.ts packages/design-tokens/src/__tests__/contrast.test.ts packages/design-tokens/src/__tests__/tokens.test.ts apps/url-encoder/package.json apps/url-encoder/vite.config.ts apps/url-encoder/src/index.css pnpm-lock.yaml scripts/verify-v4-migration.js .docs/verification/2026-07-29-sp1-visual-check.md .docs/plans/tailwind-v4-migration-guide.md docs/superpowers/plans/2026-07-29-sp1-design-tokens-v4-pilot.md
+pnpm exec vp check packages/design-tokens/package.json packages/design-tokens/tsconfig.json packages/design-tokens/src/contrast.ts packages/design-tokens/src/__tests__/contrast.test.ts packages/design-tokens/src/__tests__/tokens.test.ts apps/url-encoder/package.json apps/url-encoder/src/index.css pnpm-lock.yaml scripts/verify-v4-migration.js
 ```
 
-Expected: PASS（G9）。このブランチで新規作成・変更した formatter / linter 対象ファイルをすべて明示列挙し、`tokens.css` だけを除外した scoped check である。
+Expected: PASS（G9）。このブランチで新規作成・変更した formatter / linter 対象ファイルをすべて明示列挙し、standards 同期 CSS、Markdown、Vite設定を除外した scoped check である。
 
 - [ ] **Step 3: 目視の証跡が存在することを確認する（G6・G7）**
 
