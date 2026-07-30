@@ -26,7 +26,22 @@ const path = require('path');
 const REPO_ROOT = path.join(__dirname, '..');
 const APPS_DIR = path.join(REPO_ROOT, 'apps');
 const PUBLIC_DIR = path.join(REPO_ROOT, 'packages', 'router', 'public');
-const EXPECTED_BASE = "'./'";
+/** base に期待する「値」。ソース上のクォート種別は問わない（下記 stripQuotes を参照） */
+const EXPECTED_BASE = './';
+/** メッセージ表示用のリテラル表記 */
+const EXPECTED_BASE_LITERAL = `'${EXPECTED_BASE}'`;
+
+/**
+ * 文字列リテラルからクォートを外して値を取り出す。
+ * Oxfmt はクォートを正規化するため（`base: './'` → `base: "./"`）、
+ * ソーステキストの完全一致で判定すると runtime 同値でも違反と誤判定する。
+ * クォートで囲まれていない場合（変数・式など）は値を確定できないため null を返し、
+ * 呼び出し側で violation として扱う（ゲートなので fail-closed）。
+ */
+function stripQuotes(literal) {
+  const matched = literal.match(/^(['"`])(.*)\1$/);
+  return matched ? matched[2] : null;
+}
 
 const configOnly = process.argv.includes('--config-only');
 
@@ -60,13 +75,19 @@ function checkViteConfigs() {
     const m = src.match(/^\s*base\s*:\s*(.+?)\s*,?\s*$/m);
 
     if (!m) {
-      violations.push({ file: rel, issue: `base が未指定 (${EXPECTED_BASE} を明示すること)` });
+      violations.push({ file: rel, issue: `base が未指定 (${EXPECTED_BASE_LITERAL} を明示すること)` });
       continue;
     }
 
-    const actual = m[1].replace(/,$/, '').trim();
-    if (actual !== EXPECTED_BASE) {
-      violations.push({ file: rel, issue: `base: ${actual} → ${EXPECTED_BASE} でなければならない` });
+    const raw = m[1].replace(/,$/, '').trim();
+    const actual = stripQuotes(raw);
+    if (actual === null) {
+      violations.push({
+        file: rel,
+        issue: `base: ${raw} は文字列リテラルでないため値を確定できない (${EXPECTED_BASE_LITERAL} を直接書くこと)`,
+      });
+    } else if (actual !== EXPECTED_BASE) {
+      violations.push({ file: rel, issue: `base: ${raw} → ${EXPECTED_BASE_LITERAL} でなければならない` });
     }
   }
 
@@ -125,7 +146,9 @@ function main() {
 
   const configViolations = checkViteConfigs();
   const appCount = fs.existsSync(APPS_DIR) ? listDirs(APPS_DIR).length : 0;
-  console.log(`  vite.config.ts : ${appCount - configViolations.length} / ${appCount} が base: ${EXPECTED_BASE}`);
+  console.log(
+    `  vite.config.ts : ${appCount - configViolations.length} / ${appCount} が base: ${EXPECTED_BASE_LITERAL}`
+  );
   violations = violations.concat(configViolations);
 
   if (!configOnly) {
