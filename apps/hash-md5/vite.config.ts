@@ -1,10 +1,11 @@
 import path from 'node:path';
+import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react-swc';
 import wasm from 'vite-plugin-wasm';
 import { defineConfig } from 'vite-plus';
 
 export default defineConfig({
-  plugins: [react(), wasm()],
+  plugins: [react(), wasm(), tailwindcss()],
   base: './',
   server: {
     port: 5232,
