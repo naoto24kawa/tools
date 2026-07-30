@@ -53,9 +53,12 @@ apps/<tool-name>/
 
 ## 技術スタック
 
-- **UI**: React 18 + TypeScript (strict)
+- **UI**: React 19 + TypeScript (strict)
 - **ビルド**: Vite+ (Vite 8 + Rolldown)
-- **スタイリング**: Tailwind CSS 3.4 + shadcn/ui (Radix UI)
+- **スタイリング**: Tailwind CSS + shadcn/ui (Radix UI)
+  - `url-encoder` のみ **v4**(`@tailwindcss/vite` + `@tools/design-tokens` の oklch トークン)。
+    残り 345 アプリは **3.4**(hsl 変数 + `tailwind.config.js`)。移行は SP2 で全アプリへ展開する。
+    手順は `.docs/plans/tailwind-v4-migration-guide.md` が正本
 - **ランタイム**: Node.js (pnpm via Vite+ CLI `vp`)
 - **Linter/Formatter**: Oxlint + Oxfmt (via `vp check`)
 - **テスト**: vp test / Vitest (ユニット) + Playwright (E2E)
@@ -160,6 +163,41 @@ content-type まで見るのは、存在しないパスに HTML が 200 で返�
   **コミットされている `public/` の中身がそのまま本番になる**
 - 上記は `node scripts/check-asset-paths.js` で機械的に検査できる
   (build-all.sh の先頭と deploy.yml のデプロイ前に組み込み済み。違反があれば止まる)
+
+### 検証コマンドの落とし穴
+
+いずれも SP1（`docs/superpowers/specs/2026-07-29-design-standards-adoption-design.md`）で実測した。
+
+- **テストはリポジトリルートから `pnpm exec vp test <パス>` で実行する。**
+  `pnpm --filter <app> test` はアプリ cwd の `vite.config.ts` を使うため、root `vite.config.ts` の
+  test 設定(`environment: "happy-dom"` / `setupFiles`)を失い、全 DOM テストが
+  `document is not defined` で落ちる。実測: filter 実行は 44 failed / 11 passed、
+  root 実行は同一コードで 55 tests すべて PASS。**build と dev の filter 実行は正しい**
+  (アプリ自身の設定を使うのが正しいため)。使わないのは test だけ
+- **リポジトリ全体の `pnpm check` は通らない。** 2026-07 時点で 9074 ファイルに既存の
+  formatting issue があり exit 1 になる。変更したファイルを明示列挙した
+  `pnpm exec vp check <paths...>` を使う(`vp check` に exclude オプションはない)。
+  Markdown 等で lint/type だけ見たいときは `--no-fmt`
+- **整形してはいけないファイルが 3 種類ある。** どれも「diff や字面を読むこと自体が検証手段」で、
+  整形するとその検証が壊れる
+  - `packages/design-tokens/tokens.css` — standards テンプレートとの diff が取れなくなる
+  - `*.md` — 変更箇所のレビューが不能になる
+  - `apps/*/vite.config.ts` — Oxfmt が `base: './'` を `base: "./"` に変え、
+    `check-asset-paths.js` がソーステキスト一致で判定しているため偽検知する
+- **テストからリポジトリ内のファイルを読むとき `import.meta.url` は使えない。**
+  Vite+ の transform 下で `file:` スキームにならず `fileURLToPath` が TypeError になる。
+  `process.cwd()` 基準の `path.resolve` を使い、見つからないときに実行場所を示すエラーを投げる
+- **新規 workspace パッケージの `tsconfig.json` は `tsconfig.base.json` を extends する。**
+  root の `tsconfig.json` は `types: ["@cloudflare/workers-types"]` のみで Node の型を持たない。
+  なお base は `noUncheckedIndexedAccess` / `exactOptionalPropertyTypes` が有効で厳格
+- **`scripts/design-audit.js` は `.docs/design-audit-result.json` を書き換える。**
+  `--app` 指定で実行すると全アプリ分の結果が 1 アプリ分に置き換わるため、
+  実行後に `git checkout -- .docs/design-audit-result.json` で戻し、コミットに含めない
+- **検証コマンドを `;` や `&&` で連結しない。** 末尾のコマンドの exit code で上書きされ、
+  個々の失敗が見えなくなる(SP1 で実際に、末尾の `printf` が `grep` の exit 1 を 0 に変え、
+  無出力を「1 件ヒット」と誤記した)。別実行の `echo $?` もシェルが独立しているため無効
+- **ローカルサーバーのポートを固定値で前提にしない。** Vite は使用中なら自動退避する
+  (SP1 では 5173 が外部プロセスに占有され 5174 になった)。起動ログが示すポートを読む
 
 ## Design Rules (AI向けデザイン品質)
 
