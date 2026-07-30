@@ -4,7 +4,7 @@
 
 **Goal:** SP1 で確定した変換手順を機械化し、未移行の 345 アプリすべてを Tailwind v4 + `@tools/design-tokens` へ移行して、全アプリが検証ゲートを通る状態にする。
 
-**Architecture:** 冪等・再開可能な変換スクリプトで機械変換し、`scripts/verify-v4-migration.js` の単一 exit code で全アプリを検証する。既定形と完全一致するアプリだけを機械変換の対象とし、一致しないアプリはスクリプトが停止して報告する（fail-closed）。個別対応が必要な 7 アプリは手作業で扱う。
+**Architecture:** 冪等・再開可能な変換スクリプトで機械変換し、`scripts/verify-v4-migration.js` の単一 exit code で全アプリを検証する。既定形と完全一致するアプリだけを機械変換の対象とし、一致しないアプリはスクリプトが停止して報告する（fail-closed）。個別対応が必要な 6 アプリは手作業で扱う。
 
 **Tech Stack:** Node.js (CommonJS scripts) / Tailwind CSS v4 (`@tailwindcss/vite@^4.3`) / Vite+ 8 (Rolldown) / pnpm workspaces
 
@@ -44,8 +44,10 @@
 | `postcss.config.js` を持つ | 344（`text-code-case` のみ持たない） |
 | `tailwind.config.js` を持つ | 344（同上） |
 | `tailwind.config.js` が既定形と一致 | 343 / 344（`image-transparent` のみ chart 定義を欠く） |
+| `vite.config.ts` の plugins 形状 | `[react()]` 341 件 / `[react(), wasm()]` 4 件（`bcrypt-hash` / `hash-crc32` / `hash-md5` / `zip-creator`） |
 | `tailwindcss-animate` を持つ | 345（全未移行アプリ） |
 | `src/index.css` が既定形と一致 | 339 / 345 |
+| v3 既定形 `index.css` の SHA-256 | `2dc6990ea59b03c14aeada34837ec04166918c9842c984293d242d9615f266a2`（339 件が一致） |
 | 1 アプリのビルド時間 | 約 1.4 秒（345 アプリで約 8 分の見込み） |
 | `verify-v4-migration.js` の全アプリモード | 移行済み 1 個を検査して PASS |
 | `pnpm exec vp test apps`（移行前） | **6 failed / 6815 passed / 5 skipped / 1 error、exit 1**（所要 約 74 秒） |
@@ -73,9 +75,11 @@
 `pkg/` が生成されていないことに起因する（`pnpm install` の postinstall が
 `wasm-pack not found` を出す）。**環境依存の既存問題であり、本移行とは無関係。**
 
-## 個別対応が必要な 7 アプリ（実測で確定）
+## 個別対応が必要な 6 アプリ（実測で確定）
 
-`src/index.css` が既定形と一致しない 6 個と、設定ファイル構成が異なる 1 個。
+`src/index.css` が既定形と一致しない 6 アプリ。うち `text-code-case` は
+`tailwind.config.js` と `postcss.config.js` も持たず、`image-transparent` は
+`tailwind.config.js` の chart 定義も欠く。
 
 | アプリ | 差異 | 対応 |
 |---|---|---|
@@ -100,10 +104,14 @@ standards 値へ統一すると 6.95:1 → 6.42:1 とわずかに下がるが、
 
 ---
 
-### Task 1: 変換スクリプトの作成と 1 アプリでの実証
+### Task 1: 変換スクリプトの作成と 2 形状での実証
 
 **Files:**
 - Create: `scripts/migrate-tailwind-v4.js`
+- Modify: `apps/json-formatter/{package.json,src/index.css,vite.config.ts}` / Delete: 同 `{tailwind,postcss}.config.js`
+- Modify: `apps/bcrypt-hash/{package.json,src/index.css,vite.config.ts}` / Delete: 同 `{tailwind,postcss}.config.js`
+- Modify: `pnpm-lock.yaml`
+- Modify: `docs/superpowers/plans/2026-07-30-sp2-tailwind-v4-bulk-migration.md`
 
 **Interfaces:**
 - Consumes: `packages/design-tokens`（SP1 で作成済み）、`.docs/plans/tailwind-v4-migration-guide.md` の変換手順
@@ -135,6 +143,7 @@ standards 値へ統一すると 6.95:1 → 6.42:1 とわずかに下がるが、
  */
 
 const fs = require('node:fs');
+const { createHash } = require('node:crypto');
 const path = require('node:path');
 
 const REPO_ROOT = path.join(__dirname, '..');
@@ -143,8 +152,16 @@ const APPS_DIR = path.join(REPO_ROOT, 'apps');
 /** 移行後の index.css の全内容 */
 const MIGRATED_INDEX_CSS = `@import "@tools/design-tokens";\n`;
 
-/** 既定形の index.css（このハッシュと一致するものだけ機械変換する） */
-const BASELINE_APP = 'json-formatter';
+/**
+ * v3 既定形 index.css の SHA-256。
+ * 移行前の apps 配下にある src/index.css のうち 339 件がこの値だった（SP2 着手時の実測）。
+ *
+ * 実行時に特定アプリのファイルを読んで基準にしてはならない。
+ * 基準アプリ自身を変換した瞬間に基準が変わり、以降すべてのアプリが
+ * 「一致しない」と判定される（自己破壊）。
+ */
+const BASELINE_INDEX_CSS_SHA256 =
+  '2dc6990ea59b03c14aeada34837ec04166918c9842c984293d242d9615f266a2';
 
 const args = process.argv.slice(2);
 const dryRun = args.includes('--dry-run');
@@ -170,6 +187,10 @@ function read(file) {
   return fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : null;
 }
 
+function sha256(source) {
+  return createHash('sha256').update(source).digest('hex');
+}
+
 /** 移行済みか（冪等性の判定） */
 function isMigrated(appDir) {
   const css = read(path.join(appDir, 'src', 'index.css'));
@@ -182,7 +203,9 @@ function migratePackageJson(source) {
   const pkg = JSON.parse(source);
   pkg.dependencies = pkg.dependencies || {};
   pkg.dependencies['@tools/design-tokens'] = 'workspace:*';
-  pkg.dependencies = Object.fromEntries(Object.entries(pkg.dependencies).sort());
+  pkg.dependencies = Object.fromEntries(
+    Object.entries(pkg.dependencies).sort(([left], [right]) => left.localeCompare(right))
+  );
 
   const dev = pkg.devDependencies || {};
   delete dev.autoprefixer;
@@ -190,7 +213,9 @@ function migratePackageJson(source) {
   delete dev['tailwindcss-animate'];
   dev.tailwindcss = '^4.3.3';
   dev['@tailwindcss/vite'] = '^4.3.3';
-  pkg.devDependencies = Object.fromEntries(Object.entries(dev).sort());
+  pkg.devDependencies = Object.fromEntries(
+    Object.entries(dev).sort(([left], [right]) => left.localeCompare(right))
+  );
 
   return `${JSON.stringify(pkg, null, 2)}\n`;
 }
@@ -205,16 +230,13 @@ function migrateViteConfig(source) {
   );
   if (withImport === source) return null;
 
-  const withPlugin = withImport.replace(/^(\s*)plugins:\s*\[react\(\)\],$/m, '$1plugins: [react(), tailwindcss()],');
+  const withPlugin = withImport.replace(
+    /^(\s*)plugins: \[react\(\)(, wasm\(\))?\],$/m,
+    '$1plugins: [react()$2, tailwindcss()],'
+  );
   if (withPlugin === withImport) return null;
 
   return withPlugin;
-}
-
-const baselineIndexCss = read(path.join(APPS_DIR, BASELINE_APP, 'src', 'index.css'));
-if (baselineIndexCss === null) {
-  console.error(`基準アプリ ${BASELINE_APP} の index.css が見つからない`);
-  process.exit(1);
 }
 
 const targets = (filterApp ? [filterApp] : fs.readdirSync(APPS_DIR).sort()).filter((name) => {
@@ -245,7 +267,7 @@ for (const name of targets) {
     blocked.push(`${name}: src/index.css が存在しない`);
     continue;
   }
-  if (indexCss !== baselineIndexCss) {
+  if (sha256(indexCss) !== BASELINE_INDEX_CSS_SHA256) {
     blocked.push(`${name}: index.css が既定形と一致しない（個別対応が必要）`);
     continue;
   }
@@ -300,10 +322,12 @@ Expected: 「変換 339 / skip 1 / blocked 6」と表示され exit 1。
 blocked の 6 件は `image-generate` / `image-transparent` / `image-trim` /
 `text-code-case` / `text-counter` / `text-deduplicate` である。
 skip 1 は url-encoder（移行済み）。
+`[react(), wasm()]` 形状の 4 アプリも変換対象へ含めた修正後の dry-run で、
+この件数と内訳を実測済み（2026-07-30）。
 
 件数が違う場合は作業を止めて報告すること。実測と食い違うのは前提が変わった証拠である。
 
-- [ ] **Step 3: 1 アプリだけ実際に変換する**
+- [ ] **Step 3: 既定形の代表アプリを実際に変換する**
 
 Run: `node scripts/migrate-tailwind-v4.js --app=json-formatter`
 
@@ -347,7 +371,39 @@ Run: `node scripts/migrate-tailwind-v4.js --app=json-formatter`
 Expected: 「skip: json-formatter: 移行済み」と表示され exit 0。
 二重適用されないことの確認である。ここを省略しない。
 
-- [ ] **Step 8: lint を通してコミット**
+- [ ] **Step 8: wasm 形状の代表アプリを実証する**
+
+Run: `node scripts/migrate-tailwind-v4.js --dry-run`
+
+Expected: 「変換 338 / skip 2 / blocked 6」と表示され exit 1。
+`json-formatter` を移行済みでも基準ハッシュが変わらず、個別対応 6 アプリだけが blocked になること。
+
+Run: `node scripts/migrate-tailwind-v4.js --app=bcrypt-hash`
+
+Expected: 「migrated: bcrypt-hash」と表示され exit 0。
+
+Run: `git diff apps/bcrypt-hash/vite.config.ts`
+
+Expected: import 行 1 つの追加と、plugins の末尾への `tailwindcss()` 追加のみ。
+既存の `wasm()` とその順序が保持され、**`base: './'` の行に差分がないこと。**
+
+Run: `pnpm install`
+
+Expected: exit 0。
+
+Run: `pnpm --filter bcrypt-hash build`
+
+Expected: exit 0。
+
+Run: `node scripts/verify-v4-migration.js --app=bcrypt-hash`
+
+Expected: 「✅ bcrypt-hash」/ exit 0。
+
+Run: `node scripts/migrate-tailwind-v4.js --app=bcrypt-hash`
+
+Expected: 「skip: bcrypt-hash: 移行済み」と表示され exit 0。
+
+- [ ] **Step 9: lint を通してコミット**
 
 Run: `pnpm exec vp check scripts/migrate-tailwind-v4.js`
 
@@ -356,22 +412,23 @@ Expected: PASS。formatting issue が出た場合は
 （新規ファイルなので整形しても無関係な差分は出ない）。
 
 ```bash
-git add scripts/migrate-tailwind-v4.js apps/json-formatter pnpm-lock.yaml
-git commit -m "feat(scripts): Tailwind v4 一括変換スクリプトを追加し json-formatter で実証
+git add scripts/migrate-tailwind-v4.js apps/json-formatter apps/bcrypt-hash pnpm-lock.yaml docs/superpowers/plans/2026-07-30-sp2-tailwind-v4-bulk-migration.md
+git commit -m "feat(scripts): Tailwind v4 一括変換スクリプトを 2 形状で実証
 
 既定形と完全一致するアプリだけを機械変換し、一致しないものは変換せず
 理由を出して exit 1 にする（fail-closed）。カスタム CSS を黙って捨てないため。
-冪等性（再実行で skip）を実測で確認した。
+既定形（json-formatter）と wasm 形状（bcrypt-hash）の両方で動作を確認し、
+冪等性（再実行で skip）も実測した。
 
 Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
 ```
 
 ---
 
-### Task 2: 既定形 339 アプリの一括変換
+### Task 2: 既定形の残り 337 アプリの一括変換
 
 **Files:**
-- Modify: `apps/<既定形の 339 アプリ>/package.json`
+- Modify: `apps/<既定形の残り 337 アプリ>/package.json`
 - Modify: `apps/<同>/src/index.css`
 - Modify: `apps/<同>/vite.config.ts`
 - Delete: `apps/<同>/tailwind.config.js`
@@ -403,8 +460,8 @@ Expected: exit 1。**failed / passed / skipped / error の各件数を記録す�
 
 Run: `node scripts/migrate-tailwind-v4.js`
 
-Expected: 「変換 338 / skip 2 / blocked 6」と表示され exit 1
-（json-formatter は Task 1 で移行済みのため skip 側に移る）。
+Expected: 「変換 337 / skip 3 / blocked 6」と表示され exit 1
+（json-formatter と bcrypt-hash は Task 1、url-encoder は SP1 で移行済みのため skip 側にある）。
 blocked 6 件は Task 3 で個別対応するため、この exit 1 は想定どおりである。
 
 blocked の内訳が Task 1 Step 2 と同じ 6 アプリであることを確認すること。
@@ -419,7 +476,7 @@ Expected: 変更は `apps/` 配下と `pnpm-lock.yaml` のみ。
 
 Run: `git diff --stat apps/ | tail -1`
 
-Expected: 変更ファイル数が想定どおりであること（339 アプリ × 5 ファイル前後）。
+Expected: 変更ファイル数が想定どおりであること（残り 337 アプリ × 5 ファイル前後）。
 
 - [ ] **Step 4: base が全アプリで維持されていることを確認する**
 
@@ -440,7 +497,7 @@ Expected: exit 0。
 
 ```bash
 git add -A apps/ pnpm-lock.yaml
-git commit -m "feat: 既定形 339 アプリを Tailwind v4 + oklch トークンへ移行
+git commit -m "feat: 既定形の残り 337 アプリを Tailwind v4 + oklch トークンへ移行
 
 scripts/migrate-tailwind-v4.js による機械変換。index.css が既定形と
 完全一致するアプリのみを対象とし、一致しない 6 アプリは対象外。
@@ -759,6 +816,12 @@ PR #849 で `check-asset-paths.js` はクォート非依存になったため、
 > 本書は新規アプリ作成時の参照と、移行時に判明した地雷の記録として残す。
 > 新規アプリは最初から v4 構成で作る（`scripts/create-app.js` のテンプレートを参照）。
 ```
+
+あわせて、移行前の `vite.config.ts` には `[react()]` と `[react(), wasm()]` の 2 形状があり、
+後者では既存の `wasm()` を保持したまま末尾に `tailwindcss()` を追加する必要があることを記録する。
+また、一括変換スクリプトの判定基準を変換対象ファイルから実行時に読んではならないこと、
+基準アプリを変換した瞬間に基準が変わる自己破壊を避けるため、ハッシュ等の不変な定数として
+保持する必要があることを記録する。
 
 - [ ] **Step 4: lint を通してコミット**
 
