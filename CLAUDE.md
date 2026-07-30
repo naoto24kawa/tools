@@ -45,9 +45,7 @@ apps/<tool-name>/
   index.html
   package.json
   vite.config.ts
-  tailwind.config.js
   tsconfig.json
-  postcss.config.js
   wrangler.toml        # レガシー(個別デプロイ用、現在は build-all 方式)
 ```
 
@@ -55,10 +53,10 @@ apps/<tool-name>/
 
 - **UI**: React 19 + TypeScript (strict)
 - **ビルド**: Vite+ (Vite 8 + Rolldown)
-- **スタイリング**: Tailwind CSS + shadcn/ui (Radix UI)
-  - `url-encoder` のみ **v4**(`@tailwindcss/vite` + `@tools/design-tokens` の oklch トークン)。
-    残り 345 アプリは **3.4**(hsl 変数 + `tailwind.config.js`)。移行は SP2 で全アプリへ展開する。
-    手順は `.docs/plans/tailwind-v4-migration-guide.md` が正本
+- **スタイリング**: Tailwind CSS v4 (`@tailwindcss/vite`) + shadcn/ui (Radix UI)
+  - 全 346 アプリが v4。カラートークンは `@tools/design-tokens` の oklch 定義が唯一の正本で、
+    各アプリの `src/index.css` は `@import "@tools/design-tokens";` の 1 行のみ
+  - `tailwind.config.js` / `postcss.config.js` は持たない(v4 は CSS-first 設定)
 - **ランタイム**: Node.js (pnpm via Vite+ CLI `vp`)
 - **Linter/Formatter**: Oxlint + Oxfmt (via `vp check`)
 - **テスト**: vp test / Vitest (ユニット) + Playwright (E2E)
@@ -177,13 +175,19 @@ content-type まで見るのは、存在しないパスに HTML が 200 で返�
 - **リポジトリ全体の `pnpm check` は通らない。** 2026-07 時点で 9074 ファイルに既存の
   formatting issue があり exit 1 になる。変更したファイルを明示列挙した
   `pnpm exec vp check <paths...>` を使う(`vp check` に exclude オプションはない)。
-  Markdown 等で lint/type だけ見たいときは `--no-fmt`
+  整形せず lint/type だけ見たいときは `--no-fmt`
+- **`vp check` に Markdown だけを渡すと必ず exit 1 になる。** `--no-fmt` は整形を止めるだけで、
+  Markdown を lint 対象にはしない。対象拡張子が 1 つも無いため
+  `error: Linting could not start / No files found to lint` で落ちる(SP2 で実測。
+  同じ引数に JS を 1 つ加えると exit 0 になることで裏取り済み)。
+  **これはドキュメントの不備ではないので、この exit 1 を直しに行かないこと。**
+  Markdown だけの変更は `git diff` の目視で確認する
 - **整形してはいけないファイルが 3 種類ある。** どれも「diff や字面を読むこと自体が検証手段」で、
   整形するとその検証が壊れる
   - `packages/design-tokens/tokens.css` — standards テンプレートとの diff が取れなくなる
   - `*.md` — 変更箇所のレビューが不能になる
-  - `apps/*/vite.config.ts` — Oxfmt が `base: './'` を `base: "./"` に変え、
-    `check-asset-paths.js` がソーステキスト一致で判定しているため偽検知する
+  - `apps/*/vite.config.ts` — gate は PR #849 でクォート非依存になったため整形しても落ちないが、
+    346 ファイルに無関係な整形差分が出て変更箇所のレビューが不能になる
 - **テストからリポジトリ内のファイルを読むとき `import.meta.url` は使えない。**
   Vite+ の transform 下で `file:` スキームにならず `fileURLToPath` が TypeError になる。
   `process.cwd()` 基準の `path.resolve` を使い、見つからないときに実行場所を示すエラーを投げる

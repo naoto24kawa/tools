@@ -1,5 +1,9 @@
 # Tailwind v4 移行手順書（SP2 の仕様）
 
+> **状態**: SP2 で全 346 アプリの移行が完了した（2026-07-30）。
+> 本書は新規アプリ作成時の参照と、移行時に判明した地雷の記録として残す。
+> 新規アプリは最初から v4 構成で作る（`scripts/create-app.js` のテンプレートを参照）。
+
 SP1（url-encoder パイロット）で実測して確定した手順。SP2 の
 `scripts/migrate-tailwind-v4.js` はこの手順を機械化する。
 
@@ -112,6 +116,21 @@ pnpm exec vp test apps/<app>/src
 - G4はexact stringから `parseFloat` と緩いregex、`Number` と `\S+`、decimal grammar + `Number` へ段階的に厳密化した。数値パースは変換関数だけでなく字句文法でも決まり、検証コード自体が壊れやすい。negativeとpositiveの両方で証明する。
 - focus外縁は実測4pxで、344アプリが共有する既存のv3時代shadcn実装である。standards §5の3pxはSHOULDであり、SP1の対象外として別ticketにした。SP2でこの実装の修正を要求しない。
 - secondary buttonはlight背景との面の比が1.09:1、dark背景との面の比が1.31:1、secondary前景text比が16.42:1だった。形は判別しづらいがtext/functionは明確である。standards値であり移行回帰ではないためissue化しない。secondaryを多用するアプリはSP2のsampling判断材料とする。
+
+## SP2 の実施で判明したこと
+
+- **移行前の `vite.config.ts` には 2 形状があった。** `plugins: [react()]` が 341 件、
+  `plugins: [react(), wasm()]` が 4 件（`bcrypt-hash` / `hash-crc32` / `hash-md5` / `zip-creator`）である。
+  後者は既存の `wasm()` を保持したまま**末尾に** `tailwindcss()` を追加する必要がある。
+  `[react()]` だけを想定した置換は wasm 系 4 アプリを黙って取りこぼすか、`wasm()` を消す。
+  `scripts/migrate-tailwind-v4.js` は `/^(\s*)plugins: \[react\(\)(, wasm\(\))?\],$/m` で
+  両形状を 1 つの正規表現で扱い、どちらにも一致しないアプリは blocked として停止する（fail-closed）。
+- **一括変換スクリプトの判定基準を、変換対象のファイルから実行時に読んではならない。**
+  「既定形かどうか」を実在アプリの `index.css` を読んで基準にすると、
+  **基準アプリ自身を変換した瞬間に基準が変わり**、以降のすべてのアプリが「一致しない」と判定される（自己破壊）。
+  基準は SHA-256 のような不変の定数としてスクリプト内に持つ
+  （`BASELINE_INDEX_CSS_SHA256 = 2dc6990ea59b03c14aeada34837ec04166918c9842c984293d242d9615f266a2`）。
+  これは一括変換に固有の罠で、1 アプリずつ手作業していた SP1 では顕在化しなかった。
 
 ## SP2 の変換スクリプトへの要求
 
