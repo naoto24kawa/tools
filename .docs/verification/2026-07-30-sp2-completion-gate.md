@@ -103,7 +103,34 @@ SP2 のスコープ外（計画の完了条件に残骸削除は含まれない�
 （`https://tools.elchika.app/home/` は 200 / text/html）。**SP2 とは無関係の既存状態**であり、
 白画面事故にはなっていない。紛らわしいので削除を検討する価値はある。
 
-### 3. `vp check` に Markdown だけを渡すと必ず exit 1 になる
+### 3. ワークツリーが違うとビルド成果物が変わる（main へマージ後に判明）
+
+`main` へ fast-forward した後、マージ結果の検証として main 側で再ビルドしたところ、
+**335 アプリの JS ハッシュがコミット済みの成果物と一致しなかった**（CSS は全アプリ一致）。
+
+切り分けの実測:
+
+| 実験 | 結果 |
+|---|---|
+| main で `aes-encrypt` を 2 回ビルド | 2 回とも `index-CIipZ1lB.js`。**環境内では決定的** |
+| worktree で同じアプリをビルド | `index-DTkQ7Udr.js`。コミット済みと一致 |
+| 両者の `vite` / `rolldown` / `vite-plus` / `@radix-ui/react-toast` | すべて同一バージョン |
+| 両者の `node_modules/.pnpm` | main 743 / worktree 727。**main が上位集合**で storybook 系など 16 個多い |
+| 両成果物の `process.env` / `NODE_ENV` / `react-dom.development` | どちらも 0 件。**両方とも production ビルド** |
+
+差分の実体は Radix UI の内部実装の細部であり、機能的な優劣はない。
+原因は main 側の余分なパッケージによる peer 解決の差と見られる。非決定性ではない。
+
+**対処**: コミット済み（検証ゲートと目視を通した worktree 由来）の成果物を正とし、
+main で再ビルドした差分は `git clean -f packages/router/public/` と
+`git checkout -- packages/router/public/` で破棄した。
+`.github/workflows/deploy.yml` はビルドせず**コミット済みの `public/` がそのまま本番になる**ため、
+検証していない成果物で上書きしないことが重要である。
+
+**申し送り**: `public/` の掃除など成果物を作り直す作業は、**どのワークツリーで行うかを決めてから**
+着手し、そこで生成した一式をコミットすること。別ワークツリーの成果物と混ぜてはならない。
+
+### 4. `vp check` に Markdown だけを渡すと必ず exit 1 になる
 
 Task 5 Step 4 の `pnpm exec vp check --no-fmt CLAUDE.md .docs/plans/...md` が exit 1 になった。
 原因は `error: Linting could not start / No files found to lint` で、
