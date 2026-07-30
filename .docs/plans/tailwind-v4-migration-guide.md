@@ -2,7 +2,12 @@
 
 > **状態**: SP2 で全 346 アプリの移行が完了した（2026-07-30）。
 > 本書は新規アプリ作成時の参照と、移行時に判明した地雷の記録として残す。
-> 新規アプリは最初から v4 構成で作る（`scripts/create-app.js` のテンプレートを参照）。
+>
+> **ただし `templates/react-spa/` は 2026-07-30 時点でまだ v3 構成である**
+> （`tailwind.config.js` と `postcss.config.js` を持つ）。`node scripts/create-app.js` の
+> React テンプレートはこれをコピーするため、**新規アプリは v3 で生成され、混在が復活する**。
+> テンプレートが v4 化されるまでは、作成した直後に
+> `node scripts/migrate-tailwind-v4.js --app=<name>` を実行して v4 へ揃えること。
 
 SP1（url-encoder パイロット）で実測して確定した手順。SP2 の
 `scripts/migrate-tailwind-v4.js` はこの手順を機械化する。

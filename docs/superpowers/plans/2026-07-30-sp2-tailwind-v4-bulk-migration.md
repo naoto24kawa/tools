@@ -119,7 +119,7 @@ standards 値へ統一すると 6.95:1 → 6.42:1 とわずかに下がるが、
   変換したアプリ名を stdout に 1 行ずつ出力し、スキップしたアプリと理由も出力する。
   1 つでも「既定形と一致しないため変換できない」があれば exit 1。
 
-- [ ] **Step 1: スクリプトを書く**
+- [x] **Step 1: スクリプトを書く**
 
 `scripts/migrate-tailwind-v4.js`:
 
@@ -314,7 +314,7 @@ console.log(
 process.exit(blocked.length > 0 ? 1 : 0);
 ```
 
-- [ ] **Step 2: dry-run で対象数を確認する**
+- [x] **Step 2: dry-run で対象数を確認する**
 
 Run: `node scripts/migrate-tailwind-v4.js --dry-run`
 
@@ -327,13 +327,13 @@ skip 1 は url-encoder（移行済み）。
 
 件数が違う場合は作業を止めて報告すること。実測と食い違うのは前提が変わった証拠である。
 
-- [ ] **Step 3: 既定形の代表アプリを実際に変換する**
+- [x] **Step 3: 既定形の代表アプリを実際に変換する**
 
 Run: `node scripts/migrate-tailwind-v4.js --app=json-formatter`
 
 Expected: 「migrated: json-formatter」と表示され exit 0。
 
-- [ ] **Step 4: 変換結果を目で確認する**
+- [x] **Step 4: 変換結果を目で確認する**
 
 Run: `git diff --stat apps/json-formatter`
 
@@ -344,7 +344,7 @@ Run: `git diff apps/json-formatter/vite.config.ts`
 
 Expected: import 行 1 つの追加と plugins 行の変更のみ。**`base: './'` の行に差分がないこと。**
 
-- [ ] **Step 5: 依存をインストールしてビルドする**
+- [x] **Step 5: 依存をインストールしてビルドする**
 
 Run: `pnpm install`
 
@@ -354,7 +354,7 @@ Run: `pnpm --filter json-formatter build`
 
 Expected: exit 0。
 
-- [ ] **Step 6: 検証ゲートを通す**
+- [x] **Step 6: 検証ゲートを通す**
 
 Run: `node scripts/verify-v4-migration.js --app=json-formatter`
 
@@ -364,14 +364,14 @@ Run: `node scripts/check-asset-paths.js --config-only`
 
 Expected: 「346 / 346 が base: './'」/ exit 0。
 
-- [ ] **Step 7: 冪等性を確認する**
+- [x] **Step 7: 冪等性を確認する**
 
 Run: `node scripts/migrate-tailwind-v4.js --app=json-formatter`
 
 Expected: 「skip: json-formatter: 移行済み」と表示され exit 0。
 二重適用されないことの確認である。ここを省略しない。
 
-- [ ] **Step 8: wasm 形状の代表アプリを実証する**
+- [x] **Step 8: wasm 形状の代表アプリを実証する**
 
 Run: `node scripts/migrate-tailwind-v4.js --dry-run`
 
@@ -403,7 +403,7 @@ Run: `node scripts/migrate-tailwind-v4.js --app=bcrypt-hash`
 
 Expected: 「skip: bcrypt-hash: 移行済み」と表示され exit 0。
 
-- [ ] **Step 9: lint を通してコミット**
+- [x] **Step 9: lint を通してコミット**
 
 Run: `pnpm exec vp check scripts/migrate-tailwind-v4.js`
 
@@ -439,7 +439,7 @@ Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
 - Consumes: `scripts/migrate-tailwind-v4.js`（Task 1）
 - Produces: 既定形アプリがすべて v4 化された状態。Task 4 の全アプリ検証の対象になる
 
-- [ ] **Step 1: 変換前のベースラインを取る**
+- [x] **Step 1: 変換前のベースラインを取る**
 
 Run: `node scripts/design-audit.js`
 
@@ -456,7 +456,7 @@ Expected: exit 1。**failed / passed / skipped / error の各件数を記録す�
 数字が違っていたら、その実測値を以降の比較基準にすること
 （他の作業で状況が変わっている可能性があるため、計画の数字を信じず自分で測った値を使う）。
 
-- [ ] **Step 2: 一括変換する**
+- [x] **Step 2: 一括変換する**
 
 Run: `node scripts/migrate-tailwind-v4.js`
 
@@ -467,7 +467,7 @@ blocked 6 件は Task 3 で個別対応するため、この exit 1 は想定ど
 blocked の内訳が Task 1 Step 2 と同じ 6 アプリであることを確認すること。
 増えていたら作業を止めて報告すること。
 
-- [ ] **Step 3: 変更範囲を確認する**
+- [x] **Step 3: 変更範囲を確認する**
 
 Run: `git status --short`
 
@@ -478,7 +478,7 @@ Run: `git diff --stat apps/ | tail -1`
 
 Expected: 変更ファイル数が想定どおりであること（残り 337 アプリ × 5 ファイル前後）。
 
-- [ ] **Step 4: base が全アプリで維持されていることを確認する**
+- [x] **Step 4: base が全アプリで維持されていることを確認する**
 
 Run: `node scripts/check-asset-paths.js --config-only`
 
@@ -487,13 +487,13 @@ Expected: 「346 / 346 が base: './'」/ exit 0。
 **ここが落ちたら即座に `git checkout -- apps/` で全て戻し、原因を報告すること。**
 この事故はこのリポジトリで過去 2 回起きている。
 
-- [ ] **Step 5: 依存をインストールする**
+- [x] **Step 5: 依存をインストールする**
 
 Run: `pnpm install`
 
 Expected: exit 0。
 
-- [ ] **Step 6: コミット**
+- [x] **Step 6: コミット**
 
 ```bash
 git add -A apps/ pnpm-lock.yaml
@@ -521,7 +521,7 @@ Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
 - Consumes: Task 2 で移行済みのアプリ群（`index.css` の最終形の参考になる）
 - Produces: 全 346 アプリが移行済みの状態
 
-- [ ] **Step 1: 差分の内容を再確認する**
+- [x] **Step 1: 差分の内容を再確認する**
 
 Run: `diff apps/url-encoder/src/index.css apps/image-trim/src/index.css`
 
@@ -532,7 +532,7 @@ Run: `diff apps/url-encoder/src/index.css apps/text-counter/src/index.css`
 
 Expected: `--destructive` の値が `0 72% 40%` である。
 
-- [ ] **Step 2: カスタム CSS を持たない 4 アプリを変換する**
+- [x] **Step 2: カスタム CSS を持たない 4 アプリを変換する**
 
 `image-generate` / `image-transparent` / `text-code-case` / `text-deduplicate` は
 `index.css` を移行後の形へ置換してよい（`text-deduplicate` のカスタム `--destructive` は
@@ -560,7 +560,7 @@ standards 値へ統一する方針のため保持しない）。
 4. `apps/<app>/tailwind.config.js` と `apps/<app>/postcss.config.js` を削除する。
    **`text-code-case` にはこの 2 ファイルが存在しない**ため、削除は不要（エラーにしない）。
 
-- [ ] **Step 3: `image-trim` のカスタム CSS を保持して変換する**
+- [x] **Step 3: `image-trim` のカスタム CSS を保持して変換する**
 
 `apps/image-trim/src/index.css` を次の形にする。`@import` を先頭に置き、
 既存の `.checkerboard` 定義をその後ろに残す:
@@ -588,7 +588,7 @@ standards 値へ統一する方針のため保持しない）。
 
 package.json / vite.config.ts / config 削除は Step 2 と同じ手順で行う。
 
-- [ ] **Step 4: `text-counter` を変換する**
+- [x] **Step 4: `text-counter` を変換する**
 
 `index.css` を `@import "@tools/design-tokens";` の 1 行に置換する。
 カスタムの `--destructive: 0 72% 40%` は保持しない。standards の
@@ -603,20 +603,20 @@ package.json / vite.config.ts / config 削除は Step 2 と同じ手順で行う
 
 package.json / vite.config.ts / config 削除は Step 2 と同じ手順で行う。
 
-- [ ] **Step 5: 変換漏れがないことを確認する**
+- [x] **Step 5: 変換漏れがないことを確認する**
 
 Run: `node scripts/migrate-tailwind-v4.js --dry-run`
 
 Expected: 「変換 0 / skip 346 / blocked 0」と表示され exit 0。
 全アプリが移行済みと判定されることの確認である。
 
-- [ ] **Step 6: 依存をインストールする**
+- [x] **Step 6: 依存をインストールする**
 
 Run: `pnpm install`
 
 Expected: exit 0。
 
-- [ ] **Step 7: コミット**
+- [x] **Step 7: コミット**
 
 ```bash
 git add -A apps/ pnpm-lock.yaml
@@ -643,7 +643,7 @@ Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
 - Consumes: Task 2・Task 3 で移行された全アプリ
 - Produces: 全アプリが検証ゲートを通ることの証跡。Task 5 のデプロイ準備の前提になる
 
-- [ ] **Step 1: 全アプリの dist を消す**
+- [x] **Step 1: 全アプリの dist を消す**
 
 Run: `find apps -maxdepth 2 -name dist -type d -exec rm -r {} +`
 
@@ -656,7 +656,7 @@ Run: `find apps -maxdepth 2 -name dist -type d`
 
 Expected: 出力なし。
 
-- [ ] **Step 2: 全アプリをビルドする**
+- [x] **Step 2: 全アプリをビルドする**
 
 Run: `bash scripts/build-all.sh`
 
@@ -666,7 +666,7 @@ Expected: exit 0。約 8 分かかる見込み（1 アプリ約 1.4 秒 × 346�
 止まった場合は、そのアプリ名と実際のエラー出力を記録して報告すること。
 残りのアプリを飛ばして続行しないこと。どこまで成功したかが分からなくなる。
 
-- [ ] **Step 3: 全アプリの移行を機械検証する**
+- [x] **Step 3: 全アプリの移行を機械検証する**
 
 Run: `node scripts/verify-v4-migration.js`
 
@@ -675,13 +675,13 @@ Expected: 「検証: 346 / 346 PASS」/ exit 0。
 1 件でも失敗した場合、そのアプリ名と violation 内容を記録すること。
 **失敗を無視して次へ進まないこと。**
 
-- [ ] **Step 4: アセットパスを検査する**
+- [x] **Step 4: アセットパスを検査する**
 
 Run: `node scripts/check-asset-paths.js`
 
 Expected: 「vite.config.ts : 346 / 346」「ビルド成果物 : 346 アプリを検査、違反 0 件」「✅ 問題なし」/ exit 0。
 
-- [ ] **Step 5: 全アプリのテストを実行する**
+- [x] **Step 5: 全アプリのテストを実行する**
 
 Run: `pnpm exec vp test apps`
 
@@ -701,7 +701,7 @@ Expected: **exit 1**。ただし失敗の内容が移行前ベースラインと
 新たに失敗したアプリ名を特定し、そのアプリだけ `git stash` で移行前に戻して
 同じテストを実行し、同じ失敗が出るかで判定する。切り分けた結果を報告に含めること。
 
-- [ ] **Step 6: デザイン監査の非回帰を確認する**
+- [x] **Step 6: デザイン監査の非回帰を確認する**
 
 Run: `node scripts/design-audit.js`
 
@@ -711,7 +711,7 @@ Run: `git checkout -- .docs/design-audit-result.json`
 
 Expected: exit 0。
 
-- [ ] **Step 7: 目視サンプリング**
+- [x] **Step 7: 目視サンプリング**
 
 次の 5 アプリを実際にブラウザで開き、light / dark 両方を確認する。
 **agent-browser を使う。Claude-in-Chrome の MCP ツールは直接呼ばない。**
@@ -739,7 +739,7 @@ dev サーバーのポートは固定値を前提にせず、起動ログが示�
 各アプリの light / dark のスクリーンショットを
 `.docs/verification/sp2-screenshots/<app>-<light|dark>.png` に保存する。
 
-- [ ] **Step 8: 検証レポートを書く**
+- [x] **Step 8: 検証レポートを書く**
 
 `.docs/verification/2026-07-30-sp2-bulk-migration.md` に次を記載する。
 
@@ -752,7 +752,7 @@ dev サーバーのポートは固定値を前提にせず、起動ログが示�
 **目視した数と未目視の数を必ず書くこと。** サンプリングの事実を書かないと
 「全部見た」と読まれる。
 
-- [ ] **Step 9: コミット**
+- [x] **Step 9: コミット**
 
 ```bash
 git add .docs/verification packages/router/public
@@ -775,7 +775,7 @@ Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
 - Consumes: Task 4 の検証結果
 - Produces: 移行完了後の状態を反映したドキュメント
 
-- [ ] **Step 1: CLAUDE.md の技術スタック記述を更新する**
+- [x] **Step 1: CLAUDE.md の技術スタック記述を更新する**
 
 現在の記述:
 
@@ -795,7 +795,7 @@ Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
   - `tailwind.config.js` / `postcss.config.js` は持たない（v4 は CSS-first 設定）
 ```
 
-- [ ] **Step 2: 整形対象外の記述から不要になった項目を確認する**
+- [x] **Step 2: 整形対象外の記述から不要になった項目を確認する**
 
 `CLAUDE.md` の「整形してはいけないファイルが 3 種類ある」の
 `apps/*/vite.config.ts` の項を確認する。
@@ -807,7 +807,7 @@ PR #849 で `check-asset-paths.js` はクォート非依存になったため、
 「`apps/*/vite.config.ts` — gate は PR #849 でクォート非依存になったが、
 346 ファイルに無関係な整形差分が出るため対象に含めない」
 
-- [ ] **Step 3: 移行手順書に完了を追記する**
+- [x] **Step 3: 移行手順書に完了を追記する**
 
 `.docs/plans/tailwind-v4-migration-guide.md` の冒頭に次を追記する:
 
@@ -823,7 +823,7 @@ PR #849 で `check-asset-paths.js` はクォート非依存になったため、
 基準アプリを変換した瞬間に基準が変わる自己破壊を避けるため、ハッシュ等の不変な定数として
 保持する必要があることを記録する。
 
-- [ ] **Step 4: lint を通してコミット**
+- [x] **Step 4: lint を通してコミット**
 
 Run: `pnpm exec vp check --no-fmt CLAUDE.md .docs/plans/tailwind-v4-migration-guide.md`
 
@@ -849,7 +849,7 @@ Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>"
 - Consumes: Task 1〜5 のすべての成果物
 - Produces: SP2 完了の判定
 
-- [ ] **Step 1: クリーンな状態から全アプリを再ビルドする**
+- [x] **Step 1: クリーンな状態から全アプリを再ビルドする**
 
 Run: `find apps -maxdepth 2 -name dist -type d -exec rm -r {} +`
 
@@ -859,7 +859,7 @@ Run: `bash scripts/build-all.sh`
 
 Expected: exit 0。
 
-- [ ] **Step 2: 全ゲートを通しで実行する**
+- [x] **Step 2: 全ゲートを通しで実行する**
 
 各コマンドを**単独で**実行し、そのコマンド自身の exit code を確認する。連結しない。
 
@@ -882,7 +882,7 @@ Expected: 違反件数が Task 2 Step 1 のベースライン以下
 Run: `git checkout -- .docs/design-audit-result.json`
 Expected: exit 0
 
-- [ ] **Step 3: 移行の完全性を確認する**
+- [x] **Step 3: 移行の完全性を確認する**
 
 Run: `node scripts/migrate-tailwind-v4.js --dry-run`
 
@@ -896,13 +896,13 @@ Run: `ls apps/*/postcss.config.js`
 
 Expected: 該当なし。
 
-- [ ] **Step 4: 未コミットの変更がないことを確認する**
+- [x] **Step 4: 未コミットの変更がないことを確認する**
 
 Run: `git status --short`
 
 Expected: 出力なし。
 
-- [ ] **Step 5: 結果を報告する**
+- [x] **Step 5: 結果を報告する**
 
 次を含めて報告すること。
 
