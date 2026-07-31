@@ -16,7 +16,7 @@ const offsetArg = args.find((a) => a.startsWith("--offset="));
 const OFFSET = offsetArg ? parseInt(offsetArg.split("=")[1]) : 0;
 
 const TEMPLATE_DESC = "クライアントサイドで動作する画像トリミングアプリ";
-const REPO = "naoto24kawa/tools";
+const REPO = "elchika-inc/tools";
 
 // apps.ts から登録済みツール情報を取得
 function parseAppsTs() {
