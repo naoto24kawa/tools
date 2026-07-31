@@ -14,7 +14,7 @@ Elchika Tools 全アプリの oklch デザイントークン。**このパッケ
 
 ## standards との関係
 
-正準ソースは `naoto24kawa/standards` の `templates/design-tokens.css`。
+正準ソースは `elchika-inc/standards` の `templates/design-tokens.css`。
 変更許可トークンは `:root` の `--primary` / `--primary-foreground`、`.dark` の
 `--primary` / `--primary-foreground`、light の `--warning-foreground` の5つ。standards の
 暗色 warning foreground は warning 背景と 3.92:1 で WCAG AA 未達のため、明色へ変更している。
@@ -24,7 +24,7 @@ Elchika Tools 全アプリの oklch デザイントークン。**このパッケ
 
 standards のテンプレートが改訂されたら:
 
-1. `diff ~/projects/naoto24kawa/standards/templates/design-tokens.css tokens.css` で差分を確認
+1. `diff ~/projects/elchika-inc/standards/templates/design-tokens.css tokens.css` で差分を確認
 2. 変更許可トークン5つと diff 本体4行以外の差分を取り込む
 3. リポジトリルートで `pnpm exec vp test packages/design-tokens/src` を実行してコントラストが維持されているか確認
 

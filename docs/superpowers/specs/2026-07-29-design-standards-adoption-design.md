@@ -1,7 +1,7 @@
 # standards デザイン要件の適用 — 設計ドキュメント
 
 **対象**: SP1（基盤 + パイロット実証）
-**上位文脈**: `naoto24kawa/standards` の `DESIGN.md` を Elchika Tools（346 アプリ）へ適用する
+**上位文脈**: `elchika-inc/standards` の `DESIGN.md` を Elchika Tools（346 アプリ）へ適用する
 **作成日**: 2026-07-29
 
 ---
