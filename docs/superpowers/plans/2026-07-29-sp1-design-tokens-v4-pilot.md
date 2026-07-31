@@ -347,7 +347,7 @@ Expected: FAIL（`tokens.css` が存在しないため「`tokens.css が見つ�
 
 - [x] **Step 8: tokens.css を作る**
 
-`~/projects/naoto24kawa/standards/templates/design-tokens.css` の全内容をコピーし、以下の変更許可トークン 5つだけを書き換える。**他の行は一切変更しない**（standards テンプレート改訂時の差分マージを機械的に保つため）。
+`~/projects/elchika-inc/standards/templates/design-tokens.css` の全内容をコピーし、以下の変更許可トークン 5つだけを書き換える。**他の行は一切変更しない**（standards テンプレート改訂時の差分マージを機械的に保つため）。
 
 `:root` ブロック内:
 
@@ -370,7 +370,7 @@ Expected: FAIL（`tokens.css` が存在しないため「`tokens.css が見つ�
 /*
  * Elchika Tools デザイントークン — 唯一の正本。
  *
- * 正準ソース: naoto24kawa/standards の templates/design-tokens.css
+ * 正準ソース: elchika-inc/standards の templates/design-tokens.css
  * standards テンプレートからの変更許可トークン（5つ）:
  *   - :root の --primary / --primary-foreground（ブランドノブ）
  *   - .dark の --primary / --primary-foreground（ブランドノブ）
@@ -397,7 +397,7 @@ Expected: PASS（contrast.test.ts 7 件 + tokens.test.ts 16 件）
 
 - [x] **Step 10: diff 本体差分が 4 行に限定されていることを確認する**
 
-Run: `diff ~/projects/naoto24kawa/standards/templates/design-tokens.css packages/design-tokens/tokens.css`
+Run: `diff ~/projects/elchika-inc/standards/templates/design-tokens.css packages/design-tokens/tokens.css`
 
 Expected: 差分は冒頭のコメントブロックと、本体4行（`:root` の `--primary` / `--warning-foreground`、`.dark` の `--primary` / `--primary-foreground`）のみ。`:root` の `--primary-foreground` は変更許可対象だが standards と同値の `oklch(0.985 0 0)` のため diff には現れない。他の本体差分が出ていたらコピーミスなので修正する。
 
@@ -422,7 +422,7 @@ Elchika Tools 全アプリの oklch デザイントークン。**このパッケ
 
 ## standards との関係
 
-正準ソースは `naoto24kawa/standards` の `templates/design-tokens.css`。
+正準ソースは `elchika-inc/standards` の `templates/design-tokens.css`。
 変更許可トークンは `:root` の `--primary` / `--primary-foreground`、`.dark` の
 `--primary` / `--primary-foreground`、light の `--warning-foreground` の5つ。standards の
 暗色 warning foreground は warning 背景と 3.92:1 で WCAG AA 未達のため、明色へ変更している。
@@ -432,7 +432,7 @@ Elchika Tools 全アプリの oklch デザイントークン。**このパッケ
 
 standards のテンプレートが改訂されたら:
 
-1. `diff ~/projects/naoto24kawa/standards/templates/design-tokens.css tokens.css` で差分を確認
+1. `diff ~/projects/elchika-inc/standards/templates/design-tokens.css tokens.css` で差分を確認
 2. 変更許可トークン5つと diff 本体4行以外の差分を取り込む
 3. リポジトリルートで `pnpm exec vp test packages/design-tokens/src` を実行してコントラストが維持されているか確認
 
